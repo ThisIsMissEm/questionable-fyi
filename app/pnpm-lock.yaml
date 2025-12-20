@@ -42,8 +42,8 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@thisismissem/adonisjs-atproto-tap':
-        specifier: ^1.0.0
-        version: 1.0.0(@adonisjs/core@6.19.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(edge.js@6.4.0))(@atproto/tap@0.0.2)
+        specifier: ^1.0.2
+        version: 1.0.2(@adonisjs/core@6.19.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(edge.js@6.4.0))(@atproto/tap@0.0.2)
       '@vinejs/vine':
         specifier: ^3.0.1
         version: 3.0.1
@@ -1209,8 +1209,8 @@ packages:
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
 
-  '@thisismissem/adonisjs-atproto-tap@1.0.0':
-    resolution: {integrity: sha512-etnGNbkxHbvb7s0MA4o6jy36MdINP4TnPUiTvYQCKEtQyrHwdf0ZQaEInX2BvuejwK9icd2AjrvMzcALWIKSLw==}
+  '@thisismissem/adonisjs-atproto-tap@1.0.2':
+    resolution: {integrity: sha512-ubetR+dAyEPrng1n0usHpqeDxZCC8BR+qZwwnoSW/yX5KyNcFowvb7yqdnyk3C/PVGwZ4EHRMN/p3de7/rId/g==}
     engines: {node: '>=20.6.0'}
     peerDependencies:
       '@adonisjs/core': ^6.2.0
@@ -4592,7 +4592,7 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@thisismissem/adonisjs-atproto-tap@1.0.0(@adonisjs/core@6.19.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(edge.js@6.4.0))(@atproto/tap@0.0.2)':
+  '@thisismissem/adonisjs-atproto-tap@1.0.2(@adonisjs/core@6.19.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(edge.js@6.4.0))(@atproto/tap@0.0.2)':
     dependencies:
       '@adonisjs/core': 6.19.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(edge.js@6.4.0)
       '@atproto/tap': 0.0.2
