@@ -1,0 +1,22 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.actor.profile",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A declaration of a Questionable account profile.",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxGraphemes": 64,
+            "maxLength": 640
+          },
+          "createdAt": { "type": "string", "format": "datetime" }
+        }
+      }
+    }
+  }
+}

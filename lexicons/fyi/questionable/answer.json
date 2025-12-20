@@ -1,0 +1,41 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.answer",
+  "defs": {
+    "main": {
+      "description": "A proposed answer to a question",
+      "key": "tid",
+      "type": "record",
+      "record": {
+        "properties": {
+          "question": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Indicates the question to which this is a proposed answer to"
+          },
+          "createdAt": {
+            "format": "datetime",
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "The full text of the answer",
+            "minLength": 1,
+            "maxGraphemes": 10000,
+            "maxLength": 10000
+          },
+          "languages": {
+            "type": "array",
+            "maxLength": 3,
+            "items": {
+              "type": "string",
+              "format": "language"
+            }
+          }
+        },
+        "required": ["question", "text", "createdAt"],
+        "type": "object"
+      }
+    }
+  }
+}
