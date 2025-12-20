@@ -1,0 +1,18 @@
+services:
+  tap:
+    image: ghcr.io/bluesky-social/indigo/tap:latest
+    platform: linux/amd64
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2480/health"]
+      interval: 2s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+    volumes:
+      - ./data/tap:/data
+    env_file: tap.env
+    environment:
+      TAP_BIND: :2480
+    ports:
+      - "127.0.0.1:2480:2480"
