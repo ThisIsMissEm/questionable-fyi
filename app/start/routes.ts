@@ -10,6 +10,7 @@
 import router from '@adonisjs/core/services/router'
 
 const HomeController = () => import('#controllers/home_controller')
+const ProfilesController = () => import('#controllers/profiles_controller')
 
 router.get('/', [HomeController, 'index'])
-// router.on('/').renderInertia('home')
+router.resource('/p', ProfilesController).params({ p: 'handleOrDid' }).only(['show']).as('profile')
