@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.2/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "thisismissem/questionable-fyi" }],
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "thisismissem/questionable-fyi" }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],
