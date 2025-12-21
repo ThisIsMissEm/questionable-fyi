@@ -7,13 +7,12 @@ import { showProfileValidator } from '#validators/profile'
 export default class ProfilesController {
   async show({ request, inertia }: HttpContext) {
     const { params } = await request.validateUsing(showProfileValidator)
-    const did = await Account.resolve(params.handleOrDid)
 
-    const profile = await Profile.findOrFail(did)
-    await profile.load('account')
+    const account = await Account.resolveOrFail(params.handleOrDid)
+    const profile = await Profile.findOrFail(account.did)
 
     return inertia.render('profiles/show', {
-      profile: new ProfileDto(profile).toJson(),
+      profile: new ProfileDto(profile, account).toJson(),
     })
   }
 }

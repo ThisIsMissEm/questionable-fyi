@@ -1,12 +1,16 @@
+import Account from '#models/account'
 import Profile from '#models/profile'
 
 export default class ProfileDto {
-  constructor(private profile: Profile) {}
+  constructor(
+    private profile: Profile,
+    private account: Account
+  ) {}
 
   toJson() {
     return {
-      did: this.profile.did,
-      handle: this.profile.account?.handle ?? this.profile.did,
+      did: this.account.did,
+      handle: this.account.handle ?? this.account.did,
       displayName: this.profile.displayName,
     }
   }

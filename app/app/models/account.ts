@@ -28,12 +28,19 @@ export default class Account extends BaseModel {
   @hasOne(() => Profile)
   declare profile: HasOne<typeof Profile>
 
-  static async resolve(handleOrDid: string) {
+  static async resolveOrFail(handleOrDid: string) {
     if (handleOrDid.startsWith('did:')) {
-      return handleOrDid
+      return Account.findOrFail(handleOrDid)
     }
 
-    const account = await Account.findByOrFail({ handle: handleOrDid })
-    return account.did
+    return Account.findByOrFail({ handle: handleOrDid })
+  }
+
+  static async resolve(handleOrDid: string) {
+    if (handleOrDid.startsWith('did:')) {
+      return Account.find(handleOrDid)
+    }
+
+    return Account.findBy({ handle: handleOrDid })
   }
 }
