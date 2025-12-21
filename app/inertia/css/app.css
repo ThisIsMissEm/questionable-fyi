@@ -1,10 +1,150 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html,
 body {
   height: 100%;
   width: 100%;
+}
+
+body {
+  font-family: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+  font-weight: normal;
+  font-size: 1.25rem;
+}
+
+#app {
+  max-height: 100dvh;
+  height: 100%;
+}
+
+#wrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  width: 1170px;
+  margin: 0 auto;
+  padding: 3rem;
+  min-height: 100dvh;
+  gap: 2rem;
+}
+
+#wrapper aside {
+  position: relative;
+  max-height: 100dvh;
+}
+
+#wrapper aside nav {
+  position: fixed;
+  overflow-y: auto;
+  height: 100%;
+  width: 280px;
+}
+
+#wrapper > aside nav h1 {
+  margin-bottom: 1rem;
+  text-align: center;
+  font-style: italic;
+  color: #bbb;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.17, 0.73, 0.14, 1);
+  transition-duration: 100ms;
+}
+
+#wrapper > aside nav h1:hover {
+  color: #aaa;
+}
+
+#wrapper > aside nav ul {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+#wrapper > aside nav ul li a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  gap: 8px;
+  outline-offset: -1px;
+  font-size: 18.8px;
+  letter-spacing: 0px;
+  color: purple;
+  font-weight: 400;
+  line-height: 18.8px;
+  text-decoration: none;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.17, 0.73, 0.14, 1);
+  transition-duration: 100ms;
+}
+
+#wrapper > aside nav ul li a.active {
+  font-weight: 600;
+}
+
+#wrapper > aside nav ul li a:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+#wrapper main {
+  max-height: 100dvh;
+}
+
+.profile-header nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  align-items: stretch;
+  border-bottom: 1px solid #ccc;
+}
+
+.profile-header nav ul li a {
+  position: relative;
+  display: flex;
+  padding-left: 14px;
+  padding-right: 14px;
+  text-decoration: none;
+}
+
+.profile-header nav ul li a .tab {
+  position: relative;
+  display: inline-flex;
+  flex-grow: 1;
+  padding: 8px 6px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.profile-header nav ul li a.active .tab span {
+  background-color: purple;
+  transform: translateX(-50%);
+  min-width: 45px;
+  left: 50%;
+  height: 3px;
+  width: 100%;
+  pointer-events: auto;
+  position: absolute;
+  bottom: 0px;
+  display: inline-flex;
+}
+
+.profile-header nav ul li a:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.profile-details {
+  margin: 1rem 14px;
+}
+
+.profile-details p {
+  color: #666;
+}
+
+.profile-content {
+  padding: 14px;
 }

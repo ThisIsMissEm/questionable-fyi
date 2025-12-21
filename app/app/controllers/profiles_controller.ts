@@ -3,6 +3,7 @@ import Account from '#models/account'
 import Profile from '#models/profile'
 import ProfileDto from '#dtos/profile_dto'
 import { showProfileValidator } from '#validators/profile'
+import router from '@adonisjs/core/services/router'
 
 export default class ProfilesController {
   async show({ request, inertia }: HttpContext) {
@@ -13,6 +14,9 @@ export default class ProfilesController {
 
     return inertia.render('profiles/show', {
       profile: new ProfileDto(profile, account).toJson(),
+      links: {
+        asks: router.makeUrl('profile.show', { handleOrDid: params.handleOrDid }),
+      },
     })
   }
 }

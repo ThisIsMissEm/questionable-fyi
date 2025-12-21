@@ -1,15 +1,17 @@
 import ProfilesController from '#controllers/profiles_controller'
 import { InferPageProps } from '@adonisjs/inertia/types'
-import { Link } from '@inertiajs/react'
+import { Head } from '@inertiajs/react'
+import Layout from '~/app/layout'
+import ProfileHeader from '~/components/profile/header'
 
 export default function ShowProfile({ profile }: InferPageProps<ProfilesController, 'show'>) {
   return (
-    <>
-      <h1>
-        <Link href="/">Questionable</Link>
-      </h1>
-      <h2>{profile.displayName ?? profile.handle ?? profile.did}</h2>
-      <p>@{profile.handle ?? profile.did}</p>
-    </>
+    <Layout>
+      <Head title={`${profile.displayName ?? profile.handle}`} />
+      <ProfileHeader profile={profile} />
+      <div className="profile-content">
+        <p>There'll be a feed here of some sort.</p>
+      </div>
+    </Layout>
   )
 }
