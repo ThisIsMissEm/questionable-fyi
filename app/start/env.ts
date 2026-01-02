@@ -35,4 +35,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   TAP_URL: Env.schema.string({ format: 'url', tld: false, protocol: true }),
   TAP_ADMIN_PASSWORD: Env.schema.string.optional(),
+
+  /*
+  | OAuth Configuration
+  */
+  OAUTH_CLIENT_ID: Env.schema.string.optional({ format: 'url', protocol: true }),
 })
