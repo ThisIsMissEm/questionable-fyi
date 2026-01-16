@@ -1,14 +1,14 @@
 import { defineConfig } from '@adonisjs/auth'
 import { sessionGuard } from '@adonisjs/auth/session'
+import { atprotoAuthProvider } from '@thisismissem/adonisjs-atproto-oauth/auth/provider'
 import type { InferAuthenticators, InferAuthEvents, Authenticators } from '@adonisjs/auth/types'
-import { AtProtoProvider } from '#utils/auth'
 
 const authConfig = defineConfig({
   default: 'web',
   guards: {
     web: sessionGuard({
       useRememberMeTokens: false,
-      provider: new AtProtoProvider(),
+      provider: atprotoAuthProvider,
     }),
   },
 })

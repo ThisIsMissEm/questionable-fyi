@@ -1,57 +1,38 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { inject } from '@adonisjs/core'
 import { OAuthResolverError } from '@atproto/oauth-client-node'
+import { loginRequestValidator, signupRequestValidator } from '#validators/oauth'
+import { createFieldError } from '#utils/errors'
+import inertia from '@adonisjs/inertia/client'
+import Account from '#models/account'
 import tap from '@thisismissem/adonisjs-atproto-tap/services/tap'
 
-import { OAuthClient, OAuthPromptMode } from '#services/oauth'
-import { AtProtoUser } from '#utils/auth'
-import { createFieldError } from '#utils/errors'
-import { loginRequestValidator, signupRequestValidator } from '#validators/oauth'
-import Account from '#models/account'
-
-@inject()
 export default class OAuthController {
-  constructor(protected oauth: OAuthClient) {}
-
-  async login({ request, inertia }: HttpContext) {
+  async handleLogin({ request, inertia, oauth, logger }: HttpContext) {
+    // input should be a handle or service URL:
     const { input } = await request.validateUsing(loginRequestValidator)
     try {
-      const authorizationUrl = await this.oauth.client.authorize(input, {
-        scope: this.oauth.clientMetadata.scope,
-        prompt: 'consent',
-      })
+      const authorizationUrl = await oauth.authorize(input)
 
-      inertia.location(authorizationUrl.toString())
+      inertia.location(authorizationUrl)
     } catch (err) {
+      logger.error(err, 'Error starting AT Protocol OAuth flow')
       if (err instanceof OAuthResolverError) {
         throw createFieldError('input', input, err.message)
       }
+
+      throw createFieldError('input', input, 'Unknown error occurred')
     }
   }
 
-  async signup({ request, inertia, logger }: HttpContext) {
+  async handleSignup({ request, inertia, oauth }: HttpContext) {
+    // input should be a service URL:
     const { input, force } = await request.validateUsing(signupRequestValidator)
-    const service = input ?? this.oauth.defaultPds
-    const authorizationServer = await this.oauth.client.oauthResolver
-      .resolveFromService(service)
-      .catch((err) => {
-        logger.error(err, 'Failed to resolve Authorization Server: %s', service)
-        return null
-      })
+    const service = input ?? 'https://bsky.social'
+    const registrationSupported = await oauth.canRegister(service)
 
-    logger.debug({ service, authorizationServer })
-
-    if (!authorizationServer) {
-      throw createFieldError('input', input, 'Please enter a valid personal data server URL')
-    }
-
-    if (
-      // bsky.social doesn't currently advertise the account creation flow, but
-      // it does support account creation with one click:
-      service !== this.oauth.defaultPds &&
-      !authorizationServer.metadata.prompt_values_supported?.includes('create') &&
-      !force
-    ) {
+    if (!registrationSupported && !force) {
+      // Handle registration not supported, you may want to special case for
+      // bsky.social which has public registration behind a click.
       throw createFieldError(
         'input',
         input,
@@ -59,65 +40,40 @@ export default class OAuthController {
       )
     }
 
-    // Progressively upgrade to the create account flow:
-    let prompt: OAuthPromptMode = 'select_account'
-    if (authorizationServer.metadata.prompt_values_supported?.includes('create')) {
-      prompt = 'create'
-    }
+    const authorizationUrl = await oauth.register(service)
 
-    const authorizationUrl = await this.oauth.client.authorize(service, {
-      scope: this.oauth.clientMetadata.scope,
-      prompt,
-    })
-
-    inertia.location(authorizationUrl.toString())
+    inertia.location(authorizationUrl)
   }
 
-  async logout({ auth, response }: HttpContext) {
-    if (auth.user?.did) {
-      await this.oauth.client.revoke(auth.user.did)
-    }
-
+  async handleLogout({ auth, oauth, response }: HttpContext) {
+    await oauth.logout(auth.user?.did)
     await auth.use('web').logout()
 
     return response.redirect().back()
   }
 
-  async callback({ request, response, session, logger, auth }: HttpContext) {
-    session.regenerate()
-
+  async callback({ response, oauth, auth, logger }: HttpContext) {
     try {
-      const params = request.qs()
-      const oauth = await this.oauth.client.callback(new URLSearchParams(params))
-      const user = new AtProtoUser(oauth.session)
+      const session = await oauth.handleCallback()
 
-      await auth.use('web').login(user)
+      await auth.use('web').login(session.user)
 
+      // You'll probably want to check if you have an "account" according to Tap
+      // or some other method, and if not redirect to an onboarding flow
       // We'll have an account if the fyi.questionable.actor.profile record
       // exists & we've ingested it from Tap:
-      const account = await Account.find(user.did)
-      if (!account) {
-        await tap.addRepos([user.did])
+      const account = await Account.find(session.user.did)
+      if (account) {
+        return response.redirect().toPath('/')
+      } else {
+        await tap.addRepos([session.user.did])
         return response.redirect().toRoute('onboarding')
       }
     } catch (err) {
-      logger.debug(err, 'Error authenticating')
+      // Handle OAuth failing
+      logger.error(err, 'Error completing AT Protocol OAuth flow')
 
-      session.clear()
-      session.flash('notification', {
-        type: 'error',
-        message: 'Error authenticating, please try again',
-      })
-
-      return response.redirect().toRoute('login')
+      return response.redirect().toPath('/')
     }
-
-    response.redirect().toRoute('home')
-  }
-
-  async jwks({}: HttpContext) {}
-
-  async clientMetadata({ response }: HttpContext) {
-    return response.json(this.oauth.clientMetadata, true)
   }
 }

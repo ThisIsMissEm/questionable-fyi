@@ -37,7 +37,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   TAP_ADMIN_PASSWORD: Env.schema.string.optional(),
 
   /*
-  | OAuth Configuration
+  |----------------------------------------------------------
+  | Variables for configuring the AT Protocol OAuth provider
+  |----------------------------------------------------------
   */
-  OAUTH_CLIENT_ID: Env.schema.string.optional({ format: 'url', protocol: true }),
+  ATPROTO_OAUTH_CLIENT_ID: Env.schema.string.optional({ format: 'url', tld: true, protocol: true }),
+  ATPROTO_OAUTH_JWT_PRIVATE_KEY: Env.schema.string.optional(),
 })

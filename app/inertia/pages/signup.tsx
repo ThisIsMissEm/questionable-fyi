@@ -2,8 +2,8 @@ import { Form, usePage } from '@inertiajs/react'
 import Layout from '~/app/layout'
 
 export default function Login() {
-  const { props } = usePage<{ defaultPds: string }>()
-  const { errors, defaultPds } = props
+  const { props } = usePage()
+  const { errors } = props
 
   const isAccountCreationError = errors?.input.includes('account creation')
 
@@ -12,7 +12,7 @@ export default function Login() {
       <h2>Create an account</h2>
       <Form method="POST" action="/oauth/signup">
         <div>
-          <input type="text" name="input" placeholder={defaultPds} />
+          <input type="text" name="input" placeholder="bsky.social" />
         </div>
         {isAccountCreationError ? (
           <>

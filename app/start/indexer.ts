@@ -3,7 +3,7 @@ import tap from '@thisismissem/adonisjs-atproto-tap/services/tap'
 import logger from '@adonisjs/core/services/logger'
 import { DateTime } from 'luxon'
 
-import * as ActorProfile from '#lexicons/fyi/questionable/actor/profile'
+import * as lexicon from '#lexicons/index'
 import Account from '#models/account'
 import Profile from '#models/profile'
 import { RecordEvent } from '@atproto/tap'
@@ -37,7 +37,7 @@ indexer.record(async (evt: RecordEvent) => {
     })
   }
 
-  if (evt.collection === ActorProfile.$nsid) {
+  if (evt.collection === lexicon.fyi.questionable.actor.profile.$nsid) {
     if (evt.rkey !== 'self') {
       return
     }
@@ -47,9 +47,12 @@ indexer.record(async (evt: RecordEvent) => {
       return
     }
 
-    const profile = ActorProfile.$safeParse(evt.record)
+    const profile = lexicon.fyi.questionable.actor.profile.$safeParse(evt.record)
     if (!profile.success) {
-      logger.info({ record: evt.record }, `Invalid ${ActorProfile.$nsid} record for: ${evt.did}`)
+      logger.info(
+        { record: evt.record },
+        `Invalid ${lexicon.fyi.questionable.actor.profile.$nsid} record for: ${evt.did}`
+      )
       return
     }
 

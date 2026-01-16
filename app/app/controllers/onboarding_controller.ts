@@ -1,4 +1,4 @@
-import lexicon from '#utils/lexicon'
+import * as lexicon from '#lexicons/index'
 import Account from '#models/account'
 import Profile, { ActorProfile } from '#models/profile'
 import { getCurrentTimestamp } from '#utils/atproto'

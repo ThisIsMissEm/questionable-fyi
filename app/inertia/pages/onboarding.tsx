@@ -9,6 +9,7 @@ export default function Onboarding(props: InferPageProps<OnboardingController, '
       <h2>Welcome {props.handle}!</h2>
 
       <Form method="POST" action="/onboarding">
+        <label htmlFor="dispalyName">Display Name:</label>
         <input type="text" name="displayName" />
         <button type="submit">Save</button>
       </Form>

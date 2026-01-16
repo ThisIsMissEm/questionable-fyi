@@ -4,14 +4,18 @@ import Profile, { ActorProfile } from '#models/profile'
 import ProfileDto from '#dtos/profile_dto'
 import { showProfileValidator, updateProfileValidator } from '#validators/profile'
 import router from '@adonisjs/core/services/router'
-import lexicon from '#utils/lexicon'
+import * as lexicon from '#lexicons/index'
 
 export default class ProfilesController {
-  async show({ request, inertia }: HttpContext) {
+  async show({ request, response, inertia, logger }: HttpContext) {
     const { params } = await request.validateUsing(showProfileValidator)
 
     const account = await Account.resolveOrFail(params.handleOrDid)
     const profile = await Profile.findOrFail(account.did)
+
+    if (params.handleOrDid !== account.handle) {
+      return response.redirect().toRoute('profile.show', { handleOrDid: account.handle })
+    }
 
     return inertia.render('profiles/show', {
       profile: new ProfileDto(account, profile).toJson(),
