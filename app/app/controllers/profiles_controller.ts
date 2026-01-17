@@ -7,7 +7,7 @@ import router from '@adonisjs/core/services/router'
 import * as lexicon from '#lexicons/index'
 
 export default class ProfilesController {
-  async show({ request, response, inertia, logger }: HttpContext) {
+  async show({ request, response, inertia }: HttpContext) {
     const { params } = await request.validateUsing(showProfileValidator)
 
     const account = await Account.resolveOrFail(params.handleOrDid)

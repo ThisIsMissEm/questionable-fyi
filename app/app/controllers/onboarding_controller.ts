@@ -1,16 +1,18 @@
 import * as lexicon from '#lexicons/index'
 import Account from '#models/account'
 import Profile, { ActorProfile } from '#models/profile'
+import { Slingshot } from '#services/slingshot'
 import { getCurrentTimestamp } from '#utils/atproto'
 import { storeProfileValidator } from '#validators/onboarding'
-import { resolveMiniDocValidator } from '#validators/slingshot'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class OnboardingController {
-  async show({ inertia, response, auth, logger }: HttpContext) {
+  @inject()
+  async show({ inertia, response, auth, logger }: HttpContext, slingshot: Slingshot) {
     const user = auth.getUserOrFail()
 
-    const handle = await this.resolveIdentity(user.did)
+    const handle = await slingshot.resolveIdentity(user.did)
 
     // Create the Account record if we need one:
     await Account.firstOrCreate(
@@ -58,27 +60,5 @@ export default class OnboardingController {
     await Profile.upsert(user.did, updatedProfile)
 
     return response.redirect().toRoute('home')
-  }
-
-  private async resolveIdentity(did: string): Promise<string> {
-    const url = new URL(
-      'https://slingshot.microcosm.blue/xrpc/com.bad-example.identity.resolveMiniDoc'
-    )
-    url.searchParams.append('identifier', did)
-
-    try {
-      const response = await fetch(url)
-      if (response.ok) {
-        const json = await response.json()
-        const [error, result] = await resolveMiniDocValidator.tryValidate(json)
-        if (!error) {
-          return result.handle
-        }
-      }
-
-      return 'handle.invalid'
-    } catch (err) {
-      return 'handle.invalid'
-    }
   }
 }
