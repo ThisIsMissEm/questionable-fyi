@@ -56,6 +56,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/inertia/inertia_provider'),
     () => import('@thisismissem/adonisjs-atproto-tap/provider'),
+    () => import('@adonisjs/auth/auth_provider'),
   ],
 
   /*

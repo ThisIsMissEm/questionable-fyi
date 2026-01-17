@@ -16,7 +16,8 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "lex:build": "pnpm lex build --clear --lexicons ../lexicons --out ./app/lexicons",
-    "lex": "node_modules/.bin/lex"
+    "lex": "node_modules/.bin/lex",
+    "db:migrate": "node ace migration:run"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -33,6 +34,7 @@
     "#providers/*": "./providers/*.js",
     "#policies/*": "./app/policies/*.js",
     "#abilities/*": "./app/abilities/*.js",
+    "#utils/*": "./app/utils/*.js",
     "#database/*": "./database/*.js",
     "#tests/*": "./tests/*.js",
     "#start/*": "./start/*.js",
@@ -43,7 +45,7 @@
     "@adonisjs/eslint-config": "^2.0.0",
     "@adonisjs/prettier-config": "^1.4.4",
     "@adonisjs/tsconfig": "^1.4.0",
-    "@atproto/lex": "^0.0.6",
+    "@atproto/lex": "^0.0.8",
     "@japa/assert": "^4.0.1",
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.2.0",
@@ -73,8 +75,9 @@
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^4.0.0",
     "@atproto/jwk-jose": "^0.1.11",
-    "@atproto/oauth-client": "^0.5.11",
-    "@atproto/oauth-client-node": "^0.3.13",
+    "@atproto/oauth-client": "^0.5.12",
+    "@atproto/oauth-client-node": "^0.3.14",
+    "@atproto/syntax": "^0.4.2",
     "@atproto/tap": "^0.0.2",
     "@inertiajs/react": "^2.3.4",
     "@thisismissem/adonisjs-atproto-tap": "^1.0.2",

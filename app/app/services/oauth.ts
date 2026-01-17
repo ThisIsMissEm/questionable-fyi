@@ -10,6 +10,9 @@ import router from '@adonisjs/core/services/router'
 import env from '#start/env'
 import OauthState from '#models/oauth_state'
 import OauthSession from '#models/oauth_session'
+import { DEFAULT_PDS } from '#utils/constants'
+
+export type { OAuthPromptMode } from '@atproto/oauth-client-node'
 
 function makeUrl(routeIdentifier: string): string {
   return new URL(router.makeUrl(routeIdentifier), env.get('PUBLIC_URL')).toString()
@@ -18,8 +21,10 @@ function makeUrl(routeIdentifier: string): string {
 export class OAuthClient {
   #client?: NodeOAuthClient
 
+  readonly defaultPds: string
   readonly clientMetadata: OAuthClientMetadataInput
   constructor() {
+    this.defaultPds = `https://${DEFAULT_PDS}`
     this.clientMetadata = {
       // Must be a URL that will be exposing this metadata
       client_id: env.get('OAUTH_CLIENT_ID', makeUrl('oauth.clientMetadata')),

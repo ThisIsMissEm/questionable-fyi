@@ -6,52 +6,34 @@ import { DateTime } from 'luxon'
 import * as ActorProfile from '#lexicons/fyi/questionable/actor/profile'
 import Account from '#models/account'
 import Profile from '#models/profile'
-import { IdentityEvent, RepoStatus } from '@atproto/tap'
-
-type AccountRecord = Omit<IdentityEvent, 'id' | 'type' | 'status'> & { status: string }
-
-async function upsertAccount(account: AccountRecord) {
-  const updatedAt = DateTime.now()
-
-  await Account.updateOrCreate(
-    {
-      did: account.did,
-    },
-    {
-      did: account.did,
-      handle: account.handle,
-      status: account.status,
-      isActive: account.isActive,
-      hidden: account.status !== 'active',
-      updatedAt,
-    }
-  )
-}
+import { RecordEvent } from '@atproto/tap'
 
 indexer.identity(async (evt) => {
-  await upsertAccount(evt)
+  await Account.upsert(evt)
 })
 
-indexer.record(async (evt) => {
+indexer.record(async (evt: RecordEvent) => {
   const uri = `at://${evt.did}/${evt.collection}/${evt.rkey}`
   if (evt.action === 'create' || evt.action === 'update') {
-    console.log(`${evt.action}: ${uri}`)
+    logger.info(
+      { event: evt.action, uri, cid: evt.cid, rev: evt.rev },
+      `Tap: ${evt.action}: ${uri}`
+    )
   } else {
-    console.log(`deleted: ${uri}`)
+    logger.info({ event: evt.action, uri }, `Tap: deleted: ${uri}`)
   }
 
   const account = await Account.find(evt.did)
   if (!account) {
+    // FIXME: We probably need to call resolveIdentity here:
     const repo = await tap.getRepoInfo(evt.did)
-    if (repo.error) {
-      return
-    }
 
-    await upsertAccount({
+    await Account.upsert({
       did: repo.did,
       handle: repo.handle,
-      status: repo.state,
-      isActive: repo.state === 'active',
+      // FIXME: We assume the account is active, because Tap doesn't tell us:
+      status: 'active',
+      isActive: true,
     })
   }
 
@@ -65,26 +47,14 @@ indexer.record(async (evt) => {
       return
     }
 
-    const parsedProfile = ActorProfile.$safeParse(evt.record)
-    if (!parsedProfile.success) {
+    const profile = ActorProfile.$safeParse(evt.record)
+    if (!profile.success) {
       logger.info({ record: evt.record }, `Invalid ${ActorProfile.$nsid} record for: ${evt.did}`)
       return
     }
 
-    logger.debug(parsedProfile.value, `Parsed profile for ${evt.did}`)
+    logger.debug(profile.value, `Parsed profile for ${evt.did}`)
 
-    const profile = parsedProfile.value
-    const indexedAt = DateTime.now()
-
-    await Profile.updateOrCreate(
-      {
-        did: evt.did,
-      },
-      {
-        displayName: profile.displayName ?? null,
-        createdAt: profile.createdAt ? DateTime.fromISO(profile.createdAt) : undefined,
-        indexedAt,
-      }
-    )
+    await Profile.upsert(evt.did, profile.value, DateTime.now())
   }
 })

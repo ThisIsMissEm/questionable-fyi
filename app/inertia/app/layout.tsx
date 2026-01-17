@@ -1,16 +1,25 @@
 import { Form, Link, usePage } from '@inertiajs/react'
+import type { SharedProps, PageProps } from '@adonisjs/inertia/types'
 import { PropsWithChildren } from 'react'
 
 type LayoutProps = PropsWithChildren<{}>
 
 export default function Layout({ children }: LayoutProps) {
-  const { url, props } = usePage()
+  const { url, props } = usePage<SharedProps & PageProps>()
 
   return (
     <div id="wrapper">
       <aside>
         <nav>
-          <h1>Questionable</h1>
+          <h1 className="logomark">Questionable</h1>
+          {props.isAuthenticated && props.user ? (
+            <div className="account">
+              Logged in as{' '}
+              <Link href={`/p/${props.user.handle ?? props.user.did}`}>
+                {props.user.handle ?? props.user.did}
+              </Link>
+            </div>
+          ) : null}
           <ul>
             <li>
               <Link href="/" className={url === '/' ? 'active' : ''}>
@@ -23,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
             <li>
               <Link href="#">Topics</Link>
             </li>
-            {props.authenticated ? (
+            {props.isAuthenticated ? (
               <li>
                 <Form method="post" action="/oauth/logout">
                   <button type="submit">Logout</button>

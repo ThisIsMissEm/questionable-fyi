@@ -20,6 +20,13 @@ const loggerConfig = defineConfig({
           .pushIf(app.inProduction, targets.file({ destination: 1 }))
           .toArray(),
       },
+      serializers: {
+        user: (user) => {
+          return {
+            did: user.did,
+          }
+        },
+      },
     },
   },
 })

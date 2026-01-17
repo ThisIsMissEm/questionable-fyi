@@ -9,9 +9,7 @@ const $nsid = 'fyi.questionable.answer'
 
 export { $nsid }
 
-/**
- * A proposed answer to a question
- */
+/** A proposed answer to a question */
 type Main = {
   $type: 'fyi.questionable.answer'
 
@@ -30,9 +28,7 @@ type Main = {
 
 export type { Main }
 
-/**
- * A proposed answer to a question
- */
+/** A proposed answer to a question */
 const main = l.record<'tid', Main>(
   'tid',
   $nsid,

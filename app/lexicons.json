@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "lexicons": [
+    "fyi.questionable.actor.profile",
+    "fyi.questionable.answer",
+    "fyi.questionable.question"
+  ],
+  "resolutions": {
+    "com.atproto.repo.strongRef": {
+      "uri": "at://did:plc:6msi3pj7krzih5qxqtryxlzw/com.atproto.lexicon.schema/com.atproto.repo.strongRef",
+      "cid": "bafyreifbx7dk2lqddlzbar7n5sihedkz5b5ganyrbpcme7yyah65iv62ce"
+    },
+    "fyi.questionable.actor.profile": {
+      "uri": "at://did:plc:2tpqeou2twn2lvronqe2ipoi/com.atproto.lexicon.schema/fyi.questionable.actor.profile",
+      "cid": "bafyreig3fgaxnidr26plmvbnj2qygzb3hfrtmn65mmslobnkhk4onmcueu"
+    },
+    "fyi.questionable.answer": {
+      "uri": "at://did:plc:2tpqeou2twn2lvronqe2ipoi/com.atproto.lexicon.schema/fyi.questionable.answer",
+      "cid": "bafyreiaasiahckwqgroeq7prw7obvmwyizinrump7uycbcecxhql236qpm"
+    },
+    "fyi.questionable.question": {
+      "uri": "at://did:plc:2tpqeou2twn2lvronqe2ipoi/com.atproto.lexicon.schema/fyi.questionable.question",
+      "cid": "bafyreid5tp6yscmcmji2dqssd37pxtmn6nxghfkijtqmdwwgtupewje2qq"
+    }
+  }
+}

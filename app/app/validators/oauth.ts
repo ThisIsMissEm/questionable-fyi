@@ -19,16 +19,15 @@ export const signupRequestValidator = vine.compile(
         allow_fragments: false,
         disallow_auth: true,
       })
-      .optional()
-      .transform((value) => {
-        if (value) {
-          if (!value.startsWith('https://')) {
-            return `https://${value}`
-          }
-          return value
-        } else {
-          return 'https://bsky.social'
-        }
-      }),
+      .normalizeUrl({
+        defaultProtocol: 'https',
+        stripHash: true,
+        removeQueryParameters: true,
+        removeSingleSlash: true,
+        removeTrailingSlash: true,
+        removePath: true,
+      })
+      .optional(),
+    force: vine.accepted().optional(),
   })
 )
