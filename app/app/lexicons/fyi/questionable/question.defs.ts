@@ -10,9 +10,7 @@ const $nsid = 'fyi.questionable.question'
 
 export { $nsid }
 
-/**
- * A question asked on questionable.fyi
- */
+/** A question asked on questionable.fyi */
 type Main = {
   $type: 'fyi.questionable.question'
   createdAt: l.DatetimeString
@@ -41,9 +39,7 @@ type Main = {
 
 export type { Main }
 
-/**
- * A question asked on questionable.fyi
- */
+/** A question asked on questionable.fyi */
 const main = l.record<'tid', Main>(
   'tid',
   $nsid,

@@ -8,25 +8,23 @@ const $nsid = 'fyi.questionable.actor.profile'
 
 export { $nsid }
 
-/**
- * A declaration of a Questionable account profile.
- */
+/** A declaration of a Questionable account profile. */
 type Main = {
   $type: 'fyi.questionable.actor.profile'
   displayName?: string
+  description?: string
   createdAt?: l.DatetimeString
 }
 
 export type { Main }
 
-/**
- * A declaration of a Questionable account profile.
- */
+/** A declaration of a Questionable account profile. */
 const main = l.record<'literal:self', Main>(
   'literal:self',
   $nsid,
   l.object({
     displayName: l.optional(l.string({ maxGraphemes: 64, maxLength: 640 })),
+    description: l.optional(l.string({ maxLength: 2560, maxGraphemes: 256 })),
     createdAt: l.optional(l.string({ format: 'datetime' })),
   }),
 )

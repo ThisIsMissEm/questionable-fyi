@@ -2,7 +2,9 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
 import Profile from './profile.js'
 import type { HasOne } from '@adonisjs/lucid/types/relations'
+import { IdentityEvent } from '@atproto/tap'
 
+export type AccountRecord = Omit<IdentityEvent, 'id' | 'type'>
 export default class Account extends BaseModel {
   @column({ isPrimary: true })
   declare did: string
@@ -42,5 +44,23 @@ export default class Account extends BaseModel {
     }
 
     return Account.findBy({ handle: handleOrDid })
+  }
+
+  static async upsert(account: Partial<AccountRecord>) {
+    const updatedAt = DateTime.now()
+
+    return this.updateOrCreate(
+      {
+        did: account.did,
+      },
+      {
+        did: account.did,
+        handle: account.handle,
+        status: account.status,
+        isActive: account.isActive,
+        hidden: account.status !== 'active',
+        updatedAt,
+      }
+    )
   }
 }

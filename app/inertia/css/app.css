@@ -16,6 +16,58 @@ body {
   font-size: 1.25rem;
 }
 
+textarea,
+input {
+  font-family: inherit;
+}
+
+button {
+  color: white;
+  background: purple;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-family: inherit;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+dialog {
+  margin: auto;
+  max-width: calc(100% - 2em);
+  max-height: calc(100% - 2em);
+  min-width: 600px;
+  min-height: 450px;
+  top: 50%;
+  margin-top: calc(-450px / 2);
+
+  border: solid #666 1px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+dialog .dialog-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 16px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+dialog .dialog-body {
+  padding: 16px;
+  overflow-y: auto;
+}
+
 #app {
   max-height: 100dvh;
   height: 100%;
@@ -57,13 +109,30 @@ body {
   color: #aaa;
 }
 
+#wrapper > aside nav .account {
+  margin-bottom: 1rem;
+}
+
 #wrapper > aside nav ul {
   display: flex;
   gap: 8px;
   flex-direction: column;
 }
 
-#wrapper > aside nav ul li a {
+#wrapper > aside nav ul li form {
+  display: flex;
+}
+
+#wrapper > aside nav ul li button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+#wrapper > aside nav ul li a,
+#wrapper > aside nav ul li button {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -86,7 +155,8 @@ body {
   font-weight: 600;
 }
 
-#wrapper > aside nav ul li a:hover {
+#wrapper > aside nav ul li a:hover,
+#wrapper > aside nav ul li button:hover {
   background: rgba(0, 0, 0, 0.08);
 }
 
@@ -137,6 +207,19 @@ body {
   background: rgba(0, 0, 0, 0.08);
 }
 
+.profile-overview {
+  display: flex;
+  flex-direction: row;
+}
+
+.profile-overview .profile-details {
+  flex-grow: 1;
+}
+
+.profile-overview .profile-edit {
+  display: block;
+}
+
 .profile-details {
   margin: 1rem 14px;
 }
@@ -145,6 +228,67 @@ body {
   color: #666;
 }
 
+.profile-description {
+  margin: 0 14px 1.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  overflow: clip;
+}
+
 .profile-content {
   padding: 14px;
+}
+
+[class^='notification'] {
+  padding: 4px 8px;
+  background: grey;
+}
+
+.notification-error {
+  background: lightcoral;
+}
+
+.ask-form {
+  margin: 1rem 0;
+}
+
+.ask-form textarea {
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.ask-form .ask-form-title {
+  position: relative;
+  display: flex;
+}
+
+.ask-form .ask-form-title input {
+  display: flex;
+  flex-grow: 1;
+  font-size: 1.2rem;
+  border: none;
+  padding: 12px 16px 12px 32px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.ask-form .ask-form-title button[type='reset'] {
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  background: none;
+  color: #aaa;
+  padding: 4px;
+  font-size: 1.2rem;
+}
+
+.ask-form button {
+  color: white;
+  background: purple;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: inherit;
 }
