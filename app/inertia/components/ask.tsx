@@ -1,16 +1,19 @@
 import { Form } from '@inertiajs/react'
-import { useState } from 'react'
+import { FocusEventHandler, useState } from 'react'
 import { Button } from '~/lib/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
 import { Textarea } from '~/lib/components/ui/textarea'
+import { cn } from '~/lib/lib/utils'
 
-type AskProps = {}
+type AskProps = React.ComponentProps<'div'> & {
+  prompt?: string
+}
 
-export default function AskForm({}: AskProps) {
+export default function AskForm(props: AskProps) {
   const [collapsed, setCollapsed] = useState(true)
 
   return (
-    <div className="ask-form">
+    <div className={cn('ask-form', props.className)}>
       <Form>
         {({ reset }) => (
           <div className="flex flex-col gap-3">
@@ -32,7 +35,7 @@ export default function AskForm({}: AskProps) {
               <Input
                 type="text"
                 name="title"
-                placeholder="My question is&hellip;"
+                placeholder={`${props.prompt}...`}
                 onFocus={() => setCollapsed(false)}
                 className="ps-4 pe-24 h-14"
               />

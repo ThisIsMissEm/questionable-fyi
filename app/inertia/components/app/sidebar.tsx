@@ -7,6 +7,7 @@ import {
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
@@ -14,6 +15,14 @@ import { Avatar, AvatarFallback } from '~/lib/components/ui/avatar'
 import { Form, Link, usePage } from '@inertiajs/react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
 import { Button } from '~/lib/components/ui/button'
+import { Badge } from '~/lib/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/lib/components/ui/dropdown-menu'
+import { MoreHorizontal } from 'lucide-react'
 
 const items = [
   { title: 'Questions', href: '/' },
@@ -26,40 +35,59 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu className="hidden md:block">
-          <SidebarMenuItem>
-            <Link href="/">
-              <span className="text-3xl font-semibold">Questionable</span>
-            </Link>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarHeader className="mb-3">
+        <Link
+          href="/"
+          className="text-3xl font-semibold text-purple-800 hover:text-purple-600 focus:text-purple-600 outline-hidden"
+        >
+          Questionable
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         {page.props.isAuthenticated && (
-          <SidebarMenuButton
-            size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          >
-            <Link
-              href={`/p/${page.props.user?.handle ?? page.props.user?.did}`}
-              className="grid flex-1 text-left text-sm leading-tight"
+          <SidebarMenuItem className="p-1">
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              asChild
             >
-              <span className="truncate font-medium">
-                {page.props.user!.displayName ?? page.props.user?.handle}
-              </span>
-              <span className="text-muted-foreground truncate text-xs">
-                {page.props.user!.handle}
-              </span>
-            </Link>
-          </SidebarMenuButton>
+              <Link
+                href={`/p/${page.props.user?.handle ?? page.props.user?.did}`}
+                className="grid flex-1 text-left text-md leading-tight"
+              >
+                <span className="truncate font-medium">
+                  {page.props.user!.displayName ?? page.props.user?.handle}
+                </span>
+                <span className="text-muted-foreground truncate text-sm">
+                  {page.props.user!.handle}
+                </span>
+              </Link>
+            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="me-2" asChild>
+                <SidebarMenuAction>
+                  <MoreHorizontal />
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="right" align="start">
+                <DropdownMenuItem>
+                  <span>Account Settings</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
         )}
-        <SidebarMenu>
+        <SidebarMenu className="mt-3">
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem className="p-1" key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild isActive={page.url === item.href}>
                 {item.href == '#' ? (
-                  <span className="cursor-default">{item.title} (coming soon)</span>
+                  <span className="cursor-default">
+                    {item.title}
+                    <Badge variant="secondary" className="py-0.5 px-1 -mb-0.5">
+                      coming soon
+                    </Badge>
+                  </span>
                 ) : (
                   <Link href={item.href}>{item.title}</Link>
                 )}
@@ -70,17 +98,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {page.props.isAuthenticated ? (
             <SidebarMenuItem key="logout" className="my-5 mx-2">
               <Form method="post" action="/oauth/logout">
-                <Button type="submit">Logout</Button>
+                <Button className="w-full" type="submit">
+                  Logout
+                </Button>
               </Form>
             </SidebarMenuItem>
           ) : (
             <>
-              <SidebarMenuItem key="login">
+              <SidebarMenuItem className="p-1" key="login">
                 <SidebarMenuButton tooltip="Login to your account" asChild>
                   <Link href="/login">Login</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem key="signup">
+              <SidebarMenuItem className="p-1" key="signup">
                 <SidebarMenuButton tooltip="Login to your account" asChild>
                   <Link href="/signup">Signup</Link>
                 </SidebarMenuButton>

@@ -9,7 +9,7 @@ export default function Home(props: InferPageProps<HomeController, 'index'>) {
   const { url } = usePage()
   return (
     <Layout>
-      {props.isAuthenticated ? <AskForm /> : null}
+      {props.isAuthenticated ? <AskForm prompt={'My question is'} /> : null}
       <h2 className="text-3xl">Questions</h2>
       <Tabbar
         tabs={[
