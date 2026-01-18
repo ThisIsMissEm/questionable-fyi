@@ -1,22 +1,20 @@
-import { Form, usePage } from '@inertiajs/react'
-import Layout from '~/app/layout'
+import { Link } from '@inertiajs/react'
+import { CircleX } from 'lucide-react'
+import { LoginForm } from '~/components/loginForm'
 
 export default function Login() {
-  const { props } = usePage()
-  const { errors } = props
-
   return (
-    <Layout>
-      <h2>Login</h2>
-      <Form method="POST" action="/oauth/login">
-        <div>
-          <input type="text" name="input" />
+    <div className="relative flex flex-col min-h-svh w-full p-6 md:p-10 gap-y-4 bg-violet-950">
+      <div className="self-end mb-3">
+        <Link href="/" className="text-white hover:text-purple-100 focus:text-purple-100">
+          <CircleX size="40" />
+        </Link>
+      </div>
+      <div className="flex min-h-100 md:mx-6 md:my-8 items-center justify-center">
+        <div className="w-full max-w-sm">
+          <LoginForm />
         </div>
-
-        {errors?.input && <div className="notification-error">{errors.input}</div>}
-
-        <button type="submit">Login</button>
-      </Form>
-    </Layout>
+      </div>
+    </div>
   )
 }
