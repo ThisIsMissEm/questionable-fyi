@@ -41,7 +41,11 @@ export default class ProfilesController {
 
     const updatedProfile: ActorProfile = existing?.value ?? {}
     updatedProfile.displayName = data.displayName
-    updatedProfile.description = data.description
+    if (data.description) {
+      updatedProfile.description = data.description
+    } else {
+      updatedProfile.description = ''
+    }
 
     await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
       swapRecord: existing?.cid || undefined,
