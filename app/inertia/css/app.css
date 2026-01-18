@@ -228,10 +228,6 @@ nav.tabbar ul li a:hover {
 /*
   Profile Page:
 */
-.profile-header {
-  margin-top: 2rem;
-}
-
 .profile-overview {
   display: flex;
   flex-direction: row;
