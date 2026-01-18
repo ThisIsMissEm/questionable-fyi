@@ -1,57 +1,40 @@
 import { Form, Link, usePage } from '@inertiajs/react'
 import type { SharedProps, PageProps } from '@adonisjs/inertia/types'
 import { PropsWithChildren } from 'react'
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '~/lib/components/ui/sidebar'
+import { AppSidebar } from '~/components/app/sidebar'
+import { Separator } from '~/lib/components/ui/separator'
 
 type LayoutProps = PropsWithChildren<{}>
 
 export default function Layout({ children }: LayoutProps) {
-  const { url, props } = usePage<SharedProps & PageProps>()
-
   return (
-    <div id="wrapper">
-      <aside>
-        <nav>
-          <h1 className="logomark">Questionable</h1>
-          {props.isAuthenticated && props.user ? (
-            <div className="account">
-              Logged in as{' '}
-              <Link href={`/p/${props.user.handle ?? props.user.did}`}>
-                {props.user.handle ?? props.user.did}
-              </Link>
-            </div>
-          ) : null}
-          <ul>
-            <li>
-              <Link href="/" className={url === '/' ? 'active' : ''}>
-                Questions
-              </Link>
-            </li>
-            <li>
-              <Link href="#">Interviews</Link>
-            </li>
-            <li>
-              <Link href="#">Topics</Link>
-            </li>
-            {props.isAuthenticated ? (
-              <li>
-                <Form method="post" action="/oauth/logout">
-                  <button type="submit">Logout</button>
-                </Form>
-              </li>
-            ) : (
-              <>
-                <li>
-                  <Link href="/login">Login</Link>
-                </li>
-                <li>
-                  <Link href="/signup">Signup</Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </nav>
-      </aside>
-      <main>{children}</main>
-    </div>
+    <SidebarProvider
+      style={
+        {
+          '--sidebar-width': 'calc(var(--spacing) * 72)',
+          '--header-height': 'calc(var(--spacing) * 12)',
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <div className="sticky top-0 bg-white md:hidden">
+          <div className="flex flex-row justify-between gap-2 px-3 py-2 place-content-center h-16">
+            <SidebarTrigger className="-ml-1 size-12" size="icon-lg" iconSize={32} />
+            <Link href="/" className="mt-1 text-3xl font-semibold">
+              Questionable
+            </Link>
+            <span className="block w-8"></span>
+          </div>
+          <Separator orientation="horizontal" />
+        </div>
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main w-full md:w-2/3 flex flex-col self-center-safe gap-2 px-5">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">{children}</div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
