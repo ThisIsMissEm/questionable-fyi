@@ -59,6 +59,7 @@
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.3",
     "ts-node-maintained": "^10.9.5",
+    "tw-animate-css": "^1.4.0",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
   },
@@ -79,16 +80,28 @@
     "@atproto/syntax": "^0.4.2",
     "@atproto/tap": "^0.0.2",
     "@inertiajs/react": "^2.3.4",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@tailwindcss/vite": "^4.1.18",
     "@thisismissem/adonisjs-atproto-oauth": "^0.1.0",
     "@thisismissem/adonisjs-atproto-tap": "^1.0.2",
     "@vinejs/vine": "^3.0.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "edge.js": "^6.2.1",
+    "lucide-react": "^0.562.0",
     "luxon": "^3.7.2",
     "pg": "^8.16.3",
     "pg-connection-string": "^2.9.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18"
   },
   "hotHook": {
     "boundaries": [
