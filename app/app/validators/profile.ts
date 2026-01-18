@@ -15,6 +15,6 @@ export const updateProfileValidator = vine.compile(
     }),
 
     displayName: vine.string(),
-    description: vine.string(),
+    description: vine.string().optional(),
   })
 )

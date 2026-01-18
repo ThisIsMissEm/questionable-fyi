@@ -17,8 +17,15 @@ export default function ShowProfile({
       <Head title={`${profile.displayName ?? profile.handle}`} />
       <ProfileHeader profile={profile} />
       <div className="profile-content">
-        {isAuthenticated && user?.did !== profile.did && tab === 'asks' ? <AskForm /> : null}
-        <p>There'll be a feed here of some sort.</p>
+        {isAuthenticated && user?.did !== profile.did && tab === 'asks' ? (
+          <AskForm
+            className="mb-6"
+            prompt={`My question for ${profile.displayName ?? profile.handle} is`}
+          />
+        ) : null}
+        <div>
+          <p>There'll be a feed here of some sort.</p>
+        </div>
       </div>
     </Layout>
   )

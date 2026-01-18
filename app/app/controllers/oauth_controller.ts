@@ -1,18 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { OAuthResolverError } from '@atproto/oauth-client-node'
+import { OAuthCallbackError, OAuthResolverError } from '@atproto/oauth-client-node'
 import { loginRequestValidator, signupRequestValidator } from '#validators/oauth'
 import { createFieldError } from '#utils/errors'
-import inertia from '@adonisjs/inertia/client'
 import Account from '#models/account'
 import tap from '@thisismissem/adonisjs-atproto-tap/services/tap'
 
 export default class OAuthController {
-  async handleLogin({ request, inertia, oauth, logger }: HttpContext) {
+  async handleLogin({ request, inertia, oauth, logger, session }: HttpContext) {
     // input should be a handle or service URL:
     const { input } = await request.validateUsing(loginRequestValidator)
     try {
       const authorizationUrl = await oauth.authorize(input)
 
+      session.put('source', 'login')
       inertia.location(authorizationUrl)
     } catch (err) {
       logger.error(err, 'Error starting AT Protocol OAuth flow')
@@ -24,22 +24,23 @@ export default class OAuthController {
     }
   }
 
-  async handleSignup({ request, inertia, oauth }: HttpContext) {
+  async handleSignup({ request, inertia, oauth, session }: HttpContext) {
     // input should be a service URL:
     const { input, force } = await request.validateUsing(signupRequestValidator)
     const service = input ?? 'https://bsky.social'
     const registrationSupported = await oauth.canRegister(service)
 
-    if (!registrationSupported && !force) {
+    if (!registrationSupported && !force && service !== 'https://bsky.social') {
       // Handle registration not supported, you may want to special case for
       // bsky.social which has public registration behind a click.
       throw createFieldError(
         'input',
         input,
-        'This service does not advertise support for account creation'
+        'This PDS service does not currently advertise support for account creation, so you may not be able to create an account.'
       )
     }
 
+    session.put('source', 'signup')
     const authorizationUrl = await oauth.register(service)
 
     inertia.location(authorizationUrl)
@@ -52,24 +53,32 @@ export default class OAuthController {
     return response.redirect().back()
   }
 
-  async callback({ response, oauth, auth, logger }: HttpContext) {
+  async callback({ response, oauth, auth, session, logger }: HttpContext) {
+    const source = session.pull('source', 'login')
     try {
-      const session = await oauth.handleCallback()
+      const result = await oauth.handleCallback()
 
-      await auth.use('web').login(session.user)
+      await auth.use('web').login(result.user)
 
       // You'll probably want to check if you have an "account" according to Tap
       // or some other method, and if not redirect to an onboarding flow
       // We'll have an account if the fyi.questionable.actor.profile record
       // exists & we've ingested it from Tap:
-      const account = await Account.find(session.user.did)
+      const account = await Account.find(result.user.did)
       if (account) {
         return response.redirect().toPath('/')
       } else {
-        await tap.addRepos([session.user.did])
+        await tap.addRepos([result.user.did])
         return response.redirect().toRoute('onboarding')
       }
     } catch (err) {
+      if (err instanceof OAuthCallbackError && err.params.get('error') === 'access_denied') {
+        if (source === 'signup') {
+          return response.redirect().toRoute('signup')
+        } else {
+          return response.redirect().toRoute('login')
+        }
+      }
       // Handle OAuth failing
       logger.error(err, 'Error completing AT Protocol OAuth flow')
 

@@ -1,32 +1,21 @@
-import { Form, usePage } from '@inertiajs/react'
-import Layout from '~/app/layout'
+import { Link } from '@inertiajs/react'
+import { CircleX } from 'lucide-react'
+import { SignupForm } from '~/components/signupForm'
+import { Button } from '@/components/ui/button'
 
 export default function Login() {
-  const { props } = usePage()
-  const { errors } = props
-
-  const isAccountCreationError = errors?.input.includes('account creation')
-
   return (
-    <Layout>
-      <h2>Create an account</h2>
-      <Form method="POST" action="/oauth/signup">
-        <div>
-          <input type="text" name="input" placeholder="bsky.social" />
+    <div className="relative flex flex-col min-h-svh w-full p-6 md:p-10 gap-y-4 bg-violet-950">
+      <div className="self-end mb-3">
+        <Link href="/" className="text-white hover:text-purple-100 focus:text-purple-100">
+          <CircleX size="40" />
+        </Link>
+      </div>
+      <div className="flex min-h-100 md:mx-6 md:my-8 items-center justify-center">
+        <div className="w-full max-w-sm">
+          <SignupForm />
         </div>
-        {isAccountCreationError ? (
-          <>
-            <input type="hidden" name="force" value="true" />
-            <div className="notification-error">{errors.input}</div>
-            <button type="submit">Attempt to signup anyway</button>
-          </>
-        ) : (
-          <>
-            {errors?.input && <div className="notification-error">{errors.input}</div>}
-            <button type="submit">Signup</button>
-          </>
-        )}
-      </Form>
-    </Layout>
+      </div>
+    </div>
   )
 }

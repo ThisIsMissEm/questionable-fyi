@@ -1,3 +1,4 @@
+import { CircleX } from 'lucide-react'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -31,7 +32,9 @@ export default function Modal({ title, open, onClose, children }: ModalProps) {
     <dialog ref={dialogRef} className="modal" closedby="any" onClose={onClose}>
       <div className="dialog-header">
         <h2>{title}</h2>
-        <button onClick={() => dialogRef.current?.close()}>Close</button>
+        <button onClick={() => dialogRef.current?.close()}>
+          <CircleX size="24" />
+        </button>
       </div>
       <div className="dialog-body">{children}</div>
     </dialog>,
