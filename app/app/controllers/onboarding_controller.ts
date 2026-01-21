@@ -12,6 +12,9 @@ export default class OnboardingController {
   async show({ inertia, response, auth, logger }: HttpContext, slingshot: Slingshot) {
     const user = auth.getUserOrFail()
 
+    if (await user.hasProfile()) {
+    }
+
     const handle = await slingshot.resolveIdentity(user.did)
 
     // Create the Account record if we need one:
