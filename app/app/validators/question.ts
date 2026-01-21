@@ -1,16 +1,15 @@
 import vine from '@vinejs/vine'
+import { isTid } from '#validators/helpers'
 
-export const showProfileValidator = vine.create({
+export const listQuestionsValidator = vine.create({
   params: vine.object({
     identifier: vine.atproto.identifier(),
   }),
 })
 
-export const updateProfileValidator = vine.create({
+export const showQuestionValidator = vine.create({
   params: vine.object({
     identifier: vine.atproto.identifier(),
+    id: vine.string().use(isTid()),
   }),
-
-  displayName: vine.string().optional(),
-  description: vine.string().optional(),
 })

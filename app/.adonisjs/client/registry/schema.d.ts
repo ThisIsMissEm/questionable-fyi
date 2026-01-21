@@ -62,9 +62,9 @@ export interface Registry {
       body: {}
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/homepage').homeValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/home_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/home_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/home_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'interviews.index': {
@@ -79,28 +79,52 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/interviews_controller').default['index']>>>
     }
   }
-  'profiles.show': {
+  'profile.show': {
     methods: ["GET","HEAD"]
-    pattern: '/p/:handleOrDid'
+    pattern: '/p/:identifier'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { handleOrDid: ParamValue }
+      params: { identifier: ParamValue }
       query: ExtractQueryForGet<InferInput<(typeof import('#validators/profile').showProfileValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/profiles_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/profiles_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'profiles.update': {
+  'profile.update': {
     methods: ["PUT","PATCH"]
-    pattern: '/p/:handleOrDid'
+    pattern: '/p/:identifier'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/profile').updateProfileValidator)>>
       paramsTuple: [ParamValue]
-      params: { handleOrDid: ParamValue }
+      params: { identifier: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/profile').updateProfileValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/profiles_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/profiles_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'profile.questions.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/p/:identifier/questions'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { identifier: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/question').listQuestionsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/questions_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/questions_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'profile.questions.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/p/:identifier/questions/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { identifier: ParamValue; id: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/question').showQuestionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/questions_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/questions_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'auth.login': {
@@ -149,6 +173,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/onboarding').storeProfileValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/onboarding_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/onboarding_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'api.ask.store': {
+    methods: ["POST"]
+    pattern: '/api/ask'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/ask').askValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/ask').askValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/api/asks_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/api/asks_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
 }

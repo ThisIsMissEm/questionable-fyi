@@ -12,7 +12,7 @@ export default {
         },
       ],
     },
-    at_uri: {
+    uri: {
       tsType: 'AtUriString',
       decorator: '@column({ isPrimary: true })',
       imports: [
@@ -21,6 +21,26 @@ export default {
           typeImports: ['AtUriString'],
         },
       ],
+    },
+  },
+  tables: {
+    profiles: {
+      skipColumns: ['record'],
+    },
+    questions: {
+      skipColumns: ['record'],
+      columns: {
+        context_uri: {
+          tsType: 'AtUriString',
+          decorator: '@column()',
+          imports: [
+            {
+              source: '@atproto/lex',
+              typeImports: ['AtUriString'],
+            },
+          ],
+        },
+      },
     },
   },
 } satisfies SchemaRules

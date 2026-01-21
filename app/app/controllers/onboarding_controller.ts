@@ -1,6 +1,6 @@
 import * as lexicon from '#lexicons/index'
 import Account from '#models/account'
-import Profile, { ActorProfile } from '#models/profile'
+import Profile from '#models/profile'
 import { Slingshot } from '#services/slingshot'
 import { getCurrentTimestamp } from '#utils/atproto'
 import { storeProfileValidator } from '#validators/onboarding'
@@ -9,9 +9,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class OnboardingController {
   @inject()
-  async show({ inertia, response, auth, logger }: HttpContext, slingshot: Slingshot) {
+  async show({ inertia, auth, response, logger }: HttpContext, slingshot: Slingshot) {
     const user = auth.getUserOrFail()
-
     const handle = await slingshot.resolveIdentity(user.did)
 
     // Create the Account record if we need one:
@@ -48,10 +47,14 @@ export default class OnboardingController {
     const existing = await user.client
       .get(lexicon.fyi.questionable.actor.profile)
       .catch((_) => undefined)
-    const updatedProfile: ActorProfile = existing?.value ?? {}
 
-    updatedProfile.createdAt = updatedProfile.createdAt ?? getCurrentTimestamp()
+    const updatedProfile: lexicon.fyi.questionable.actor.profile.Main = existing?.value ?? {
+      $type: lexicon.fyi.questionable.actor.profile.$nsid,
+    }
+
     updatedProfile.displayName = data.displayName
+    updatedProfile.description = data.description ?? ''
+    updatedProfile.createdAt = updatedProfile.createdAt ?? getCurrentTimestamp()
 
     const update = await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
       swapRecord: existing?.cid || undefined,

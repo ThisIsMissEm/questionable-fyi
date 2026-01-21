@@ -4,26 +4,25 @@ import Profile, { type ActorProfile } from '#models/profile'
 import { showProfileValidator, updateProfileValidator } from '#validators/profile'
 import * as lexicon from '#lexicons/index'
 import ProfileTransformer from '#transformers/profile_transformer'
+import { resolveHandle } from '#utils/helpers'
 
 export default class ProfilesController {
   async show({ request, response, inertia }: HttpContext) {
     const { params } = await request.validateUsing(showProfileValidator)
 
-    // handle.invalid shouldn't display a profile:
-    if (params.handleOrDid === 'handle.invalid') {
-      throw new errors.E_ROUTE_NOT_FOUND(['GET', request.url()])
+    const resolved = await resolveHandle({
+      url: request.url(),
+      params,
+      redirect(handle) {
+        return response.redirect().toRoute('profile.show', { identifier: handle })
+      },
+    })
+
+    if (resolved.redirected) {
+      return
     }
 
-    const account = await Account.resolveOrFail(params.handleOrDid)
-    const profile = await Profile.find(account.did)
-    await profile?.load('account')
-
-    // Redirect to canonical profile page:
-    if (params.handleOrDid !== account.handle && account.handle !== 'handle.invalid') {
-      return response.redirect().toRoute('profiles.show', [account.handle])
-    }
-
-    const profileResult = ProfileTransformer.transform(profile)
+    const profileResult = ProfileTransformer.transform(resolved.profile, resolved.account)
     if (!profileResult) {
       throw new errors.E_ROUTE_NOT_FOUND(['GET', request.url()])
     }
@@ -38,7 +37,7 @@ export default class ProfilesController {
     logger.debug({ user }, 'Updating profile')
     const data = await request.validateUsing(updateProfileValidator)
 
-    const account = await Account.resolveOrFail(data.params.handleOrDid)
+    const account = await Account.resolveOrFail(data.params.identifier)
 
     if (account.did !== user.did) {
       return response.abort('Not allowed', 401)
@@ -60,12 +59,17 @@ export default class ProfilesController {
     } else {
       updatedProfile.description = ''
     }
+    updatedProfile.displayName = data.displayName
+    updatedProfile.description = data.description ?? ''
 
     const update = await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
       swapRecord: existing?.cid || undefined,
     })
 
-    await Profile.upsert(user.did, update.cid, updatedProfile)
+    await Profile.upsert(user.did, update.cid, {
+      $type: lexicon.fyi.questionable.actor.profile.$type,
+      ...updatedProfile,
+    })
 
     return response.redirect().back()
   }

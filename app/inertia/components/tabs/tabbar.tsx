@@ -1,3 +1,4 @@
+import { InertiaLinkProps } from '@inertiajs/react'
 import { cn } from '~/lib/lib/utils'
 import { Tab } from './tab'
 
@@ -5,8 +6,8 @@ export type TabbarProps = {
   tabs: {
     id: string
     title: string
-    href: string
     isActive: boolean
+    link: InertiaLinkProps
   }[]
 }
 
@@ -16,7 +17,7 @@ export function Tabbar({ tabs }: TabbarProps) {
       <ul>
         {tabs.map((tab) => (
           <li key={tab.id}>
-            <Tab href={tab.href} className={cn({ active: tab.isActive })}>
+            <Tab {...tab.link} className={cn({ active: tab.isActive })}>
               {tab.title}
             </Tab>
           </li>

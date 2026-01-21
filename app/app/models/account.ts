@@ -1,21 +1,33 @@
 import { DateTime } from 'luxon'
-import { hasOne } from '@adonisjs/lucid/orm'
-import Profile from './profile.js'
-import type { HasOne } from '@adonisjs/lucid/types/relations'
+import { hasMany, hasOne } from '@adonisjs/lucid/orm'
+import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+
 import { IdentityEvent } from '@atproto/tap'
 import { AccountSchema } from '#database/schema'
 
+import Profile from '#models/profile'
+import Question from '#models/question'
+
 export type AccountRecord = Omit<IdentityEvent, 'id' | 'type'>
 export default class Account extends AccountSchema {
-  @hasOne(() => Profile)
+  @hasOne(() => Profile, {
+    localKey: 'did',
+    foreignKey: 'did',
+  })
   declare profile: HasOne<typeof Profile>
+
+  @hasMany(() => Question, {
+    localKey: 'did',
+    foreignKey: 'authorDid',
+  })
+  declare questions: HasMany<typeof Question>
 
   static async resolveOrFail(handleOrDid: string) {
     if (handleOrDid.startsWith('did:')) {
-      return Account.findOrFail(handleOrDid)
+      return Account.findByOrFail({ did: handleOrDid, hidden: false })
     }
 
-    return Account.findByOrFail({ handle: handleOrDid })
+    return Account.findByOrFail({ handle: handleOrDid, hidden: false })
   }
 
   static async resolve(handleOrDid: string) {
@@ -37,8 +49,8 @@ export default class Account extends AccountSchema {
         did: account.did,
         handle: account.handle,
         status: account.status,
-        isActive: account.isActive,
-        hidden: account.status !== 'active',
+        isActive: account.isActive && account.handle !== 'handle.invalid',
+        hidden: account.status !== 'active' || account.handle === 'handle.invalid',
         updatedAt,
       }
     )

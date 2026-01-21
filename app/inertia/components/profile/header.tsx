@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
-import { Form } from '@adonisjs/inertia/react'
-import { router, usePage } from '@inertiajs/react'
 import Modal from '~/components/modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
@@ -11,6 +9,8 @@ import { Tabbar } from '../tabs/tabbar'
 import { Data } from '@generated/data'
 import { useAuth } from '~/hooks/use-auth'
 import { urlFor } from '~/client'
+import { router, usePage } from '@inertiajs/react'
+import { Form } from '@adonisjs/inertia/react'
 
 export type ProfileHeaderProps = {
   profile: Data.Profile
@@ -28,8 +28,47 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
   const onProfileEditSuccess = () => {
     showEdit(false)
-    router.get(urlFor('profiles.show', [handleOrDid]), {}, { only: ['profile'] })
+    router.get(urlFor('profile.show', [handleOrDid]), {}, { only: ['profile'] })
   }
+
+  const tabs = useMemo(() => {
+    const result = []
+
+    if (profile.links.asks) {
+      result.push({
+        id: 'asks',
+        title: 'Asks',
+        link: {
+          href: urlFor('profile.show', { identifier: handleOrDid }),
+        },
+        isActive: component == 'profiles/show' && !url.includes('tab'),
+      })
+    }
+
+    if (profile.links.questions) {
+      result.push({
+        id: 'questions',
+        title: 'Questions',
+        link: {
+          href: urlFor('profile.questions.index', { identifier: handleOrDid }),
+        },
+        isActive: component == 'profiles/questions/index',
+      })
+    }
+
+    if (profile.links.answers) {
+      result.push({
+        id: 'answers',
+        title: 'Answers',
+        link: {
+          href: urlFor('profile.show', { identifier: handleOrDid }, { qs: { tab: 'answers' } }),
+        },
+        isActive: url.includes('tab=answers'),
+      })
+    }
+
+    return result
+  }, [profile.links])
 
   return (
     <div className="profile-header">
@@ -45,8 +84,8 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
         )}
         <Modal title="Edit Profile" open={editing} onClose={() => showEdit(false)}>
           <Form
-            route="profiles.update"
-            routeParams={{ handleOrDid }}
+            route="profile.update"
+            routeParams={{ identifier: handleOrDid }}
             onSuccess={onProfileEditSuccess}
           >
             {({ processing }) => (
@@ -75,29 +114,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
       </div>
       <div className="profile-description">{profile.description}</div>
 
-      <Tabbar
-        tabs={[
-          {
-            id: 'asks',
-            title: 'Asks',
-            href: urlFor('profiles.show', [handleOrDid]),
-            isActive:
-              (component == 'profiles/show' && !url.includes('tab=')) || url.includes('tab=asks'),
-          },
-          {
-            id: 'questions',
-            title: 'Questions',
-            href: urlFor('profiles.show', [handleOrDid], { qs: { tab: 'questions' } }),
-            isActive: url.includes('tab=questions'),
-          },
-          {
-            id: 'answers',
-            title: 'Answers',
-            href: urlFor('profiles.show', [handleOrDid], { qs: { tab: 'answers' } }),
-            isActive: url.includes('tab=answers'),
-          },
-        ]}
-      />
+      <Tabbar tabs={tabs} />
     </div>
   )
 }

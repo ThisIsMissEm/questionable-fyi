@@ -50,7 +50,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       flash: ctx.inertia.always({
         error: error,
       }),
-      viewer: ctx.inertia.always(viewer && ProfileTransformer.transform(viewer)),
+      viewer: ctx.inertia.always(viewer && ProfileTransformer.transform(viewer, viewer.account)),
     }
   }
 
