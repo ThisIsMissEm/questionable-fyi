@@ -1,0 +1,16 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.richtext.bskyPost",
+  "defs": {
+    "main": {
+      "type": "object",
+      "required": ["postRef"],
+      "properties": {
+        "postRef": {
+          "ref": "com.atproto.repo.strongRef",
+          "type": "ref"
+        }
+      }
+    }
+  }
+}

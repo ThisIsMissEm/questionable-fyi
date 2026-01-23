@@ -1,0 +1,26 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.richtext.list",
+  "defs": {
+    "main": {
+      "type": "object",
+      "required": ["items"],
+      "properties": {
+        "ordered": {
+          "type": "boolean",
+          "default": false
+        },
+        "items": {
+          "items": {
+            "type": "union",
+            "refs": [
+              "fyi.questionable.richtext.text",
+              "fyi.questionable.richtext.list"
+            ]
+          },
+          "type": "array"
+        }
+      }
+    }
+  }
+}
