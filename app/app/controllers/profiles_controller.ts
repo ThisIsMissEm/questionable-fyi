@@ -1,4 +1,4 @@
-import type { HttpContext } from '@adonisjs/core/http'
+import { errors, type HttpContext } from '@adonisjs/core/http'
 import Account from '#models/account'
 import Profile, { ActorProfile } from '#models/profile'
 import ProfileDto from '#dtos/profile_dto'
@@ -10,10 +10,16 @@ export default class ProfilesController {
   async show({ request, response, inertia }: HttpContext) {
     const { params } = await request.validateUsing(showProfileValidator)
 
-    const account = await Account.resolveOrFail(params.handleOrDid)
-    const profile = await Profile.findOrFail(account.did)
+    // handle.invalid shouldn't display a profile:
+    if (params.handleOrDid === 'handle.invalid') {
+      throw new errors.E_ROUTE_NOT_FOUND(['GET', request.url()])
+    }
 
-    if (params.handleOrDid !== account.handle) {
+    const account = await Account.resolveOrFail(params.handleOrDid)
+    const profile = await Profile.find(account.did)
+
+    // Redirect to canonical profile page:
+    if (params.handleOrDid !== account.handle && account.handle !== 'handle.invalid') {
       return response.redirect().toRoute('profile.show', { handleOrDid: account.handle })
     }
 
