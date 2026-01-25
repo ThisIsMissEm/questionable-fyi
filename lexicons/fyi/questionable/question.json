@@ -7,6 +7,8 @@
       "key": "tid",
       "type": "record",
       "record": {
+        "type": "object",
+        "required": ["summary", "content", "createdAt"],
         "properties": {
           "createdAt": {
             "format": "datetime",
@@ -19,12 +21,9 @@
             "minLength": 1,
             "type": "string"
           },
-          "text": {
-            "description": "The full text of the question",
-            "minLength": 1,
-            "maxGraphemes": 10000,
-            "maxLength": 10000,
-            "type": "string"
+          "content": {
+            "type": "ref",
+            "ref": "fyi.questionable.richtext.content"
           },
           "languages": {
             "type": "array",
@@ -35,23 +34,12 @@
               "format": "language"
             }
           },
-          "answers": {
-            "type": "array",
-            "description": "The answers selected by the author of the question as answering the question",
-            "maxLength": 10,
-            "items": {
-              "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
-            }
-          },
           "context": {
             "type": "union",
             "closed": false,
             "refs": ["fyi.questionable.actor.profile"]
           }
-        },
-        "required": ["summary", "text", "createdAt"],
-        "type": "object"
+        }
       }
     }
   }

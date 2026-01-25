@@ -3,7 +3,7 @@
  */
 
 import { l } from '@atproto/lex'
-import * as RepoStrongRef from '../../com/atproto/repo/strongRef.defs.js'
+import * as RichtextContent from './richtext/content.defs.js'
 import * as ActorProfile from './actor/profile.defs.js'
 
 const $nsid = 'fyi.questionable.question'
@@ -19,21 +19,12 @@ type Main = {
    * A short summary of the question
    */
   summary: string
-
-  /**
-   * The full text of the question
-   */
-  text: string
+  content: RichtextContent.Main
 
   /**
    * Indicates human language of the primary text content.
    */
   languages?: l.LanguageString[]
-
-  /**
-   * The answers selected by the author of the question as answering the question
-   */
-  answers?: RepoStrongRef.Main[]
   context?: l.TypedRef<ActorProfile.Main> | l.TypedObject
 }
 
@@ -46,14 +37,9 @@ const main = l.record<'tid', Main>(
   l.object({
     createdAt: l.string({ format: 'datetime' }),
     summary: l.string({ maxGraphemes: 300, maxLength: 3000, minLength: 1 }),
-    text: l.string({ minLength: 1, maxGraphemes: 10000, maxLength: 10000 }),
+    content: l.ref<RichtextContent.Main>((() => RichtextContent.main) as any),
     languages: l.optional(
       l.array(l.string({ format: 'language' }), { maxLength: 3 }),
-    ),
-    answers: l.optional(
-      l.array(l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any), {
-        maxLength: 10,
-      }),
     ),
     context: l.optional(
       l.typedUnion(

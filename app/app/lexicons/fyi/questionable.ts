@@ -4,4 +4,6 @@
 
 export * as actor from './questionable/actor.js'
 export * as answer from './questionable/answer.js'
+export * as richtext from './questionable/richtext.js'
+export * as selectedAnswer from './questionable/selectedAnswer.js'
 export * as question from './questionable/question.js'

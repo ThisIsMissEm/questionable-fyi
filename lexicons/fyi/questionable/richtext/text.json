@@ -1,0 +1,26 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.richtext.text",
+  "defs": {
+    "main": {
+      "properties": {
+        "facets": {
+          "items": {
+            "ref": "fyi.questionable.richtext.facet",
+            "type": "ref"
+          },
+          "type": "array"
+        },
+        "plaintext": {
+          "type": "string"
+        },
+        "textSize": {
+          "enum": ["default", "small", "large"],
+          "type": "string"
+        }
+      },
+      "required": ["plaintext"],
+      "type": "object"
+    }
+  }
+}

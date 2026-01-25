@@ -4,38 +4,33 @@
 
 import { l } from '@atproto/lex'
 import * as RepoStrongRef from '../../com/atproto/repo/strongRef.defs.js'
-import * as RichtextContent from './richtext/content.defs.js'
 
-const $nsid = 'fyi.questionable.answer'
+const $nsid = 'fyi.questionable.selectedAnswer'
 
 export { $nsid }
 
-/** A proposed answer to a question */
+/** Marks an answer as answering a given question */
 type Main = {
-  $type: 'fyi.questionable.answer'
+  $type: 'fyi.questionable.selectedAnswer'
+  questionRef: RepoStrongRef.Main
+  answerRef: RepoStrongRef.Main
 
   /**
-   * Indicates the question to which this is a proposed answer to
+   * Client-declared timestamp when this vote was originally created.
    */
-  question: RepoStrongRef.Main
   createdAt: l.DatetimeString
-  content: RichtextContent.Main
-  languages?: l.LanguageString[]
 }
 
 export type { Main }
 
-/** A proposed answer to a question */
+/** Marks an answer as answering a given question */
 const main = l.record<'tid', Main>(
   'tid',
   $nsid,
   l.object({
-    question: l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
+    questionRef: l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
+    answerRef: l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
     createdAt: l.string({ format: 'datetime' }),
-    content: l.ref<RichtextContent.Main>((() => RichtextContent.main) as any),
-    languages: l.optional(
-      l.array(l.string({ format: 'language' }), { maxLength: 3 }),
-    ),
   }),
 )
 
