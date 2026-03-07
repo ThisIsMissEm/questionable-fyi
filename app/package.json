@@ -10,6 +10,7 @@
     "prebuild": "pnpm lex:build",
     "build": "node ace build",
     "dev": "node ace serve --hmr --no-clear",
+    "dev:debug": "node ace --inspect=9229 serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
