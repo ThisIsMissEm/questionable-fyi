@@ -21,9 +21,9 @@ import {
   DropdownMenuTrigger,
 } from '~/lib/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
-import { urlFor } from '~/client'
 import { usePage } from '@inertiajs/react'
-import { useAuth } from '~/lib/hooks/use-auth'
+import { useAuth } from '~/hooks/use-auth'
+import { urlFor } from '~/client'
 
 const items = [
   { title: 'Questions', href: urlFor('home.index') },

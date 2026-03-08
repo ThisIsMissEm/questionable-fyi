@@ -2,7 +2,7 @@ import { Data } from '@generated/data'
 import { Head, usePage } from '@inertiajs/react'
 import AskForm from '~/components/ask'
 import ProfileHeader from '~/components/profile/header'
-import { useAuth } from '~/lib/hooks/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { InertiaProps } from '~/types'
 
 type PageProps = InertiaProps<{

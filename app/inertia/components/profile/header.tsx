@@ -9,7 +9,7 @@ import { Textarea } from '~/lib/components/ui/textarea'
 import { Field, FieldLabel } from '~/lib/components/ui/field'
 import { Tabbar } from '../tabs/tabbar'
 import { Data } from '@generated/data'
-import { useAuth } from '~/lib/hooks/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { urlFor } from '~/client'
 
 export type ProfileHeaderProps = {
