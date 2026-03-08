@@ -1,7 +1,6 @@
 import Profile from '#models/profile'
 import ProfileTransformer from '#transformers/profile_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
-import { Maybe } from '@adonisjs/core/transformers'
 import type { NextFn } from '@adonisjs/core/types/http'
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
 import { AtProtoUser } from '@thisismissem/adonisjs-atproto-oauth'
@@ -11,7 +10,7 @@ async function getViewer(user?: AtProtoUser) {
     return undefined
   }
 
-  const profile = user && await Profile.find(user.did)
+  const profile = await Profile.find(user.did)
   await profile?.loadOnce('account')
 
   if (!profile) {
