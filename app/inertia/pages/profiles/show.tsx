@@ -1,23 +1,26 @@
-import ProfilesController from '#controllers/profiles_controller'
-import { InferPageProps } from '@adonisjs/inertia/types'
+import { Data } from '@generated/data'
 import { Head, usePage } from '@inertiajs/react'
-import Layout from '~/app/layout'
 import AskForm from '~/components/ask'
 import ProfileHeader from '~/components/profile/header'
+import { useAuth } from '~/lib/hooks/use-auth'
+import { InertiaProps } from '~/types'
 
-export default function ShowProfile({
-  profile,
-  user,
-  isAuthenticated,
-}: InferPageProps<ProfilesController, 'show'>) {
+type PageProps = InertiaProps<{
+  profile: Data.Profile
+}>
+
+export default function ShowProfile({ profile }: PageProps) {
   const { url } = usePage()
+  const viewer = useAuth()
+
   const tab = new URLSearchParams(url.split('?', 2)[1]).get('tab') ?? 'asks'
+
   return (
-    <Layout>
+    <>
       <Head title={`${profile.displayName ?? profile.handle}`} />
       <ProfileHeader profile={profile} />
       <div className="profile-content">
-        {isAuthenticated && user?.did !== profile.did && tab === 'asks' ? (
+        {viewer.isLoggedIn && viewer.user?.did !== profile.did && tab === 'asks' ? (
           <AskForm
             className="mb-6"
             prompt={`My question for ${profile.displayName ?? profile.handle} is`}
@@ -27,6 +30,6 @@ export default function ShowProfile({
           <p>There'll be a feed here of some sort.</p>
         </div>
       </div>
-    </Layout>
+    </>
   )
 }

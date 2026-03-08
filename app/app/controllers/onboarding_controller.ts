@@ -33,10 +33,10 @@ export default class OnboardingController {
       logger.debug({ user, profile: existing }, 'Existing actor profile found!')
       await Profile.upsert(user.did, existing.value)
 
-      return response.redirect().toRoute('home')
+      return response.redirect().toRoute('home.index')
     }
 
-    return inertia.render('onboarding', {
+    return inertia.render('chromeless/onboarding', {
       handle,
     })
   }
@@ -59,6 +59,6 @@ export default class OnboardingController {
 
     await Profile.upsert(user.did, updatedProfile)
 
-    return response.redirect().toRoute('home')
+    return response.redirect().toRoute('home.index')
   }
 }

@@ -1,34 +1,38 @@
-import type HomeController from '#controllers/home_controller'
-import { InferPageProps } from '@adonisjs/inertia/types'
-import { Link, usePage } from '@inertiajs/react'
-import Layout from '~/app/layout'
+import { Link } from '@adonisjs/inertia/react'
+import { usePage } from '@inertiajs/react'
 import AskForm from '~/components/ask'
 import { Tabbar } from '~/components/tabs/tabbar'
 
-export default function Home(props: InferPageProps<HomeController, 'index'>) {
+import { urlFor } from '~/client'
+import { InertiaProps } from '~/types'
+
+type PageProps = InertiaProps<{}>
+
+export default function Home({ viewer }: PageProps) {
   const { url } = usePage()
+
   return (
-    <Layout>
-      {props.isAuthenticated ? <AskForm prompt={'My question is'} /> : null}
+    <>
+      {viewer ? <AskForm prompt={'My question is'} /> : null}
       <h2 className="text-3xl">Questions</h2>
       <Tabbar
         tabs={[
           {
             id: 'new',
             title: 'New',
-            href: `?filter=new`,
+            href: urlFor('home.index'),
             isActive: !url.includes('filter=') || url.includes('filter=new'),
           },
           {
             id: 'unanswered',
             title: 'Unanswered',
-            href: `?filter=unanswered`,
+            href: urlFor('home.index', {}, { qs: { filter: 'unanswered' } }),
             isActive: url.includes('filter=unanswered'),
           },
           {
             id: 'answered',
             title: 'Answered',
-            href: `?filter=answered`,
+            href: urlFor('home.index', {}, { qs: { filter: 'answered' } }),
             isActive: url.includes('filter=answered'),
           },
         ]}
@@ -36,10 +40,14 @@ export default function Home(props: InferPageProps<HomeController, 'index'>) {
       <p>There'll be a feed of questions here at some point.</p>
       <ul>
         <li>
-          <Link href="/p/test.thisismissem.social">Emelia's Test Profile</Link>
+          <Link route="profiles.show" routeParams={{ handleOrDid: 'test.thisismissem.social' }}>
+            Emelia's Test Profile
+          </Link>
         </li>
         <li>
-          <Link href="/p/thisismissem.social">Emelia's Main Profile</Link>
+          <Link route="profiles.show" routeParams={{ handleOrDid: 'thisismissem.social' }}>
+            Emelia's Main Profile
+          </Link>
         </li>
       </ul>
       <p>
@@ -92,6 +100,6 @@ export default function Home(props: InferPageProps<HomeController, 'index'>) {
         culpa impedit beatae modi cupiditate ducimus incidunt, ad dolor tenetur maiores a
         dignissimos nisi placeat. Aperiam?
       </p>
-    </Layout>
+    </>
   )
 }

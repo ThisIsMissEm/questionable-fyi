@@ -6,7 +6,7 @@ import Account from '#models/account'
 import tap from '@thisismissem/adonisjs-atproto-tap/services/tap'
 
 export default class OAuthController {
-  async handleLogin({ request, inertia, oauth, logger, session }: HttpContext) {
+  async login({ request, inertia, oauth, logger, session }: HttpContext) {
     // input should be a handle or service URL:
     const { input } = await request.validateUsing(loginRequestValidator)
     try {
@@ -24,7 +24,7 @@ export default class OAuthController {
     }
   }
 
-  async handleSignup({ request, inertia, oauth, session }: HttpContext) {
+  async signup({ request, inertia, oauth, session }: HttpContext) {
     // input should be a service URL:
     const { input, force } = await request.validateUsing(signupRequestValidator)
     const service = input ?? 'https://bsky.social'
@@ -46,7 +46,7 @@ export default class OAuthController {
     inertia.location(authorizationUrl)
   }
 
-  async handleLogout({ auth, oauth, response }: HttpContext) {
+  async logout({ auth, oauth, response }: HttpContext) {
     await oauth.logout(auth.user?.did)
     await auth.use('web').logout()
 
@@ -66,23 +66,23 @@ export default class OAuthController {
       // exists & we've ingested it from Tap:
       const account = await Account.find(result.user.did)
       if (account) {
-        return response.redirect().toPath('/')
+        return response.redirect().toRoute('home.index')
       } else {
         await tap.addRepos([result.user.did])
-        return response.redirect().toRoute('onboarding')
+        return response.redirect().toRoute('onboarding.show')
       }
     } catch (err) {
       if (err instanceof OAuthCallbackError && err.params.get('error') === 'access_denied') {
         if (source === 'signup') {
-          return response.redirect().toRoute('signup')
+          return response.redirect().toRoute('auth.signup')
         } else {
-          return response.redirect().toRoute('login')
+          return response.redirect().toRoute('auth.login')
         }
       }
       // Handle OAuth failing
       logger.error(err, 'Error completing AT Protocol OAuth flow')
 
-      return response.redirect().toPath('/')
+      return response.redirect().toRoute('home.index')
     }
   }
 }

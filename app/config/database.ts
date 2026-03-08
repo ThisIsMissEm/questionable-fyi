@@ -4,7 +4,7 @@ import app from '@adonisjs/core/services/app'
 
 import env from '#start/env'
 
-const connectionOptions = parse(env.get('DATABASE_URL'), { useLibpqCompat: true })
+const connectionOptions = parse(env.get('DATABASE_URL').release(), { useLibpqCompat: true })
 if (connectionOptions.database === null) {
   connectionOptions.database = `questionable_${env.get('NODE_ENV')}`
 }

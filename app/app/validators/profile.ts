@@ -11,6 +11,6 @@ export const updateProfileValidator = vine.create({
     handleOrDid: vine.atproto.identifier(),
   }),
 
-  displayName: vine.string(),
+  displayName: vine.string().optional(),
   description: vine.string().optional(),
 })

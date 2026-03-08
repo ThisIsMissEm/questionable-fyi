@@ -1,10 +1,10 @@
 import { errors, type HttpContext } from '@adonisjs/core/http'
 import Account from '#models/account'
 import Profile, { ActorProfile } from '#models/profile'
-import ProfileDto from '#dtos/profile_dto'
 import { showProfileValidator, updateProfileValidator } from '#validators/profile'
-import router from '@adonisjs/core/services/router'
 import * as lexicon from '#lexicons/index'
+import { urlFor } from '@adonisjs/core/services/url_builder'
+import ProfileTransformer from '#transformers/profile_transformer'
 
 export default class ProfilesController {
   async show({ request, response, inertia }: HttpContext) {
@@ -17,22 +17,24 @@ export default class ProfilesController {
 
     const account = await Account.resolveOrFail(params.handleOrDid)
     const profile = await Profile.find(account.did)
+    await profile?.load('account')
 
     // Redirect to canonical profile page:
     if (params.handleOrDid !== account.handle && account.handle !== 'handle.invalid') {
-      return response.redirect().toRoute('profile.show', { handleOrDid: account.handle })
+      return response.redirect().toRoute('profiles.show', [account.handle])
     }
 
     return inertia.render('profiles/show', {
-      profile: new ProfileDto(account, profile).toJson(),
+      profile: ProfileTransformer.transform(profile),
       links: {
-        asks: router.makeUrl('profile.show', { handleOrDid: params.handleOrDid }),
+        asks: urlFor('profiles.show', [params.handleOrDid]),
       },
     })
   }
 
-  async update({ request, response, auth }: HttpContext) {
+  async update({ request, response, auth, logger }: HttpContext) {
     const user = auth.getUserOrFail()
+    logger.debug({ user }, 'Updating profile')
     const data = await request.validateUsing(updateProfileValidator)
 
     const account = await Account.resolveOrFail(data.params.handleOrDid)
@@ -46,7 +48,12 @@ export default class ProfilesController {
       .catch((_) => undefined)
 
     const updatedProfile: ActorProfile = existing?.value ?? {}
-    updatedProfile.displayName = data.displayName
+    if (data.displayName) {
+      updatedProfile.displayName = data.displayName
+    } else {
+      updatedProfile.displayName = ''
+    }
+
     if (data.description) {
       updatedProfile.description = data.description
     } else {
