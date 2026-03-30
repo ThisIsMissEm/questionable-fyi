@@ -1,0 +1,26 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.waitlist.approval",
+  "defs": {
+    "main": {
+      "description": "Created when waitlist request to join Questionable.fyi has been approved. Record key is the DID of the approved account.",
+      "key": "any",
+      "type": "record",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "request": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "The AT URI of the fyi.questionable.waitlist.request that was approved; Optional as to allow us to pre-approve accounts without needing them to explicitly request to join."
+          }
+        }
+      }
+    }
+  }
+}
