@@ -25,18 +25,18 @@ type Main = {
    * Array of content blocks
    */
   items: (
-    | l.TypedRef<RichtextText.Main>
-    | l.TypedRef<RichtextBlockquote.Main>
-    | l.TypedRef<RichtextBskyPost.Main>
-    | l.TypedRef<RichtextCode.Main>
-    | l.TypedRef<RichtextHeader.Main>
-    | l.TypedRef<RichtextHorizontalRule.Main>
-    | l.TypedRef<RichtextImage.Main>
-    | l.TypedRef<RichtextMath.Main>
-    | l.TypedRef<RichtextText.Main>
-    | l.TypedRef<RichtextList.Main>
-    | l.TypedRef<RichtextWebsite.Main>
-    | l.TypedObject
+    | l.$Typed<RichtextText.Main>
+    | l.$Typed<RichtextBlockquote.Main>
+    | l.$Typed<RichtextBskyPost.Main>
+    | l.$Typed<RichtextCode.Main>
+    | l.$Typed<RichtextHeader.Main>
+    | l.$Typed<RichtextHorizontalRule.Main>
+    | l.$Typed<RichtextImage.Main>
+    | l.$Typed<RichtextMath.Main>
+    | l.$Typed<RichtextText.Main>
+    | l.$Typed<RichtextList.Main>
+    | l.$Typed<RichtextWebsite.Main>
+    | l.Unknown$TypedObject
   )[]
 }
 
@@ -80,7 +80,11 @@ export const $isTypeOf = /*#__PURE__*/ main.isTypeOf.bind(main),
   $build = /*#__PURE__*/ main.build.bind(main),
   $type = /*#__PURE__*/ main.$type
 export const $assert = /*#__PURE__*/ main.assert.bind(main),
+  $check = /*#__PURE__*/ main.check.bind(main),
+  $cast = /*#__PURE__*/ main.cast.bind(main),
   $ifMatches = /*#__PURE__*/ main.ifMatches.bind(main),
   $matches = /*#__PURE__*/ main.matches.bind(main),
   $parse = /*#__PURE__*/ main.parse.bind(main),
-  $safeParse = /*#__PURE__*/ main.safeParse.bind(main)
+  $safeParse = /*#__PURE__*/ main.safeParse.bind(main),
+  $validate = /*#__PURE__*/ main.validate.bind(main),
+  $safeValidate = /*#__PURE__*/ main.safeValidate.bind(main)

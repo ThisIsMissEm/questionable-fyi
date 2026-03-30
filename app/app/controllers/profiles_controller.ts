@@ -1,9 +1,8 @@
 import { errors, type HttpContext } from '@adonisjs/core/http'
 import Account from '#models/account'
-import Profile, { ActorProfile } from '#models/profile'
+import Profile, { type ActorProfile } from '#models/profile'
 import { showProfileValidator, updateProfileValidator } from '#validators/profile'
 import * as lexicon from '#lexicons/index'
-import { urlFor } from '@adonisjs/core/services/url_builder'
 import ProfileTransformer from '#transformers/profile_transformer'
 
 export default class ProfilesController {
@@ -24,11 +23,13 @@ export default class ProfilesController {
       return response.redirect().toRoute('profiles.show', [account.handle])
     }
 
+    const profileResult = ProfileTransformer.transform(profile)
+    if (!profileResult) {
+      throw new errors.E_ROUTE_NOT_FOUND(['GET', request.url()])
+    }
+
     return inertia.render('profiles/show', {
-      profile: ProfileTransformer.transform(profile),
-      links: {
-        asks: urlFor('profiles.show', [params.handleOrDid]),
-      },
+      profile: profileResult,
     })
   }
 
@@ -60,11 +61,11 @@ export default class ProfilesController {
       updatedProfile.description = ''
     }
 
-    await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
+    const update = await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
       swapRecord: existing?.cid || undefined,
     })
 
-    await Profile.upsert(user.did, updatedProfile)
+    await Profile.upsert(user.did, update.cid, updatedProfile)
 
     return response.redirect().back()
   }

@@ -2,10 +2,10 @@ import Profile from '#models/profile'
 import ProfileTransformer from '#transformers/profile_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
+import type { AtprotoUser } from '@thisismissem/adonisjs-atproto-oauth'
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
-import { AtProtoUser } from '@thisismissem/adonisjs-atproto-oauth'
 
-async function getViewer(user?: AtProtoUser) {
+async function getViewer(user?: AtprotoUser) {
   if (!user) {
     return undefined
   }

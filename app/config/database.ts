@@ -28,6 +28,17 @@ const dbConfig = defineConfig({
         paths: ['database/migrations'],
       },
       debug: !app.inProduction,
+      schemaGeneration: {
+        /**
+         * Enable schema generation from Lucid models.
+         */
+        enabled: true,
+
+        /**
+         * Custom schema rules file paths.
+         */
+        rulesPaths: ['./database/schema_rules.js'],
+      },
     },
   },
 })

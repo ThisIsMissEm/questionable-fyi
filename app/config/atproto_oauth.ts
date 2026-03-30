@@ -1,7 +1,9 @@
-import { defineConfig } from '@thisismissem/adonisjs-atproto-oauth'
+import {
+  defineConfig,
+  lucidSessionStore,
+  lucidStateStore,
+} from '@thisismissem/adonisjs-atproto-oauth'
 import env from '#start/env'
-import OAuthState from '#models/oauth_state'
-import OAuthSession from '#models/oauth_session'
 
 export default defineConfig({
   publicUrl: env.get('PUBLIC_URL'),
@@ -13,15 +15,16 @@ export default defineConfig({
     // logo_uri: 'https://my-app.com/logo.png',
     // tos_uri: 'https://my-app.com/tos',
     // policy_uri: 'https://my-app.com/policy',
-    redirect_uris: ['/oauth/callback'],
     // TODO: Use permissions
     scope: 'atproto transition:generic',
   },
 
   // For a confidential client:
-  // jwks: [env.get('ATPROTO_OAUTH_JWT_PRIVATE_KEY')],
+  jwks: [env.get('ATPROTO_OAUTH_JWT_PRIVATE_KEY')],
 
   // Models to store OAuth State and Sessions:
-  stateStore: OAuthState,
-  sessionStore: OAuthSession,
+  stores: {
+    states: lucidStateStore(() => import('#models/oauth_state')),
+    sessions: lucidSessionStore(() => import('#models/oauth_session')),
+  },
 })

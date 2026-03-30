@@ -12,15 +12,15 @@ export { $nsid }
 type Main = {
   $type?: 'fyi.questionable.richtext.facet'
   features: (
-    | l.TypedRef<Link>
-    | l.TypedRef<Mention>
-    | l.TypedRef<Code>
-    | l.TypedRef<Highlight>
-    | l.TypedRef<Underline>
-    | l.TypedRef<Strikethrough>
-    | l.TypedRef<Bold>
-    | l.TypedRef<Italic>
-    | l.TypedObject
+    | l.$Typed<Link>
+    | l.$Typed<Mention>
+    | l.$Typed<Code>
+    | l.$Typed<Highlight>
+    | l.$Typed<Underline>
+    | l.$Typed<Strikethrough>
+    | l.$Typed<Bold>
+    | l.$Typed<Italic>
+    | l.Unknown$TypedObject
   )[]
   index: ByteSlice
 }
@@ -57,10 +57,14 @@ export const $isTypeOf = /*#__PURE__*/ main.isTypeOf.bind(main),
   $build = /*#__PURE__*/ main.build.bind(main),
   $type = /*#__PURE__*/ main.$type
 export const $assert = /*#__PURE__*/ main.assert.bind(main),
+  $check = /*#__PURE__*/ main.check.bind(main),
+  $cast = /*#__PURE__*/ main.cast.bind(main),
   $ifMatches = /*#__PURE__*/ main.ifMatches.bind(main),
   $matches = /*#__PURE__*/ main.matches.bind(main),
   $parse = /*#__PURE__*/ main.parse.bind(main),
-  $safeParse = /*#__PURE__*/ main.safeParse.bind(main)
+  $safeParse = /*#__PURE__*/ main.safeParse.bind(main),
+  $validate = /*#__PURE__*/ main.validate.bind(main),
+  $safeValidate = /*#__PURE__*/ main.safeValidate.bind(main)
 
 /** Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets. */
 type ByteSlice = {

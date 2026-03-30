@@ -57,7 +57,8 @@ export default class OAuthController {
     const source = session.pull('source', 'login')
     try {
       const result = await oauth.handleCallback()
-
+      session.regenerate()
+      session.tag(result.user.did)
       await auth.use('web').login(result.user)
 
       // You'll probably want to check if you have an "account" according to Tap

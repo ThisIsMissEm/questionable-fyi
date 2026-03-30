@@ -12,7 +12,11 @@ export { $nsid }
 type Main = {
   $type?: 'fyi.questionable.richtext.list'
   ordered?: boolean
-  items: (l.TypedRef<RichtextText.Main> | l.TypedRef<Main> | l.TypedObject)[]
+  items: (
+    | l.$Typed<RichtextText.Main>
+    | l.$Typed<Main>
+    | l.Unknown$TypedObject
+  )[]
 }
 
 export type { Main }
@@ -21,7 +25,7 @@ const main = l.typedObject<Main>(
   $nsid,
   'main',
   l.object({
-    ordered: l.optional(l.boolean({ default: false })),
+    ordered: l.optional(l.withDefault(l.boolean(), false)),
     items: l.array(
       l.typedUnion(
         [
@@ -40,7 +44,11 @@ export const $isTypeOf = /*#__PURE__*/ main.isTypeOf.bind(main),
   $build = /*#__PURE__*/ main.build.bind(main),
   $type = /*#__PURE__*/ main.$type
 export const $assert = /*#__PURE__*/ main.assert.bind(main),
+  $check = /*#__PURE__*/ main.check.bind(main),
+  $cast = /*#__PURE__*/ main.cast.bind(main),
   $ifMatches = /*#__PURE__*/ main.ifMatches.bind(main),
   $matches = /*#__PURE__*/ main.matches.bind(main),
   $parse = /*#__PURE__*/ main.parse.bind(main),
-  $safeParse = /*#__PURE__*/ main.safeParse.bind(main)
+  $safeParse = /*#__PURE__*/ main.safeParse.bind(main),
+  $validate = /*#__PURE__*/ main.validate.bind(main),
+  $safeValidate = /*#__PURE__*/ main.safeValidate.bind(main)

@@ -31,7 +31,7 @@ export default class OnboardingController {
 
     if (existing?.value) {
       logger.debug({ user, profile: existing }, 'Existing actor profile found!')
-      await Profile.upsert(user.did, existing.value)
+      await Profile.upsert(user.did, existing.cid, existing.value)
 
       return response.redirect().toRoute('home.index')
     }
@@ -53,11 +53,11 @@ export default class OnboardingController {
     updatedProfile.createdAt = updatedProfile.createdAt ?? getCurrentTimestamp()
     updatedProfile.displayName = data.displayName
 
-    await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
+    const update = await user.client.put(lexicon.fyi.questionable.actor.profile, updatedProfile, {
       swapRecord: existing?.cid || undefined,
     })
 
-    await Profile.upsert(user.did, updatedProfile)
+    await Profile.upsert(user.did, update.cid, updatedProfile)
 
     return response.redirect().toRoute('home.index')
   }

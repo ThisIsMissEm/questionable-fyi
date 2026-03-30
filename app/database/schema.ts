@@ -6,24 +6,17 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
+import type { DidString } from '@atproto/lex'
 
 export class AccountSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'did',
-    'handle',
-    'hidden',
-    'isActive',
-    'status',
-    'updatedAt',
-  ] as const
+  static $columns = ['createdAt', 'did', 'handle', 'hidden', 'isActive', 'status', 'updatedAt'] as const
   $columns = AccountSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare did: DidString
   @column()
-  declare did: string
-  @column()
-  declare handle: string | null
+  declare handle: string
   @column()
   declare hidden: boolean
   @column()
@@ -42,7 +35,7 @@ export class OauthSessionSchema extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
   @column()
-  declare value: string | null
+  declare value: string
 }
 
 export class OauthStateSchema extends BaseModel {
@@ -53,63 +46,26 @@ export class OauthStateSchema extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
   @column()
-  declare value: string | null
+  declare value: string
 }
 
 export class ProfileSchema extends BaseModel {
-  static $columns = ['cid', 'createdAt', 'did', 'indexedAt', 'record', 'updatedAt'] as const
+  static $columns = ['cid', 'createdAt', 'description', 'did', 'displayName', 'indexedAt', 'updatedAt'] as const
   $columns = ProfileSchema.$columns
   @column()
   declare cid: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column()
-  declare did: string
+  declare description: string | null
+  @column({ isPrimary: true })
+  declare did: DidString
+  @column()
+  declare displayName: string | null
   @column.dateTime()
   declare indexedAt: DateTime | null
-  @column()
-  declare record: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
-}
-
-export class QuestionSchema extends BaseModel {
-  static $columns = [
-    'authorDid',
-    'cid',
-    'contextCid',
-    'contextType',
-    'contextUri',
-    'createdAt',
-    'indexedAt',
-    'record',
-    'rkey',
-    'updatedAt',
-    'uri',
-  ] as const
-  $columns = QuestionSchema.$columns
-  @column()
-  declare authorDid: string
-  @column()
-  declare cid: string | null
-  @column()
-  declare contextCid: string | null
-  @column()
-  declare contextType: string | null
-  @column()
-  declare contextUri: string | null
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime | null
-  @column.dateTime()
-  declare indexedAt: DateTime | null
-  @column()
-  declare record: string
-  @column()
-  declare rkey: string
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-  @column()
-  declare uri: string
 }
 
 export class SessionSchema extends BaseModel {
