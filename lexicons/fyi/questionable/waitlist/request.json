@@ -1,0 +1,21 @@
+{
+  "lexicon": 1,
+  "id": "fyi.questionable.waitlist.request",
+  "defs": {
+    "main": {
+      "description": "A waitlist request to join Questionable.fyi",
+      "key": "literal:self",
+      "type": "record",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}
