@@ -9,6 +9,7 @@
     "wispctl": "^1.0.10"
   },
   "scripts": {
-    "deploy": "wispctl deploy questionable.fyi --path ./site --site questionable-fyi"
+    "deploy": "wispctl deploy questionable.fyi --path ./site --site questionable-fyi",
+    "dev": "python -m http.server -b 127.0.0.1 4000 -d site/"
   }
 }

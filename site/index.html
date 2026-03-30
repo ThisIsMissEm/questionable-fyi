@@ -21,6 +21,7 @@
       --brand-primary: oklch(0.5236 0.288 302.321);
       --brand-secondary: oklch(0.78 0.016 308.19);
       --color-white: white;
+      --color-grey-50: #8a8a8a;
       --color-grey: oklch(37.3% 0.034 259.733);
       --color-black: #1a1a1a;
     }
@@ -121,6 +122,36 @@
       line-height: 1.4rem;
     }
 
+    .text-center {
+      text-align: center;
+    }
+
+    .my-5 {
+      margin: 3rem 0;
+    }
+
+    .button {
+      display: inline-block;
+      margin: 0;
+      padding: 0.4rem 0.8rem;
+      background: var(--color-grey-50);
+      color: var(--color-white);
+      border-radius: 0.6rem;
+      font-size: 1.1875rem;
+      line-height: 2rem;
+      cursor: pointer;
+      text-align: center;
+      outline: none;
+      text-decoration: none;
+      border: none;
+    }
+
+    .button:hover,
+    .button:focus-within {
+      background-color: var(--brand-primary);
+      color: var(--color-white);
+    }
+
     @media screen and (max-width: 834px) {
       html {
         font-size: 100%;
@@ -197,6 +228,9 @@
         pull off is placing a bounty on questions and paying out when you accept an answer. There's probably more ways
         to make money, but making money isn't a direct goal right now.</p>
       <p>I will be happy if Questionable makes enough money to be self-sufficient and help enough people.</p>
+      <p class="text-center my-5">
+        <a class="button" href="https://aturi.to/did:plc:2tpqeou2twn2lvronqe2ipoi">Follow for updates</a>
+      </p>
     </section>
     <footer>
       <p><span class="eu">🇪🇺</span><span>Made in Europe by <a href="#">Emelia Smith</a></span></p>
