@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      wispctl:
+        specifier: ^1.0.10
+        version: 1.0.10
+
+packages:
+
+  wispctl@1.0.10:
+    resolution: {integrity: sha512-yn8yBU/9qMU252Vf8n97a26k0BPsMDqoTrUm4hOLHD8QJ6z9HheuZJtlqeNuMbY9L8NBCZw7vf4xRGjt0xDt4w==}
+    hasBin: true
+
+snapshots:
+
+  wispctl@1.0.10: {}
