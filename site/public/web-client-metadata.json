@@ -1,6 +1,6 @@
 {
   "client_id": "https://questionable.fyi/web-client-metadata.json",
-  "client_name": "My App",
+  "client_name": "Questionable.fyi Waiting List",
   "client_uri": "https://questionable.fyi",
   "redirect_uris": ["https://questionable.fyi/waitlist"],
   "scope": "atproto repo:fyi.questionable.waitlist.request",
