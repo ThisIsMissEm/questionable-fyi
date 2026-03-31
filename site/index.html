@@ -58,13 +58,30 @@
         pull off is placing a bounty on questions and paying out when you accept an answer. There's probably more ways
         to make money, but making money isn't a direct goal right now.</p>
       <p>I will be happy if Questionable makes enough money to be self-sufficient and help enough people.</p>
-      <p class="text-center my-5">
+      <p class="text-center my-5" id="action-buttons">
         <a class="button" href="https://aturi.to/did:plc:2tpqeou2twn2lvronqe2ipoi">Follow for updates</a>
+        <button class="button primary" id="request-invite">Request invite</button>
       </p>
     </section>
     <footer>
       <p><span class="eu">🇪🇺</span><span>Made in Europe by <a href="#">Emelia Smith</a></span></p>
     </footer>
+    <dialog id="request-invite-modal" closedby="any">
+      <form>
+        <label for="handle">Enter your handle to request an invite</label>
+        <p>We will automatically store your invite request on your personal data server.</p>
+        <div class="handle-input">
+          <span>@</span>
+          <input id="handle" name="handle" type="text" placeholder="username.bsky.social" autocomplete="username"
+            autocapitalize="false" autocorrect="off" data-1p-ignore />
+        </div>
+        <button class="button primary" type="submit">Request invite</button>
+      </form>
+    </dialog>
+    <dialog id="notification" closedby="any">
+      Invite successfully requested!
+    </dialog>
+
     <script type="module" src="/src/main.ts"></script>
   </main>
 </body>

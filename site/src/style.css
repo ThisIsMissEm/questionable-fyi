@@ -71,6 +71,13 @@ section strong {
   font-weight: 600;
 }
 
+#action-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
 footer {
   margin-top: 2.6rem;
   padding-top: 1rem;
@@ -112,6 +119,10 @@ footer a:focus-within {
   margin: 3rem 0;
 }
 
+.gap-2 {
+  gap: 1rem;
+}
+
 .button {
   display: inline-block;
   margin: 0;
@@ -132,6 +143,89 @@ footer a:focus-within {
 .button:focus-within {
   background-color: var(--brand-primary);
   color: var(--color-white);
+}
+
+.button.primary {
+  background: var(--brand-primary);
+  color: var(--color-white);
+}
+.button.primary:hover,
+.button.primary:focus-within {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+.button.disabled {
+  background: var(--color-grey-50) !important;
+  color: var(--color-white) !important;
+  cursor: default;
+}
+
+.handle-input {
+  display: flex;
+  border: 1px solid var(--color-grey-50);
+  background: var(--color-white);
+  color: var(--color-black);
+  border-radius: 0.6rem;
+  margin-bottom: 1rem;
+}
+.handle-input > span {
+  color: var(--brand-primary);
+  font-weight: 500;
+  padding: 0.6rem;
+}
+.handle-input:focus-within {
+  outline: 2px solid var(--brand-primary);
+}
+.handle-input input {
+  border: none;
+  background: none;
+  display: inline-flex;
+  flex-grow: 1;
+  padding: 0.6rem;
+  padding-left: 0;
+}
+.handle-input input:focus-within {
+  outline: none;
+}
+
+dialog {
+  border: 1px solid var(--color-grey-50);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  border-radius: 0.6rem;
+  outline: none;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+dialog#notification {
+  cursor: default;
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: var(--brand-primary);
+  color: var(--color-white);
+  border: var(--color-grey);
+  border-radius: 0.6rem;
+  margin: 0 0 0 auto;
+  outline: 1px solid var(--color-white);
+}
+
+dialog#request-invite-modal label {
+  font-weight: 600;
+}
+
+dialog#request-invite-modal p {
+  color: var(--color-grey-50);
+}
+dialog#request-invite-modal form {
+  display: flex;
+  flex-direction: column;
+}
+dialog#request-invite-modal button[type="submit"] {
+  flex-grow: 0;
+  align-self: flex-end;
 }
 
 @media screen and (max-width: 834px) {

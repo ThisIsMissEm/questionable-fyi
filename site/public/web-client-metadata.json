@@ -1,0 +1,12 @@
+{
+  "client_id": "https://questionable.fyi/web-client-metadata.json",
+  "client_name": "My App",
+  "client_uri": "https://questionable.fyi",
+  "redirect_uris": ["https://questionable.fyi/waitlist"],
+  "scope": "atproto repo:fyi.questionable.waitlist.request",
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none",
+  "application_type": "web",
+  "dpop_bound_access_tokens": true
+}
