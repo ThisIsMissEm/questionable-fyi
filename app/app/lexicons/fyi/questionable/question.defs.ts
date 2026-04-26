@@ -4,7 +4,7 @@
 
 import { l } from '@atproto/lex'
 import * as RichtextContent from './richtext/content.defs.js'
-import * as ActorProfile from './actor/profile.defs.js'
+import * as RepoStrongRef from '../../com/atproto/repo/strongRef.defs.js'
 
 const $nsid = 'fyi.questionable.question'
 
@@ -25,7 +25,11 @@ type Main = {
    * Indicates human language of the primary text content.
    */
   languages?: l.LanguageString[]
-  context?: l.$Typed<ActorProfile.Main> | l.Unknown$TypedObject
+
+  /**
+   * Indicates the context in which this question was asked. Currently only fyi.questionable.actor.profile
+   */
+  contextRef?: RepoStrongRef.Main
 }
 
 export type { Main }
@@ -41,11 +45,8 @@ const main = l.record<'tid', Main>(
     languages: l.optional(
       l.array(l.string({ format: 'language' }), { maxLength: 3 }),
     ),
-    context: l.optional(
-      l.typedUnion(
-        [l.typedRef<ActorProfile.Main>((() => ActorProfile.main) as any)],
-        false,
-      ),
+    contextRef: l.optional(
+      l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
     ),
   }),
 )

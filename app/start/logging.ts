@@ -10,6 +10,7 @@ emitter.on('http:server_ready', () => {
 })
 
 const ignoredUrlPrefixes = [
+  '/app/lexicons/',
   '/resources',
   '/.adonisjs',
   '/inertia',

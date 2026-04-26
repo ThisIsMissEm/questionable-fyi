@@ -2,13 +2,13 @@ import vine from '@vinejs/vine'
 
 export const showProfileValidator = vine.create({
   params: vine.object({
-    handleOrDid: vine.atproto.identifier(),
+    identifier: vine.atproto.identifier(),
   }),
 })
 
 export const updateProfileValidator = vine.create({
   params: vine.object({
-    handleOrDid: vine.atproto.identifier(),
+    identifier: vine.atproto.identifier(),
   }),
 
   displayName: vine.string().optional(),

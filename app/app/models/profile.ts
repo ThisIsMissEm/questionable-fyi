@@ -1,15 +1,20 @@
 import { DateTime } from 'luxon'
-import { belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Account from '#models/account'
-import { Main as ActorProfileMain } from '#lexicons/fyi/questionable/actor/profile'
 import { ModelAttributes } from '@adonisjs/lucid/types/model'
-import { ProfileSchema } from '#database/schema'
+import { belongsTo } from '@adonisjs/lucid/orm'
 import { DidString } from '@atproto/syntax'
 
-export type ActorProfile = Omit<ActorProfileMain, '$type'>
+import { ProfileSchema } from '#database/schema'
+import Account from '#models/account'
+import * as lexicon from '#lexicons/index'
+import { withAtprotoRecord } from '#models/atproto_model'
 
-export default class Profile extends ProfileSchema {
+export type ActorProfile = Omit<lexicon.fyi.questionable.actor.profile.Main, '$type'>
+
+export default class Profile extends withAtprotoRecord(
+  lexicon.fyi.questionable.actor.profile.main,
+  ProfileSchema
+) {
   @belongsTo(() => Account, {
     localKey: 'did',
     foreignKey: 'did',
@@ -19,14 +24,20 @@ export default class Profile extends ProfileSchema {
   static async upsert(
     did: DidString,
     cid: string | undefined,
-    profile: ActorProfile,
+    record: lexicon.fyi.questionable.actor.profile.Main,
     indexedAt?: DateTime | undefined
   ) {
     const update: Partial<ModelAttributes<Profile>> = {
-      displayName: profile.displayName?.trim() ?? null,
-      description: profile.description?.trim() ?? '',
-      createdAt: profile.createdAt ? DateTime.fromISO(profile.createdAt) : DateTime.now(),
+      displayName: record.displayName?.trim() ?? null,
+      description: record.description?.trim() ?? '',
+      record,
     }
+
+    let createdAt = record.createdAt ? DateTime.fromISO(record.createdAt) : DateTime.now()
+    if (!createdAt.isValid) {
+      createdAt = DateTime.now()
+    }
+
     if (cid) {
       update.cid = cid
     }

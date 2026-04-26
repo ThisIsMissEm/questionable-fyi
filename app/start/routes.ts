@@ -15,11 +15,19 @@ import '#start/routes/oauth'
 
 router.get('/', [controllers.Home, 'index'])
 router.get('/interviews', [controllers.Interviews, 'index'])
+
 router
   .resource('/p', controllers.Profiles)
-  .params({ p: 'handleOrDid' })
+  .params({ p: 'identifier' })
   .only(['show', 'update'])
-  .as('profiles')
+  .as('profile')
+
+router
+  .group(() => {
+    router.resource('questions', controllers.Questions).only(['index', 'show'])
+  })
+  .prefix('/p/:identifier')
+  .as('profile')
 
 router
   .group(() => {
@@ -34,3 +42,10 @@ router
     router.post('/onboarding', [controllers.Onboarding, 'store'])
   })
   .use(middleware.protected())
+
+router
+  .group(() => {
+    router.resource('ask', controllers.api.Asks).only(['store'])
+  })
+  .prefix('/api')
+  .as('api')

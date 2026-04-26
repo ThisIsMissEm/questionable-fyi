@@ -56,8 +56,8 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
               asChild
             >
               <Link
-                route="profiles.show"
-                routeParams={{ handleOrDid: user.handle ?? user.did }}
+                route="profile.show"
+                routeParams={{ identifier: user.handle ?? user.did }}
                 className="grid flex-1 text-left text-md leading-tight"
               >
                 <span className="truncate font-medium">{user.displayName ?? user.handle}</span>
@@ -82,8 +82,8 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
           {items.map((item) => (
             <SidebarMenuItem className="p-1" key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild isActive={page.url === item.href}>
-                {item.href == '#' ? (
-                  <span className="cursor-default">
+                {item.disabled ? (
+                  <span className="cursor-default pointer-events-none">
                     {item.title}
                     <Badge variant="secondary" className="py-0.5 px-1 -mb-0.5">
                       coming soon

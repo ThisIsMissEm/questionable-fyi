@@ -5,6 +5,7 @@ import { Separator } from '~/lib/components/ui/separator'
 import { PropsWithChildren } from 'react'
 import { AuthContext } from '~/components/context/authContext'
 import type { Data } from '@generated/data'
+import { Toaster } from '~/lib/components/ui/sonner'
 
 export default function Layout({
   children,
@@ -34,6 +35,7 @@ export default function Layout({
             <div className="@container/main w-full md:w-2/3 flex flex-col self-center-safe gap-2 px-5">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mt-2 md:mt-5">
                 {children}
+                <Toaster />
               </div>
             </div>
           </div>

@@ -6,7 +6,7 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
-import type { DidString } from '@atproto/lex'
+import type { DidString, AtUriString } from '@atproto/lex'
 
 export class AccountSchema extends BaseModel {
   static $columns = ['createdAt', 'did', 'handle', 'hidden', 'isActive', 'status', 'updatedAt'] as const
@@ -66,6 +66,31 @@ export class ProfileSchema extends BaseModel {
   declare indexedAt: DateTime | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class QuestionSchema extends BaseModel {
+  static $columns = ['authorDid', 'cid', 'contextCid', 'contextType', 'contextUri', 'createdAt', 'indexedAt', 'rkey', 'updatedAt', 'uri'] as const
+  $columns = QuestionSchema.$columns
+  @column()
+  declare authorDid: string
+  @column()
+  declare cid: string | null
+  @column()
+  declare contextCid: string | null
+  @column()
+  declare contextType: string | null
+  @column()
+  declare contextUri: AtUriString | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.dateTime()
+  declare indexedAt: DateTime | null
+  @column()
+  declare rkey: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column({ isPrimary: true })
+  declare uri: AtUriString
 }
 
 export class SessionSchema extends BaseModel {

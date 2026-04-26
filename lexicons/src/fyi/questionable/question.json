@@ -34,10 +34,10 @@
               "format": "language"
             }
           },
-          "context": {
-            "type": "union",
-            "closed": false,
-            "refs": ["fyi.questionable.actor.profile"]
+          "contextRef": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Indicates the context in which this question was asked. Currently only fyi.questionable.actor.profile"
           }
         }
       }

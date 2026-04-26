@@ -42,17 +42,29 @@ const routes = {
     tokens: [{"old":"/interviews","type":0,"val":"interviews","end":""}],
     types: placeholder as Registry['interviews.index']['types'],
   },
-  'profiles.show': {
+  'profile.show': {
     methods: ["GET","HEAD"],
-    pattern: '/p/:handleOrDid',
-    tokens: [{"old":"/p/:handleOrDid","type":0,"val":"p","end":""},{"old":"/p/:handleOrDid","type":1,"val":"handleOrDid","end":""}],
-    types: placeholder as Registry['profiles.show']['types'],
+    pattern: '/p/:identifier',
+    tokens: [{"old":"/p/:identifier","type":0,"val":"p","end":""},{"old":"/p/:identifier","type":1,"val":"identifier","end":""}],
+    types: placeholder as Registry['profile.show']['types'],
   },
-  'profiles.update': {
+  'profile.update': {
     methods: ["PUT","PATCH"],
-    pattern: '/p/:handleOrDid',
-    tokens: [{"old":"/p/:handleOrDid","type":0,"val":"p","end":""},{"old":"/p/:handleOrDid","type":1,"val":"handleOrDid","end":""}],
-    types: placeholder as Registry['profiles.update']['types'],
+    pattern: '/p/:identifier',
+    tokens: [{"old":"/p/:identifier","type":0,"val":"p","end":""},{"old":"/p/:identifier","type":1,"val":"identifier","end":""}],
+    types: placeholder as Registry['profile.update']['types'],
+  },
+  'profile.questions.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/p/:identifier/questions',
+    tokens: [{"old":"/p/:identifier/questions","type":0,"val":"p","end":""},{"old":"/p/:identifier/questions","type":1,"val":"identifier","end":""},{"old":"/p/:identifier/questions","type":0,"val":"questions","end":""}],
+    types: placeholder as Registry['profile.questions.index']['types'],
+  },
+  'profile.questions.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/p/:identifier/questions/:id',
+    tokens: [{"old":"/p/:identifier/questions/:id","type":0,"val":"p","end":""},{"old":"/p/:identifier/questions/:id","type":1,"val":"identifier","end":""},{"old":"/p/:identifier/questions/:id","type":0,"val":"questions","end":""},{"old":"/p/:identifier/questions/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['profile.questions.show']['types'],
   },
   'auth.login': {
     methods: ["GET","HEAD"],
@@ -77,6 +89,12 @@ const routes = {
     pattern: '/onboarding',
     tokens: [{"old":"/onboarding","type":0,"val":"onboarding","end":""}],
     types: placeholder as Registry['onboarding.store']['types'],
+  },
+  'api.ask.store': {
+    methods: ["POST"],
+    pattern: '/api/ask',
+    tokens: [{"old":"/api/ask","type":0,"val":"api","end":""},{"old":"/api/ask","type":0,"val":"ask","end":""}],
+    types: placeholder as Registry['api.ask.store']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

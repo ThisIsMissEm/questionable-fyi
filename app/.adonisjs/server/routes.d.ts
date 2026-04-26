@@ -10,18 +10,23 @@ export type ScannedRoutes = {
     'oauth.callback': { paramsTuple?: []; params?: {} }
     'home.index': { paramsTuple?: []; params?: {} }
     'interviews.index': { paramsTuple?: []; params?: {} }
-    'profiles.show': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
-    'profiles.update': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
+    'profile.show': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.update': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.index': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.show': { paramsTuple: [ParamValue,ParamValue]; params: {'identifier': ParamValue,'id': ParamValue} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'auth.signup': { paramsTuple?: []; params?: {} }
     'onboarding.show': { paramsTuple?: []; params?: {} }
     'onboarding.store': { paramsTuple?: []; params?: {} }
+    'api.ask.store': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'oauth.callback': { paramsTuple?: []; params?: {} }
     'home.index': { paramsTuple?: []; params?: {} }
     'interviews.index': { paramsTuple?: []; params?: {} }
-    'profiles.show': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
+    'profile.show': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.index': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.show': { paramsTuple: [ParamValue,ParamValue]; params: {'identifier': ParamValue,'id': ParamValue} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'auth.signup': { paramsTuple?: []; params?: {} }
     'onboarding.show': { paramsTuple?: []; params?: {} }
@@ -30,7 +35,9 @@ export type ScannedRoutes = {
     'oauth.callback': { paramsTuple?: []; params?: {} }
     'home.index': { paramsTuple?: []; params?: {} }
     'interviews.index': { paramsTuple?: []; params?: {} }
-    'profiles.show': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
+    'profile.show': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.index': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
+    'profile.questions.show': { paramsTuple: [ParamValue,ParamValue]; params: {'identifier': ParamValue,'id': ParamValue} }
     'auth.login': { paramsTuple?: []; params?: {} }
     'auth.signup': { paramsTuple?: []; params?: {} }
     'onboarding.show': { paramsTuple?: []; params?: {} }
@@ -40,12 +47,13 @@ export type ScannedRoutes = {
     'oauth.login': { paramsTuple?: []; params?: {} }
     'oauth.signup': { paramsTuple?: []; params?: {} }
     'onboarding.store': { paramsTuple?: []; params?: {} }
+    'api.ask.store': { paramsTuple?: []; params?: {} }
   }
   PUT: {
-    'profiles.update': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
+    'profile.update': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
   }
   PATCH: {
-    'profiles.update': { paramsTuple: [ParamValue]; params: {'handleOrDid': ParamValue} }
+    'profile.update': { paramsTuple: [ParamValue]; params: {'identifier': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

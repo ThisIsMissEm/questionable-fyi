@@ -14,9 +14,13 @@ export interface ApiDefinition {
   interviews: {
     index: typeof routes['interviews.index']
   }
-  profiles: {
-    show: typeof routes['profiles.show']
-    update: typeof routes['profiles.update']
+  profile: {
+    show: typeof routes['profile.show']
+    update: typeof routes['profile.update']
+    questions: {
+      index: typeof routes['profile.questions.index']
+      show: typeof routes['profile.questions.show']
+    }
   }
   auth: {
     login: typeof routes['auth.login']
@@ -25,5 +29,10 @@ export interface ApiDefinition {
   onboarding: {
     show: typeof routes['onboarding.show']
     store: typeof routes['onboarding.store']
+  }
+  api: {
+    ask: {
+      store: typeof routes['api.ask.store']
+    }
   }
 }
