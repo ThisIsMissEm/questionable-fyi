@@ -10,9 +10,10 @@ import { $nsid as ProfileNSID } from '#lexicons/fyi/questionable/actor/profile'
 
 type PageProps = InertiaProps<{
   profile: Data.Profile
+  links: Data.ProfileLinks
 }>
 
-export default function ShowProfile({ profile }: PageProps) {
+export default function ShowProfile({ profile, links }: PageProps) {
   const { url } = usePage()
   const viewer = useAuth()
 
@@ -25,7 +26,7 @@ export default function ShowProfile({ profile }: PageProps) {
   return (
     <>
       <Head title={`${profile.displayName ?? profile.handle}`} />
-      <ProfileHeader profile={profile} />
+      <ProfileHeader profile={profile} links={links} />
       <div className="profile-content">
         {viewer.isLoggedIn && viewer.user?.did !== profile.did && tab === 'asks' ? (
           <AskForm

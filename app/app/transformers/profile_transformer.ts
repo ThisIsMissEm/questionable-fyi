@@ -16,11 +16,6 @@ export default class ProfileTransformer extends BaseTransformer<Profile> {
       handle: this.account.handle ?? this.resource.did,
       displayName: this.resource.displayName ?? null,
       description: this.resource.description ?? '',
-      links: {
-        asks: true,
-        questions: true,
-        answers: true,
-      },
     }
   }
 }

@@ -43,6 +43,18 @@ export default function Home({ questions }: PageProps) {
     <>
       {viewer.isLoggedIn ? <AskForm prompt={'My question is'} postAsk={postAskCallback} /> : null}
       <h2 className="text-3xl">Questions</h2>
+      <ul>
+        <li>
+          <Link route="profile.show" routeParams={{ identifier: 'test.thisismissem.social' }}>
+            Emelia's Test Profile
+          </Link>
+        </li>
+        <li>
+          <Link route="profile.show" routeParams={{ identifier: 'thisismissem.social' }}>
+            Emelia's Main Profile
+          </Link>
+        </li>
+      </ul>
       <Tabbar
         tabs={[
           {
@@ -74,18 +86,6 @@ export default function Home({ questions }: PageProps) {
           },
         ]}
       />
-      <ul>
-        <li>
-          <Link route="profile.show" routeParams={{ identifier: 'test.thisismissem.social' }}>
-            Emelia's Test Profile
-          </Link>
-        </li>
-        <li>
-          <Link route="profile.show" routeParams={{ identifier: 'thisismissem.social' }}>
-            Emelia's Main Profile
-          </Link>
-        </li>
-      </ul>
       <div className="profile-content">
         {questions.data.length > 0 ? (
           questions.data.map((question) => (

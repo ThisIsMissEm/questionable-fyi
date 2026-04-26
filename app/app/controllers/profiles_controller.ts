@@ -5,6 +5,7 @@ import { showProfileValidator, updateProfileValidator } from '#validators/profil
 import * as lexicon from '#lexicons/index'
 import ProfileTransformer from '#transformers/profile_transformer'
 import { resolveHandle } from '#utils/helpers'
+import ProfileLinksTransformer from '#transformers/profile_links_transformer'
 
 export default class ProfilesController {
   async show({ request, response, inertia }: HttpContext) {
@@ -29,6 +30,11 @@ export default class ProfilesController {
 
     return inertia.render('profiles/show', {
       profile: profileResult,
+      links: ProfileLinksTransformer.transform({
+        asks: true,
+        questions: true,
+        answers: true,
+      }),
     })
   }
 

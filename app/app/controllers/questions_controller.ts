@@ -7,6 +7,7 @@ import { listQuestionsValidator, showQuestionValidator } from '#validators/quest
 import { resolveHandle } from '#utils/helpers'
 import ProfileTransformer from '#transformers/profile_transformer'
 import QuestionTransformer from '#transformers/question_transformer'
+import ProfileLinksTransformer from '#transformers/profile_links_transformer'
 
 export default class QuestionsController {
   async index({ request, response, inertia }: HttpContext) {
@@ -43,6 +44,11 @@ export default class QuestionsController {
     return inertia.render('profiles/questions/index', {
       profile: profileResult,
       questions: QuestionTransformer.paginate(data, metadata),
+      links: ProfileLinksTransformer.transform({
+        asks: true,
+        questions: true,
+        answers: true,
+      }),
     })
   }
 

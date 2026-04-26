@@ -14,9 +14,10 @@ import { Form } from '@adonisjs/inertia/react'
 
 export type ProfileHeaderProps = {
   profile: Data.Profile
+  links: Data.ProfileLinks
 }
 
-export default function ProfileHeader({ profile }: ProfileHeaderProps) {
+export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
   const handleOrDid = profile.handle ?? profile.did
   const viewer = useAuth()
   const { component, props, url } = usePage<SharedProps & PageProps>()
@@ -34,7 +35,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
   const tabs = useMemo(() => {
     const result = []
 
-    if (profile.links.asks) {
+    if (links.asks) {
       result.push({
         id: 'asks',
         title: 'Asks',
@@ -45,7 +46,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
       })
     }
 
-    if (profile.links.questions) {
+    if (links.questions) {
       result.push({
         id: 'questions',
         title: 'Questions',
@@ -56,7 +57,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
       })
     }
 
-    if (profile.links.answers) {
+    if (links.answers) {
       result.push({
         id: 'answers',
         title: 'Answers',
@@ -68,7 +69,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     }
 
     return result
-  }, [profile.links])
+  }, [links])
 
   return (
     <div className="profile-header">

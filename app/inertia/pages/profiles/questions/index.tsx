@@ -6,6 +6,7 @@ import { InertiaProps } from '~/types'
 
 type PageProps = InertiaProps<{
   profile: Data.Profile
+  links: Data.ProfileLinks
   questions: {
     metadata: {
       total: number
@@ -14,11 +15,11 @@ type PageProps = InertiaProps<{
   }
 }>
 
-export default function ShowProfileQuestions({ profile, questions }: PageProps) {
+export default function ShowProfileQuestions({ profile, links, questions }: PageProps) {
   return (
     <>
       <Head title={`${profile.displayName ?? profile.handle}`} />
-      <ProfileHeader profile={profile} />
+      <ProfileHeader profile={profile} links={links} />
       <div className="profile-content">
         <div className="mb-4">
           {questions.metadata.total} {questions.metadata.total == 1 ? 'Question' : 'Questions'}
