@@ -1,32 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
+import { hasOne } from '@adonisjs/lucid/orm'
 import Profile from './profile.js'
 import type { HasOne } from '@adonisjs/lucid/types/relations'
 import { IdentityEvent } from '@atproto/tap'
+import { AccountSchema } from '#database/schema'
 
 export type AccountRecord = Omit<IdentityEvent, 'id' | 'type'>
-export default class Account extends BaseModel {
-  @column({ isPrimary: true })
-  declare did: string
-
-  @column()
-  declare handle: string
-
-  @column()
-  declare status: string
-
-  @column()
-  declare isActive: boolean
-
-  @column()
-  declare hidden: boolean
-
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
-
+export default class Account extends AccountSchema {
   @hasOne(() => Profile)
   declare profile: HasOne<typeof Profile>
 

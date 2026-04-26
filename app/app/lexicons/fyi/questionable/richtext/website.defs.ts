@@ -23,9 +23,7 @@ const main = l.typedObject<Main>(
   'main',
   l.object({
     description: l.optional(l.string({ maxGraphemes: 3000, maxLength: 3000 })),
-    previewImage: l.optional(
-      l.blob({ accept: ['image/*'], maxSize: 1000000, allowLegacy: false }),
-    ),
+    previewImage: l.optional(l.blob({ accept: ['image/*'], maxSize: 1000000 })),
     uri: l.string({ format: 'uri' }),
     title: l.optional(l.string({ maxGraphemes: 300, maxLength: 3000 })),
   }),
@@ -37,7 +35,11 @@ export const $isTypeOf = /*#__PURE__*/ main.isTypeOf.bind(main),
   $build = /*#__PURE__*/ main.build.bind(main),
   $type = /*#__PURE__*/ main.$type
 export const $assert = /*#__PURE__*/ main.assert.bind(main),
+  $check = /*#__PURE__*/ main.check.bind(main),
+  $cast = /*#__PURE__*/ main.cast.bind(main),
   $ifMatches = /*#__PURE__*/ main.ifMatches.bind(main),
   $matches = /*#__PURE__*/ main.matches.bind(main),
   $parse = /*#__PURE__*/ main.parse.bind(main),
-  $safeParse = /*#__PURE__*/ main.safeParse.bind(main)
+  $safeParse = /*#__PURE__*/ main.safeParse.bind(main),
+  $validate = /*#__PURE__*/ main.validate.bind(main),
+  $safeValidate = /*#__PURE__*/ main.safeValidate.bind(main)

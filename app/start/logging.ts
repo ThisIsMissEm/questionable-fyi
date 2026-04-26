@@ -9,20 +9,27 @@ emitter.on('http:server_ready', () => {
   logger.info(`Server available at: ${env.get('PUBLIC_URL')}`)
 })
 
+const ignoredUrlPrefixes = [
+  '/resources',
+  '/.adonisjs',
+  '/inertia',
+  '/@',
+  '/node_modules',
+  '/favicon.ico',
+  '/installHook.js.map',
+]
+
 emitter.on('http:request_completed', ({ ctx, duration }) => {
   const { request, response } = ctx
+  const requestUrl = request.url()
 
   // Don't log request for health checks:
-  if (request.url() === '/health') {
+  if (requestUrl === '/health') {
     return
   }
 
   // Don't log request for static assets:
-  if (
-    request.url().startsWith('/resources') ||
-    request.url().startsWith('/node_modules') ||
-    request.url().startsWith('/@')
-  ) {
+  if (ignoredUrlPrefixes.some((prefix) => requestUrl.startsWith(prefix))) {
     return
   }
 

@@ -19,11 +19,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   HOST: Env.schema.string({ format: 'host' }),
   PUBLIC_URL: Env.schema.string({ format: 'url', tld: false }),
 
-  APP_KEY: Env.schema.string(),
+  APP_KEY: Env.schema.secret(),
 
   SESSION_DRIVER: Env.schema.enum(['database', 'memory'] as const),
 
-  DATABASE_URL: Env.schema.string(),
+  DATABASE_URL: Env.schema.secret(),
   DATABASE_POOL_MIN: Env.schema.number.optional(),
   DATABASE_POOL_MAX: Env.schema.number.optional(),
   DATABASE_AUTOMIGRATE: Env.schema.boolean.optional(),
@@ -34,7 +34,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   TAP_URL: Env.schema.string({ format: 'url', tld: false, protocol: true }),
-  TAP_ADMIN_PASSWORD: Env.schema.string.optional(),
+  TAP_ADMIN_PASSWORD: Env.schema.secret.optional(),
 
   /*
   |----------------------------------------------------------
@@ -42,5 +42,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   ATPROTO_OAUTH_CLIENT_ID: Env.schema.string.optional({ format: 'url', tld: true, protocol: true }),
-  ATPROTO_OAUTH_JWT_PRIVATE_KEY: Env.schema.string.optional(),
+  ATPROTO_OAUTH_JWT_PRIVATE_KEY: Env.schema.secret.optional(),
 })

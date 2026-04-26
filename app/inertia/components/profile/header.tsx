@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
-import { Form, router, usePage } from '@inertiajs/react'
-import { Tab } from '~/components/tabs/tab'
+import { Form } from '@adonisjs/inertia/react'
+import { router, usePage } from '@inertiajs/react'
 import Modal from '~/components/modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
 import { Textarea } from '~/lib/components/ui/textarea'
 import { Field, FieldLabel } from '~/lib/components/ui/field'
 import { Tabbar } from '../tabs/tabbar'
+import { Data } from '@generated/data'
+import { useAuth } from '~/hooks/use-auth'
+import { urlFor } from '~/client'
 
 export type ProfileHeaderProps = {
-  profile: {
-    displayName: string | null
-    description?: string
-    handle: string | null
-    did: string
-  }
+  profile: Data.Profile
 }
 
 export default function ProfileHeader({ profile }: ProfileHeaderProps) {
   const handleOrDid = profile.handle ?? profile.did
+  const viewer = useAuth()
   const { component, props, url } = usePage<SharedProps & PageProps>()
   const [editing, showEdit] = useState(false)
 
@@ -29,7 +28,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
   const onProfileEditSuccess = () => {
     showEdit(false)
-    router.get(`/p/${handleOrDid}`, {}, { only: ['profile'] })
+    router.get(urlFor('profiles.show', [handleOrDid]), {}, { only: ['profile'] })
   }
 
   return (
@@ -39,13 +38,17 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
           <h2 className="text-3xl">{profile.displayName ?? profile.handle ?? profile.did}</h2>
           <p>@{handleOrDid}</p>
         </div>
-        {props.isAuthenticated && props.user?.did === profile.did && (
+        {viewer.isLoggedIn && viewer.user?.did === profile.did && (
           <div className="profile-edit">
             <Button onClick={() => showEdit(true)}>Edit Profile</Button>
           </div>
         )}
         <Modal title="Edit Profile" open={editing} onClose={() => showEdit(false)}>
-          <Form method="PUT" onSuccess={onProfileEditSuccess}>
+          <Form
+            route="profiles.update"
+            routeParams={{ handleOrDid }}
+            onSuccess={onProfileEditSuccess}
+          >
             {({ processing }) => (
               <div className="flex flex-col gap-2">
                 <Field>
@@ -77,20 +80,20 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
           {
             id: 'asks',
             title: 'Asks',
-            href: `/p/${handleOrDid}?tab=asks`,
+            href: urlFor('profiles.show', [handleOrDid]),
             isActive:
               (component == 'profiles/show' && !url.includes('tab=')) || url.includes('tab=asks'),
           },
           {
             id: 'questions',
             title: 'Questions',
-            href: `/p/${handleOrDid}?tab=questions`,
+            href: urlFor('profiles.show', [handleOrDid], { qs: { tab: 'questions' } }),
             isActive: url.includes('tab=questions'),
           },
           {
             id: 'answers',
             title: 'Answers',
-            href: `/p/${handleOrDid}?tab=answers`,
+            href: urlFor('profiles.show', [handleOrDid], { qs: { tab: 'answers' } }),
             isActive: url.includes('tab=answers'),
           },
         ]}

@@ -1,2 +1,7 @@
+.adonisjs
+node_modules
+build
 app/lexicons/*
+inertia/lib/*
 pnpm-lock.yaml
+database/schema.ts

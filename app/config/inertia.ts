@@ -1,27 +1,20 @@
-import { ProfileDtoResult } from '#dtos/profile_dto'
 import { defineConfig } from '@adonisjs/inertia'
-import type { InferSharedProps } from '@adonisjs/inertia/types'
 
 const inertiaConfig = defineConfig({
   /**
-   * Path to the Edge view that will be used as the root view for Inertia responses
-   */
-  rootView: 'inertia_layout',
-
-  /**
-   * Options for the server-side rendering
+   * Server-side rendering options.
    */
   ssr: {
+    /**
+     * Toggle SSR mode for Inertia pages.
+     */
     enabled: true,
-    entrypoint: 'inertia/app/ssr.tsx',
+
+    /**
+     * Entry file used by the SSR server build.
+     */
+    entrypoint: 'inertia/ssr.tsx',
   },
 })
 
 export default inertiaConfig
-
-declare module '@adonisjs/inertia/types' {
-  export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {
-    user?: ProfileDtoResult
-    isAuthenticated: boolean
-  }
-}

@@ -11,9 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { Avatar, AvatarFallback } from '~/lib/components/ui/avatar'
-import { Form, Link, usePage } from '@inertiajs/react'
-import { PageProps, SharedProps } from '@adonisjs/inertia/types'
+import { Link, Form } from '@adonisjs/inertia/react'
 import { Button } from '~/lib/components/ui/button'
 import { Badge } from '~/lib/components/ui/badge'
 import {
@@ -23,15 +21,21 @@ import {
   DropdownMenuTrigger,
 } from '~/lib/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
+import { usePage } from '@inertiajs/react'
+import { useAuth } from '~/hooks/use-auth'
+import { urlFor } from '~/client'
 
 const items = [
-  { title: 'Questions', href: '/' },
-  { title: 'Interviews', href: '/interviews' },
+  { title: 'Questions', href: urlFor('home.index') },
+  { title: 'Interviews', href: '#', disabled: true },
   { title: 'Topics', href: '#', disabled: true },
 ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const page = usePage<SharedProps & PageProps>()
+type AppSidebarProps = React.ComponentProps<typeof Sidebar>
+
+export function AppSidebar({ ...props }: AppSidebarProps) {
+  const page = usePage()
+  const { isLoggedIn, user } = useAuth()
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -44,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        {page.props.isAuthenticated && (
+        {isLoggedIn && user && (
           <SidebarMenuItem className="p-1">
             <SidebarMenuButton
               size="lg"
@@ -52,15 +56,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
             >
               <Link
-                href={`/p/${page.props.user?.handle ?? page.props.user?.did}`}
+                route="profiles.show"
+                routeParams={{ handleOrDid: user.handle ?? user.did }}
                 className="grid flex-1 text-left text-md leading-tight"
               >
-                <span className="truncate font-medium">
-                  {page.props.user!.displayName ?? page.props.user?.handle}
-                </span>
-                <span className="text-muted-foreground truncate text-sm">
-                  {page.props.user!.handle}
-                </span>
+                <span className="truncate font-medium">{user.displayName ?? user.handle}</span>
+                <span className="text-muted-foreground truncate text-sm">{user.handle}</span>
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -95,7 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           ))}
 
-          {page.props.isAuthenticated ? (
+          {isLoggedIn ? (
             <SidebarMenuItem key="logout" className="my-5 mx-2">
               <Form method="post" action="/oauth/logout">
                 <Button className="w-full" type="submit">

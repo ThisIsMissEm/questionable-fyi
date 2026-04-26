@@ -33,7 +33,7 @@ indexer.put(lexicon.fyi.questionable.actor.profile, async (evt) => {
 
   logger.debug(evt.record, `Updating profile for ${evt.did}`)
 
-  await Profile.upsert(evt.did, evt.record, DateTime.now())
+  await Profile.upsert(evt.did, evt.cid, evt.record, DateTime.now())
 })
 
 indexer.error((err) => {

@@ -1,6 +1,6 @@
 import { defineConfig } from '@adonisjs/auth'
 import { sessionGuard } from '@adonisjs/auth/session'
-import { atprotoAuthProvider } from '@thisismissem/adonisjs-atproto-oauth/auth/provider'
+import { atprotoUserProvider } from '@thisismissem/adonisjs-atproto-oauth/auth/user_provider'
 import type { InferAuthenticators, InferAuthEvents, Authenticators } from '@adonisjs/auth/types'
 
 const authConfig = defineConfig({
@@ -8,7 +8,7 @@ const authConfig = defineConfig({
   guards: {
     web: sessionGuard({
       useRememberMeTokens: false,
-      provider: atprotoAuthProvider,
+      provider: atprotoUserProvider,
     }),
   },
 })
