@@ -23,9 +23,7 @@ const main = l.typedObject<Main>(
   'main',
   l.object({
     description: l.optional(l.string({ maxGraphemes: 3000, maxLength: 3000 })),
-    previewImage: l.optional(
-      l.blob({ accept: ['image/*'], maxSize: 1000000, allowLegacy: false }),
-    ),
+    previewImage: l.optional(l.blob({ accept: ['image/*'], maxSize: 1000000 })),
     uri: l.string({ format: 'uri' }),
     title: l.optional(l.string({ maxGraphemes: 300, maxLength: 3000 })),
   }),

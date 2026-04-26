@@ -43,11 +43,7 @@ const main = l.typedObject<Main>(
   l.object({
     alt: l.optional(l.string({ maxGraphemes: 3000, maxLength: 3000 })),
     aspectRatio: l.ref<AspectRatio>((() => aspectRatio) as any),
-    image: l.blob({
-      accept: ['image/*'],
-      maxSize: 1000000,
-      allowLegacy: false,
-    }),
+    image: l.blob({ accept: ['image/*'], maxSize: 1000000 }),
   }),
 )
 
