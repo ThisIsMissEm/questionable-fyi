@@ -30,7 +30,7 @@ export class AccountSchema extends BaseModel {
 export class OauthSessionSchema extends BaseModel {
   static $columns = ['sub', 'updatedAt', 'value'] as const
   $columns = OauthSessionSchema.$columns
-  @column()
+  @column({ isPrimary: true })
   declare sub: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
@@ -41,7 +41,7 @@ export class OauthSessionSchema extends BaseModel {
 export class OauthStateSchema extends BaseModel {
   static $columns = ['key', 'updatedAt', 'value'] as const
   $columns = OauthStateSchema.$columns
-  @column()
+  @column({ isPrimary: true })
   declare key: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
