@@ -61,6 +61,7 @@
     "@types/node": "^22.15.18",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@typescript/lib-dom": "npm:@types/web@^0.0.347",
     "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^10.2.1",
     "hot-hook": "^1.0.0",
