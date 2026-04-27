@@ -120,117 +120,33 @@ dialog {
   margin: auto;
   max-width: calc(100% - 2em);
   max-height: calc(100% - 2em);
-  min-width: 600px;
+  min-width: min(600px, calc(100vw - 2em));
   min-height: 450px;
   top: 50%;
   margin-top: calc(-450px / 2);
 
-  border: solid #666 1px;
-  border-radius: 8px;
-  box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 10px 15px -3px oklch(0 0 0 / 0.1),
+    0 4px 6px -4px oklch(0 0 0 / 0.1);
 }
 
 dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: oklch(0 0 0 / 0.6);
 }
 
 dialog .dialog-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding: 16px;
-  background: #eee;
-  border-bottom: 1px solid #ccc;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
 }
 
 dialog .dialog-body {
   padding: 16px;
   overflow-y: auto;
-}
-
-nav.tabbar ul {
-  list-style: none;
-  display: flex;
-  flex-direction: row;
-  align-content: flex-start;
-  align-items: stretch;
-  border-bottom: 1px solid #ccc;
-}
-
-nav.tabbar ul li a {
-  position: relative;
-  display: flex;
-  padding-left: 14px;
-  padding-right: 14px;
-  text-decoration: none;
-}
-
-nav.tabbar ul li a .tab {
-  position: relative;
-  display: inline-flex;
-  flex-grow: 1;
-  padding: 8px 6px;
-  text-decoration: none;
-  text-align: center;
-}
-
-nav.tabbar ul li a.active .tab span {
-  background-color: var(--primary);
-  transform: translateX(-50%);
-  min-width: 45px;
-  left: 50%;
-  height: 3px;
-  width: 100%;
-  pointer-events: auto;
-  position: absolute;
-  bottom: 0px;
-  display: inline-flex;
-}
-
-nav.tabbar ul li a:hover {
-  background: rgba(0, 0, 0, 0.08);
-}
-
-/*
-  Profile Page:
-*/
-.profile-overview {
-  display: flex;
-  flex-direction: row;
-}
-
-.profile-overview .profile-details {
-  flex-grow: 1;
-}
-
-.profile-overview .profile-edit {
-  display: block;
-}
-
-.profile-details {
-  margin: 0 14px 1rem;
-}
-
-.profile-details p {
-  color: #666;
-}
-
-.profile-description {
-  margin: 0 14px 1.5rem;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  overflow: clip;
-}
-
-.profile-content {
-  padding: 0 calc(var(--spacing) * 3);
-}
-
-[class^='notification'] {
-  padding: 4px 8px;
-  background: grey;
-}
-
-.notification-error {
-  background: lightcoral;
 }
