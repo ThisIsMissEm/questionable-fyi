@@ -41,18 +41,6 @@ export default function Home({ questions }: PageProps) {
 
   return (
     <>
-      <ul className="fixed bottom-0 backdrop-blur-lg flex flex-row gap-4 p-2">
-        <li>
-          <Link route="profile.show" routeParams={{ identifier: 'test.thisismissem.social' }}>
-            Emelia's Test Profile
-          </Link>
-        </li>
-        <li>
-          <Link route="profile.show" routeParams={{ identifier: 'thisismissem.social' }}>
-            Emelia's Main Profile
-          </Link>
-        </li>
-      </ul>
       {viewer.isLoggedIn ? (
         <AskForm prompt={'My question is'} postAsk={postAskCallback} />
       ) : (
@@ -69,61 +57,63 @@ export default function Home({ questions }: PageProps) {
           </Button>
         </section>
       )}
-      <h2 className="text-2xl font-semibold mt-12 mb-3">Questions</h2>
-      <Tabbar
-        aria-label="Questions"
-        tabs={[
-          {
-            id: 'new',
-            title: 'New',
-            link: {
-              href: urlFor('home.index'),
-              only: ['questions'],
+      <section className="mt-8" aria-labelledby="questions-heading">
+        <h2 id="questions-heading" className="text-2xl font-semibold mb-1">Questions</h2>
+        <Tabbar
+          aria-label="Questions"
+          tabs={[
+            {
+              id: 'new',
+              title: 'New',
+              link: {
+                href: urlFor('home.index'),
+                only: ['questions'],
+              },
+              isActive: tab === 'new',
             },
-            isActive: tab === 'new',
-          },
-          {
-            id: 'unanswered',
-            title: 'Unanswered',
-            link: {
-              href: urlFor('home.index', {}, { qs: { filter: 'unanswered' } }),
-              only: ['questions'],
+            {
+              id: 'unanswered',
+              title: 'Unanswered',
+              link: {
+                href: urlFor('home.index', {}, { qs: { filter: 'unanswered' } }),
+                only: ['questions'],
+              },
+              isActive: tab === 'unanswered',
             },
-            isActive: tab === 'unanswered',
-          },
-          {
-            id: 'answered',
-            title: 'Answered',
-            link: {
-              href: urlFor('home.index', {}, { qs: { filter: 'answered' } }),
-              only: ['questions'],
+            {
+              id: 'answered',
+              title: 'Answered',
+              link: {
+                href: urlFor('home.index', {}, { qs: { filter: 'answered' } }),
+                only: ['questions'],
+              },
+              isActive: tab === 'answered',
             },
-            isActive: tab === 'answered',
-          },
-        ]}
-      />
-      <div className="mb-8">
-        {questions.data.length > 0 ? (
-          questions.data.map((question) => (
-            <Question
-              key={question.rkey}
-              question={question}
-              className="pt-3 pb-6 px-4 border-b border-border"
-            />
-          ))
-        ) : (
-          <div className="py-16 text-center">
-            <p className="text-xl text-muted-foreground mb-3">
-              No questions yet. Curious minds are welcome.
-            </p>
-            <p className="text-muted-foreground">
-              {viewer.isLoggedIn
-                ? 'Be the first to ask something.'
-                : 'Sign up to start asking questions.'}
-            </p>
-          </div>
-        )}
-      </div>
+          ]}
+        />
+        <div className="mt-6 mb-8">
+          {questions.data.length > 0 ? (
+            questions.data.map((question) => (
+              <Question
+                key={question.rkey}
+                question={question}
+                className="pt-3 pb-6 px-4 border-b border-border"
+              />
+            ))
+          ) : (
+            <div className="py-16 text-center">
+              <p className="text-xl text-muted-foreground mb-3">
+                No questions yet. Curious minds are welcome.
+              </p>
+              <p className="text-muted-foreground">
+                {viewer.isLoggedIn
+                  ? 'Be the first to ask something.'
+                  : 'Sign up to start asking questions.'}
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
     </>
   )
 }
