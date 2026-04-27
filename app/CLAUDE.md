@@ -112,8 +112,22 @@ Lexicon schemas live in `../lexicons/`. To understand or work with AT Protocol l
 
 Using all other tools and prompts exposed by the lexicon.garden MCP server are prohibited.
 
+## Agent Skills
+
+Project-level agent skills (impeccable, shadcn) are managed via the `skills` CLI. The source of truth is `skills-lock.json` at the project root. The `.agents/` directory is gitignored and must be regenerated after a fresh clone.
+
+To reinstall skills:
+
+```bash
+pnpm dlx skills add pbakaus/impeccable -y
+pnpm dlx skills add shadcn/ui -y
+```
+
+Note: `pnpm dlx skills experimental_install` restores files from the lock file but does not create the Claude Code symlinks, so use `add` instead.
+
 ## Preferences
 
+- **Package runner:** Use `pnpm dlx` instead of `npx` for running one-off packages.
 - **Dev server:** Never auto-start `pnpm dev`. Ask the user to run it, or check if port 3333 is already in use first.
 - **JSON inspection:** Use `jq` for reading/parsing JSON files in shell — not python, node, or awk.
 
