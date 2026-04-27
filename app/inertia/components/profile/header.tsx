@@ -1,6 +1,14 @@
 import { useMemo, useState } from 'react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
-import Modal from '~/components/modal'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '~/lib/components/ui/sheet'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
 import { Textarea } from '~/lib/components/ui/textarea'
@@ -26,7 +34,8 @@ export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
 
   const onProfileEditSuccess = () => {
     showEdit(false)
-    router.get(urlFor('profile.show', [handleOrDid]), {}, { only: ['profile'] })
+    toast.success('Profile updated')
+    router.reload({ only: ['profile'] })
   }
 
   const tabs = useMemo(() => {
@@ -84,35 +93,43 @@ export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
             </Button>
           </div>
         )}
-        <Modal title="Edit Profile" open={editing} onClose={() => showEdit(false)}>
-          <Form
-            route="profile.update"
-            routeParams={{ identifier: handleOrDid }}
-            onSuccess={onProfileEditSuccess}
-          >
-            {({ processing }) => (
-              <div className="flex flex-col gap-2">
-                <Field>
-                  <FieldLabel htmlFor="displayName">Display Name:</FieldLabel>
-                  <Input type="text" name="displayName" defaultValue={profile.displayName ?? ''} />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="description">Description:</FieldLabel>
-                  <Textarea
-                    name="description"
-                    rows={3}
-                    defaultValue={profile.description?.trim()}
-                  />
-                </Field>
-                <Field>
-                  <Button type="submit" disabled={processing}>
-                    {processing ? 'Updating profile...' : 'Save profile'}
-                  </Button>
-                </Field>
-              </div>
-            )}
-          </Form>
-        </Modal>
+        <Sheet open={editing} onOpenChange={showEdit}>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit Profile</SheetTitle>
+              <SheetDescription>Update your display name and profile description.</SheetDescription>
+            </SheetHeader>
+            <Form
+              route="profile.update"
+              routeParams={{ identifier: handleOrDid }}
+              onSuccess={onProfileEditSuccess}
+            >
+              {({ processing }) => (
+                <>
+                  <div className="flex flex-col gap-4 px-4">
+                    <Field>
+                      <FieldLabel htmlFor="displayName">Display Name</FieldLabel>
+                      <Input type="text" name="displayName" defaultValue={profile.displayName ?? ''} />
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="description">Description</FieldLabel>
+                      <Textarea
+                        name="description"
+                        rows={3}
+                        defaultValue={profile.description?.trim()}
+                      />
+                    </Field>
+                  </div>
+                  <SheetFooter>
+                    <Button type="submit" disabled={processing}>
+                      {processing ? 'Updating profile...' : 'Save profile'}
+                    </Button>
+                  </SheetFooter>
+                </>
+              )}
+            </Form>
+          </SheetContent>
+        </Sheet>
       </div>
       <div className="px-3 mb-6 text-lg font-sans whitespace-pre-wrap wrap-break-word overflow-clip">
         {profile.description}
