@@ -9,6 +9,7 @@ import { useAuth } from '~/hooks/use-auth'
 import { Data } from '@generated/data'
 import { Link } from '@adonisjs/inertia/react'
 import { useMemo } from 'react'
+import { Button } from '~/lib/components/ui/button'
 
 type PageProps = InertiaProps<{
   questions: {
@@ -40,9 +41,7 @@ export default function Home({ questions }: PageProps) {
 
   return (
     <>
-      {viewer.isLoggedIn ? <AskForm prompt={'My question is'} postAsk={postAskCallback} /> : null}
-      <h2 className="text-3xl">Questions</h2>
-      <ul>
+      <ul className="fixed bottom-0 backdrop-blur-lg flex flex-row gap-4 p-2">
         <li>
           <Link route="profile.show" routeParams={{ identifier: 'test.thisismissem.social' }}>
             Emelia's Test Profile
@@ -54,6 +53,23 @@ export default function Home({ questions }: PageProps) {
           </Link>
         </li>
       </ul>
+      {viewer.isLoggedIn ? (
+        <AskForm prompt={'My question is'} postAsk={postAskCallback} />
+      ) : (
+        <section className="py-6 px-6 mx-1 rounded-xl border border-border">
+          <h1 className="text-4xl font-semibold text-primary mb-3">
+            We all have questions, let's get some answers
+          </h1>
+          <p className="text-lg text-muted-foreground mb-5 max-w-lg">
+            Ask questions about anything, or direct them to specific people. See what others are
+            curious about.
+          </p>
+          <Button asChild>
+            <Link href="/signup">Get started</Link>
+          </Button>
+        </section>
+      )}
+      <h2 className="text-2xl font-semibold mt-12 mb-3">Questions</h2>
       <Tabbar
         aria-label="Questions"
         tabs={[
