@@ -25,6 +25,7 @@ export default function FullPageFormLayout({ children, closable }: FullPageFormL
         <div className="self-end mb-3">
           <button
             onClick={handleBack}
+            aria-label="Close"
             className="text-white hover:text-purple-100 focus:text-purple-100"
           >
             <CircleX size="40" />

@@ -11,8 +11,8 @@ export default function Onboarding() {
       <h2>Welcome {viewer.user!.handle}!</h2>
 
       <Form route="onboarding.store" formMethod="POST">
-        <label htmlFor="dispalyName">Display Name:</label>
-        <input type="text" name="displayName" />
+        <label htmlFor="displayName">Display Name:</label>
+        <input type="text" id="displayName" name="displayName" />
         <button type="submit">Save</button>
       </Form>
     </FormLayout>
