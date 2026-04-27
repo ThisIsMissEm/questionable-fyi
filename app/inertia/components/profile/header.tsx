@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
 import Modal from '~/components/modal'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { useAuth } from '~/hooks/use-auth'
 import { urlFor } from '~/client'
 import { router, usePage } from '@inertiajs/react'
 import { Form } from '@adonisjs/inertia/react'
+import { AccountHandle } from '~/components/account-handle'
 
 export type ProfileHeaderProps = {
   profile: Data.Profile
@@ -20,12 +21,8 @@ export type ProfileHeaderProps = {
 export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
   const handleOrDid = profile.handle ?? profile.did
   const viewer = useAuth()
-  const { component, props, url } = usePage<SharedProps & PageProps>()
+  const { component, url } = usePage<SharedProps & PageProps>()
   const [editing, showEdit] = useState(false)
-
-  useEffect(() => {
-    console.log(props)
-  }, [props])
 
   const onProfileEditSuccess = () => {
     showEdit(false)
@@ -72,15 +69,19 @@ export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
   }, [links])
 
   return (
-    <div className="profile-header">
-      <div className="profile-overview">
-        <div className="profile-details">
-          <h2 className="text-3xl">{profile.displayName ?? profile.handle ?? profile.did}</h2>
-          <p>@{handleOrDid}</p>
+    <div>
+      <div className="flex flex-row px-3 mb-4">
+        <div className="flex-1">
+          <h2 className="text-4xl font-semibold">
+            {profile.displayName ?? profile.handle ?? profile.did}
+          </h2>
+          <AccountHandle account={profile} className="text-xl text-muted-foreground" />
         </div>
         {viewer.isLoggedIn && viewer.user?.did === profile.did && (
-          <div className="profile-edit">
-            <Button onClick={() => showEdit(true)}>Edit Profile</Button>
+          <div>
+            <Button onClick={() => showEdit(true)} className="font-sans">
+              Edit Profile
+            </Button>
           </div>
         )}
         <Modal title="Edit Profile" open={editing} onClose={() => showEdit(false)}>
@@ -113,9 +114,11 @@ export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
           </Form>
         </Modal>
       </div>
-      <div className="profile-description">{profile.description}</div>
+      <div className="px-3 mb-6 text-lg font-sans whitespace-pre-wrap wrap-break-word overflow-clip">
+        {profile.description}
+      </div>
 
-      <Tabbar tabs={tabs} />
+      <Tabbar tabs={tabs} aria-label="Profile" />
     </div>
   )
 }

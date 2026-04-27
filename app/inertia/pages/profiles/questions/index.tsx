@@ -20,17 +20,28 @@ export default function ShowProfileQuestions({ profile, links, questions }: Page
     <>
       <Head title={`${profile.displayName ?? profile.handle}`} />
       <ProfileHeader profile={profile} links={links} />
-      <div className="profile-content">
-        <div className="mb-4">
-          {questions.metadata.total} {questions.metadata.total == 1 ? 'Question' : 'Questions'}
-        </div>
-        {questions.data.map((question) => (
-          <Question
-            question={question}
-            hideByline={true}
-            className="pt-2 pb-4 border-b border-b-gray-300"
-          />
-        ))}
+      <div className="mt-6">
+        {questions.data.length > 0 ? (
+          <>
+            <div className="mb-4 px-4 text-sm font-sans font-medium text-muted-foreground">
+              {questions.metadata.total} {questions.metadata.total == 1 ? 'Question' : 'Questions'}
+            </div>
+            {questions.data.map((question) => (
+              <Question
+                key={question.rkey}
+                question={question}
+                hideByline={true}
+                className="pt-3 pb-6 px-4 border-t border-border"
+              />
+            ))}
+          </>
+        ) : (
+          <div className="py-12 text-center">
+            <p className="text-xl text-muted-foreground">
+              No questions from {profile.displayName ?? profile.handle} yet.
+            </p>
+          </div>
+        )}
       </div>
     </>
   )

@@ -27,16 +27,20 @@ export default function ShowProfile({ profile, links }: PageProps) {
     <>
       <Head title={`${profile.displayName ?? profile.handle}`} />
       <ProfileHeader profile={profile} links={links} />
-      <div className="profile-content">
+      <div className="mt-6">
         {viewer.isLoggedIn && viewer.user?.did !== profile.did && tab === 'asks' ? (
           <AskForm
-            className="mb-6"
+            className="mb-6 px-3"
             prompt={`My question for ${profile.displayName ?? profile.handle} is`}
             context={context}
           />
         ) : null}
-        <div>
-          <p>There'll be a feed here of some sort.</p>
+        <div className="py-12 text-center">
+          <p className="text-xl text-muted-foreground">
+            {profile.did === viewer?.user?.did
+              ? 'You have no activity here yet.'
+              : `No activity from ${profile.displayName ?? profile.handle} yet.`}
+          </p>
         </div>
       </div>
     </>

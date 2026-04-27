@@ -6,12 +6,16 @@
 /// <reference path="./manifest.d.ts" />
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import type ProfileLinksTransformer from '#transformers/profile_links_transformer'
 import type ProfileTransformer from '#transformers/profile_transformer'
 import type QuestionTransformer from '#transformers/question_transformer'
-import type ProfileLinksTransformer from '#transformers/profile_links_transformer'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
+  export type ProfileLinks = InferData<ProfileLinksTransformer>
+  export namespace ProfileLinks {
+    export type Variants = InferVariants<ProfileLinksTransformer>
+  }
   export type Profile = InferData<ProfileTransformer>
   export namespace Profile {
     export type Variants = InferVariants<ProfileTransformer>
@@ -19,10 +23,6 @@ export namespace Data {
   export type Question = InferData<QuestionTransformer>
   export namespace Question {
     export type Variants = InferVariants<QuestionTransformer>
-  }
-  export type ProfileLinks = InferData<ProfileLinksTransformer>
-  export namespace ProfileLinks {
-    export type Variants = InferVariants<ProfileLinksTransformer>
   }
   export type SharedProps = InferSharedProps<InertiaMiddleware>
 }

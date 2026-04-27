@@ -55,6 +55,7 @@ export default function Home({ questions }: PageProps) {
         </li>
       </ul>
       <Tabbar
+        aria-label="Questions"
         tabs={[
           {
             id: 'new',
@@ -85,17 +86,26 @@ export default function Home({ questions }: PageProps) {
           },
         ]}
       />
-      <div className="profile-content">
+      <div className="mb-8">
         {questions.data.length > 0 ? (
           questions.data.map((question) => (
             <Question
               key={question.rkey}
               question={question}
-              className="pt-2 pb-4 border-b border-b-gray-200"
+              className="pt-3 pb-6 px-4 border-b border-border"
             />
           ))
         ) : (
-          <div>There's no questions here.</div>
+          <div className="py-16 text-center">
+            <p className="text-xl text-muted-foreground mb-3">
+              No questions yet. Curious minds are welcome.
+            </p>
+            <p className="text-muted-foreground">
+              {viewer.isLoggedIn
+                ? 'Be the first to ask something.'
+                : 'Sign up to start asking questions.'}
+            </p>
+          </div>
         )}
       </div>
     </>
