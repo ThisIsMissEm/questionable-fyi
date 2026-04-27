@@ -189,7 +189,7 @@ export function TopNav() {
                   <AccountDisplayName account={user} className="truncate max-w-60" />
                   <AccountHandle
                     account={user}
-                    className="text-[color-mix(in_oklch,var(--primary-foreground)_90%,var(--primary))] truncate max-w-60"
+                    className="text-primary-foreground/70 truncate max-w-60"
                   />
                 </span>
               </Link>
