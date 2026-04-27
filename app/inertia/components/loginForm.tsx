@@ -18,7 +18,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         </CardHeader>
         <CardContent>
           <Form route="oauth.login">
-            {({ errors }) => (
+            {({ errors, processing }) => (
               <FieldGroup>
                 <Field>
                   <FieldLabel htmlFor="input">Your Internet handle</FieldLabel>
@@ -36,7 +36,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                   {errors?.input && <FieldError errors={[{ message: errors.input }]} />}
                 </Field>
                 <Field>
-                  <Button type="submit">Login</Button>
+                  <Button type="submit" disabled={processing}>
+                    {processing ? 'Logging in...' : 'Login'}
+                  </Button>
                   <FieldDescription className="text-center">
                     Don&apos;t have an account? <Link href="/signup">Sign up</Link>
                   </FieldDescription>

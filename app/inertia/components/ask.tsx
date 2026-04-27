@@ -52,8 +52,7 @@ export default function AskForm(props: AskProps) {
         await props.postAsk()
       }
     } catch (err) {
-      console.error(err)
-      toast.error('Error asking question')
+      toast.error('Something went wrong. Please try again.')
     }
   }
 

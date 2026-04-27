@@ -32,7 +32,7 @@ export default function Modal({ title, open, onClose, children }: ModalProps) {
     <dialog ref={dialogRef} className="modal" closedby="any" onClose={onClose}>
       <div className="dialog-header">
         <h2>{title}</h2>
-        <button onClick={() => dialogRef.current?.close()}>
+        <button onClick={() => dialogRef.current?.close()} aria-label="Close dialog">
           <CircleX size="24" />
         </button>
       </div>
