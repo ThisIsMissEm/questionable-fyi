@@ -36,7 +36,7 @@ export function TopNav() {
   const { isLoggedIn, user } = useAuth()
 
   return (
-    <header className="py-6 flex flex-col items-center gap-6 w-full bg-background">
+    <header className="sticky top-0 z-40 py-6 flex flex-col items-center gap-6 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_calc(100%-1.5rem),transparent)]">
       <div className="flex flex-row items-center-safe justify-between w-full md:w-auto px-4">
         <div className="flex flex-1 self-stretch">
           {/* Brand (left) */}
