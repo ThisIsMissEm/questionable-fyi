@@ -10,8 +10,8 @@ The current profile edit UI uses a custom `Modal` component built on the native 
 
 ### Layout: Header + Form + Sticky Footer
 
-- **Sheet Header** (`SheetHeader`): Contains `SheetTitle` ("Edit Profile") and `SheetDescription` ("Update your display name and bio"). The close button (X icon) is built into `SheetContent` automatically.
-- **Form Body**: Scrollable area between header and footer. Contains:
+- **Sheet Header** (`SheetHeader`): Contains `SheetTitle` ("Edit Profile") and `SheetDescription` ("Update your display name and profile description"). The close button (X icon) is built into `SheetContent` automatically.
+- **Form Body**: Static area between header and footer (no scrolling needed — the form is small). Contains:
   - Display Name — `Input` field with `Field`/`FieldLabel` wrapper
   - Description — `Textarea` field with `Field`/`FieldLabel` wrapper
 - **Sheet Footer** (`SheetFooter`): Sticky at the bottom (`mt-auto` built in). Contains the submit button with loading state ("Updating profile..." / "Save profile").
@@ -25,7 +25,7 @@ The current profile edit UI uses a custom `Modal` component built on the native 
 
 - **Open**: Controlled via `open`/`onOpenChange` props on `Sheet`, triggered by "Edit Profile" button click
 - **Close**: Escape key, overlay click, or X button (all Radix defaults)
-- **On save success**: Close drawer immediately → show Sonner toast ("Profile updated") → reload profile data via `router.get()` with `only: ['profile']`
+- **On save success**: Close drawer immediately → show Sonner toast ("Profile updated") → reload profile data via `router.reload({ only: ['profile'] })`
 - **On close without saving**: No dirty-state warning — form resets to current values on next open
 - **Loading state**: Submit button shows "Updating profile..." and is disabled while `processing` is true
 
@@ -52,7 +52,7 @@ Use the existing Sonner integration (`sonner.tsx`) to show a success toast. Impo
 ### Unchanged
 
 - Backend route (`profile.update`) and controller logic
-- Form fields (`displayName`, `description`) and validation
+- Form fields (`displayName`, `description`) and validation (`updateProfileValidator` in `app/validators/profile.ts`)
 - `@adonisjs/inertia/react` `Form` component usage
 - Sheet component itself (`inertia/lib/components/ui/sheet.tsx`) — used as-is
 
