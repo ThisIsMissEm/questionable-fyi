@@ -1,25 +1,14 @@
 import { useMemo, useState } from 'react'
 import { PageProps, SharedProps } from '@adonisjs/inertia/types'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '~/lib/components/ui/sheet'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '~/lib/components/ui/input'
-import { Textarea } from '~/lib/components/ui/textarea'
-import { Field, FieldLabel } from '~/lib/components/ui/field'
 import { Tabbar } from '../tabs/tabbar'
 import { Data } from '@generated/data'
 import { useAuth } from '~/hooks/use-auth'
 import { urlFor } from '~/client'
 import { router, usePage } from '@inertiajs/react'
-import { Form } from '@adonisjs/inertia/react'
 import { AccountHandle } from '~/components/account-handle'
+import { EditProfileSheet } from '~/components/profile/edit-profile-sheet'
 
 export type ProfileHeaderProps = {
   profile: Data.Profile
@@ -79,60 +68,31 @@ export default function ProfileHeader({ profile, links }: ProfileHeaderProps) {
 
   return (
     <div>
-      <div className="flex flex-row px-3 mb-4">
-        <div className="flex-1">
-          <h2 className="text-4xl font-semibold">
+      <div className="flex flex-col gap-3 px-3 mb-4 sm:flex-row sm:items-start">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-4xl font-semibold break-words">
             {profile.displayName ?? profile.handle ?? profile.did}
           </h2>
           <AccountHandle account={profile} className="text-xl text-muted-foreground" />
+          {profile.description && (
+            <div className="mt-3 text-lg font-sans whitespace-pre-wrap wrap-break-word overflow-clip">
+              {profile.description}
+            </div>
+          )}
         </div>
         {viewer.isLoggedIn && viewer.user?.did === profile.did && (
-          <div>
-            <Button onClick={() => showEdit(true)} className="font-sans">
+          <>
+            <Button onClick={() => showEdit(true)} className="font-sans shrink-0 self-start">
               Edit Profile
             </Button>
-          </div>
-        )}
-        <Sheet open={editing} onOpenChange={showEdit}>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Edit Profile</SheetTitle>
-              <SheetDescription>Update your display name and profile description.</SheetDescription>
-            </SheetHeader>
-            <Form
-              route="profile.update"
-              routeParams={{ identifier: handleOrDid }}
+            <EditProfileSheet
+              profile={profile}
+              open={editing}
+              onOpenChange={showEdit}
               onSuccess={onProfileEditSuccess}
-            >
-              {({ processing }) => (
-                <>
-                  <div className="flex flex-col gap-4 px-4">
-                    <Field>
-                      <FieldLabel htmlFor="displayName">Display Name</FieldLabel>
-                      <Input type="text" name="displayName" defaultValue={profile.displayName ?? ''} />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="description">Description</FieldLabel>
-                      <Textarea
-                        name="description"
-                        rows={3}
-                        defaultValue={profile.description?.trim()}
-                      />
-                    </Field>
-                  </div>
-                  <SheetFooter>
-                    <Button type="submit" disabled={processing}>
-                      {processing ? 'Updating profile...' : 'Save profile'}
-                    </Button>
-                  </SheetFooter>
-                </>
-              )}
-            </Form>
-          </SheetContent>
-        </Sheet>
-      </div>
-      <div className="px-3 mb-6 text-lg font-sans whitespace-pre-wrap wrap-break-word overflow-clip">
-        {profile.description}
+            />
+          </>
+        )}
       </div>
 
       <Tabbar tabs={tabs} aria-label="Profile" />
