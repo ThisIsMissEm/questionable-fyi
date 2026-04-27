@@ -24,8 +24,7 @@ export default function Home({ questions }: PageProps) {
   const viewer = useAuth()
 
   const tab = useMemo(() => {
-    const parsed = URL.parse(url, document.location.href)
-    const filter = parsed?.searchParams.get('filter')
+    const filter = new URLSearchParams(url.split('?', 2)[1]).get('filter')
     if (!filter || filter === 'new') {
       return 'new'
     } else if (filter === 'unanswered') {
