@@ -83,6 +83,7 @@ Tuyau generates a type-safe API client and route registry in `.adonisjs/`. Inert
 For design adjustments and UI refinement, use the impeccable.style MCP server tools.
 
 See `DESIGN.md` and `DESIGN.json` for the full specification. Key points:
+
 - Primary color: inquisitive-violet (`oklch(43.2% 0.232 292.759)`)
 - Typography: Charter serif font family for body/display text; `font-sans` is intentionally used on metadata/byline text and buttons — don't remove it
 - Rounded corners: 0.625rem base
@@ -106,6 +107,7 @@ For AdonisJS Inertia adapter docs, use library ID `/adonisjs/inertia`.
 ## AT Protocol Lexicons
 
 Lexicon schemas live in `../lexicons/`. To understand or work with AT Protocol lexicons, use the lexicon.garden MCP server:
+
 - `describe_lexicon` — explain what a lexicon does
 - `validate_lexicon` — check a lexicon schema for errors
 - `lexicon_schema_creation_guide` prompt — reference for creating new lexicons

@@ -112,9 +112,7 @@
         "purpose": "Entrance animations for expanding forms (ask form reveal)."
       }
     ],
-    "breakpoints": [
-      { "name": "md", "value": "768px" }
-    ]
+    "breakpoints": [{ "name": "md", "value": "768px" }]
   },
   "components": [
     {
@@ -185,11 +183,31 @@
       "Playful confidence: warm enough to invite participation, sharp enough to be taken seriously"
     ],
     "rules": [
-      { "name": "The Parlor Rule", "body": "Inquisitive Violet appears on no more than 15% of any given screen. Its rarity makes it meaningful.", "section": "colors" },
-      { "name": "The Warm Neutral Rule", "body": "No pure #000 or #fff in production. Every neutral is tinted warm by the serif typography's natural character.", "section": "colors" },
-      { "name": "The One Voice Rule", "body": "Charter is the only typeface. No sans-serif for UI chrome, no monospace for code blocks (unless displaying actual code).", "section": "typography" },
-      { "name": "The Generous Base Rule", "body": "Body text is 20px, not 16px. Reducing it to match standard app sizing destroys the editorial feel.", "section": "typography" },
-      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only on the navigation bar and dropdown menus.", "section": "elevation" }
+      {
+        "name": "The Parlor Rule",
+        "body": "Inquisitive Violet appears on no more than 15% of any given screen. Its rarity makes it meaningful.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Neutral Rule",
+        "body": "No pure #000 or #fff in production. Every neutral is tinted warm by the serif typography's natural character.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Voice Rule",
+        "body": "Charter is the only typeface. No sans-serif for UI chrome, no monospace for code blocks (unless displaying actual code).",
+        "section": "typography"
+      },
+      {
+        "name": "The Generous Base Rule",
+        "body": "Body text is 20px, not 16px. Reducing it to match standard app sizing destroys the editorial feel.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Shadows appear only on the navigation bar and dropdown menus.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do use Charter at 20px base size for all body text.",
