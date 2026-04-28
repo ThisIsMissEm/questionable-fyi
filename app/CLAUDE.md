@@ -104,6 +104,8 @@ The docs site (docs.adonisjs.com) can be fetched as markdown, but only from spec
 For Tuyau (API client / URL generation) docs, use library ID `/julien-r44/tuyau`.
 For AdonisJS Inertia adapter docs, use library ID `/adonisjs/inertia`.
 
+When working with AdonisJS Inertia, always prefer `Link` and `Form` from `@adonisjs/inertia/react` instead of `@inertiajs/react`.
+
 ## AT Protocol Lexicons
 
 Lexicon schemas live in `../lexicons/`. To understand or work with AT Protocol lexicons, use the lexicon.garden MCP server:
