@@ -21,6 +21,7 @@ type AskProps = React.ComponentProps<'div'> & {
 export default function AskForm(props: AskProps) {
   const [collapsed, setCollapsed] = useState(true)
   const [showDiscardDialog, setShowDiscardDialog] = useState(false)
+  const [hasEditorContent, setHasEditorContent] = useState(false)
   const editorRef = useRef<RichtextEditorRef>(null)
   const editorContentRef = useRef<JSONContent | null>(null)
   const { data, setData, processing, resetAndClearErrors, wasSuccessful } = useForm({
@@ -48,14 +49,24 @@ export default function AskForm(props: AskProps) {
     resetAndClearErrors()
     editorRef.current?.clearContent()
     editorContentRef.current = null
+    setHasEditorContent(false)
   }
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
+
+    if (!editorContentRef.current) return
+
+    const hasEditorContent = editorContentRef.current.content?.some(
+      (node: any) => node.content?.length > 0
+    )
+    if (!hasEditorContent) {
+      toast.error('Please add some details to your question.')
+      return
+    }
+
     try {
-      const content = editorContentRef.current
-        ? tiptapToLexicon(editorContentRef.current)
-        : tiptapToLexicon({ type: 'doc', content: [] })
+      const content = tiptapToLexicon(editorContentRef.current)
 
       const response = await client.api.api.ask.store({
         body: { ...data, content } as any,
@@ -95,7 +106,15 @@ export default function AskForm(props: AskProps) {
 
   return (
     <div className={cn('ask-form', props.className)}>
-      <form onSubmit={handleSubmit} inert={processing}>
+      <form
+        onSubmit={handleSubmit}
+        inert={processing}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget) && !hasContent()) {
+            discard()
+          }
+        }}
+      >
         <div className="flex flex-col gap-3 pb-2">
           <div className="ask-form-title relative">
             <AnimatePresence>
@@ -106,7 +125,7 @@ export default function AskForm(props: AskProps) {
                   animate={{ width: 'auto', opacity: 1 }}
                   exit={{ width: 0, opacity: 0 }}
                 >
-                  <Button type="button" variant={'secondary'} onClick={tryDiscard}>
+                  <Button type="button" tabIndex={-1} variant={'secondary'} onClick={tryDiscard}>
                     Cancel
                   </Button>
                 </motion.div>
@@ -118,9 +137,13 @@ export default function AskForm(props: AskProps) {
               placeholder={`${props.prompt}...`}
               onFocus={() => setCollapsed(false)}
               onKeyDown={(e) => {
-                if (e.key === 'Escape') tryDiscard()
+                if (e.key === 'Escape') {
+                  e.currentTarget.blur()
+                  tryDiscard()
+                }
               }}
               className="ps-4 pe-30 h-14"
+              required
               autoComplete="off"
               value={data.title}
               onChange={(e) => setData('title', e.target.value)}
@@ -143,11 +166,19 @@ export default function AskForm(props: AskProps) {
                     placeholder="Write more details about your question here"
                     onChange={(json) => {
                       editorContentRef.current = json
+                      setHasEditorContent(
+                        json.content?.some((node: any) => node.content?.length > 0) ?? false
+                      )
                     }}
                     onEscape={tryDiscard}
                     className="mb-2 flex-1 w-full"
                   />
-                  <Button size="lg" type="submit" className="w-full" disabled={processing}>
+                  <Button
+                    size="lg"
+                    type="submit"
+                    className="w-full"
+                    disabled={processing || !data.title.trim() || !hasEditorContent}
+                  >
                     {processing ? 'Asking...' : wasSuccessful ? 'Asked!' : 'Ask question'}
                   </Button>
                 </div>
