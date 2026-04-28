@@ -1,24 +1,14 @@
+import type { JSONContent } from '@tiptap/react'
 import { router, useForm } from '@inertiajs/react'
 import { FormEventHandler, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import type { JSONContent } from '@tiptap/react'
 
 import { client, urlFor } from '~/client'
 import { tiptapToLexicon } from '~/lib/richtext/tiptap_to_lexicon'
-
 import { Button } from '~/lib/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '~/lib/components/ui/alert-dialog'
-import { RichtextEditor, type RichtextEditorRef } from '~/components/richtext-editor'
+import { RichtextEditor, type RichtextEditorRef } from '~/components/richtext/editor'
+import { DiscardDialog } from '~/components/richtext/discard_dialog'
 import { cn } from '~/lib/lib/utils'
 import { toast } from 'sonner'
 
@@ -45,22 +35,15 @@ export default function AskForm(props: AskProps) {
     return doc.content.some((node: any) => node.content?.length > 0)
   }
 
-  const previousFocusRef = useRef<HTMLElement | null>(null)
-
   const tryDiscard = () => {
     if (hasContent()) {
-      previousFocusRef.current =
-        document.activeElement instanceof HTMLElement ? document.activeElement : null
       setShowDiscardDialog(true)
     } else {
       discard()
     }
   }
 
-  const discardedRef = useRef(false)
-
   const discard = () => {
-    discardedRef.current = true
     setCollapsed(true)
     resetAndClearErrors()
     editorRef.current?.clearContent()
@@ -174,30 +157,11 @@ export default function AskForm(props: AskProps) {
         </div>
       </form>
 
-      <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
-        <AlertDialogContent
-          onCloseAutoFocus={(e) => {
-            e.preventDefault()
-            if (discardedRef.current) {
-              discardedRef.current = false
-            } else {
-              previousFocusRef.current?.focus()
-            }
-            previousFocusRef.current = null
-          }}
-        >
-          <AlertDialogHeader>
-            <AlertDialogTitle>Discard your question?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your question and any details you've written will be lost.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel autoFocus>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onClick={discard}>Discard</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DiscardDialog
+        open={showDiscardDialog}
+        onOpenChange={setShowDiscardDialog}
+        onDiscard={discard}
+      />
     </div>
   )
 }
