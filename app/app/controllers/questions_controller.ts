@@ -69,7 +69,7 @@ export default class QuestionsController {
 
     const atUri = AtUri.make(
       resolved.account.did,
-      lexicon.fyi.questionable.question.$nsid,
+      lexicon.fyi.questionable.graph.question.$nsid,
       params.id
     )
     const question = await Question.query()

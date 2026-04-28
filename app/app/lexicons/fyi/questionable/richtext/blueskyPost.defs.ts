@@ -5,13 +5,14 @@
 import { l } from '@atproto/lex'
 import * as RepoStrongRef from '../../../com/atproto/repo/strongRef.defs.js'
 
-const $nsid = 'fyi.questionable.richtext.bskyPost'
+const $nsid = 'fyi.questionable.richtext.blueskyPost'
 
 export { $nsid }
 
 type Main = {
-  $type?: 'fyi.questionable.richtext.bskyPost'
+  $type?: 'fyi.questionable.richtext.blueskyPost'
   postRef: RepoStrongRef.Main
+  plaintext?: string
 }
 
 export type { Main }
@@ -21,6 +22,7 @@ const main = l.typedObject<Main>(
   'main',
   l.object({
     postRef: l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
+    plaintext: l.optional(l.string({ maxLength: 1000, maxGraphemes: 1000 })),
   }),
 )
 

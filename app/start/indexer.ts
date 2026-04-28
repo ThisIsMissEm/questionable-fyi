@@ -20,7 +20,7 @@ indexer.identity(async (evt) => {
   await Account.upsert(evt)
 })
 
-indexer.put(lexicon.fyi.questionable.question, async (evt) => {
+indexer.put(lexicon.fyi.questionable.graph.question, async (evt) => {
   const uri = AtUri.make(evt.did, evt.collection, evt.rkey).toString()
 
   logger.debug(evt.record, `Updating question: ${uri}`)
@@ -28,7 +28,7 @@ indexer.put(lexicon.fyi.questionable.question, async (evt) => {
   await Question.upsert(uri, evt.cid, evt.rkey, evt.did, evt.record, DateTime.now())
 })
 
-indexer.delete(lexicon.fyi.questionable.question, async (evt) => {
+indexer.delete(lexicon.fyi.questionable.graph.question, async (evt) => {
   const uri = AtUri.make(evt.did, evt.collection, evt.rkey).toString()
 
   logger.debug(`Deleting question: ${uri}`)

@@ -14,7 +14,7 @@ import { QuestionSchema } from '#database/schema'
 export type QuestionContextType = 'profile' | undefined
 
 export default class Question extends withAtprotoRecord(
-  lexicon.fyi.questionable.question,
+  lexicon.fyi.questionable.graph.question,
   QuestionSchema
 ) {
   @hasOne(() => Account, {
@@ -52,7 +52,7 @@ export default class Question extends withAtprotoRecord(
     cid: string,
     rkey: string,
     author: DidString | string,
-    record: lexicon.fyi.questionable.question.Main,
+    record: lexicon.fyi.questionable.graph.question.Main,
     indexedAt?: DateTime | undefined
   ) {
     logger.trace({ uri, cid, rkey, author, record }, 'Upserting Question')

@@ -33,7 +33,7 @@ export default class AsksController {
     }
 
     // Build the record to create:
-    const record = lexicon.fyi.questionable.question.$build({
+    const record = lexicon.fyi.questionable.graph.question.$build({
       createdAt: getCurrentTimestamp(),
       summary: data.title,
       content: lexicon.fyi.questionable.richtext.content.$build({
@@ -46,7 +46,7 @@ export default class AsksController {
       contextRef: context !== null ? lexicon.com.atproto.repo.strongRef.$build(context) : undefined,
     })
 
-    const created = await user.client.create(lexicon.fyi.questionable.question, record)
+    const created = await user.client.create(lexicon.fyi.questionable.graph.question, record)
     const uri = new AtUri(created.uri)
     await Question.upsert(created.uri, created.cid, uri.rkey, user.did, record)
 

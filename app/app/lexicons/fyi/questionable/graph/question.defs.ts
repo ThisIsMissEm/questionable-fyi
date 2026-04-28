@@ -3,38 +3,50 @@
  */
 
 import { l } from '@atproto/lex'
-import * as RepoStrongRef from '../../com/atproto/repo/strongRef.defs.js'
-import * as RichtextContent from './richtext/content.defs.js'
+import * as RichtextContent from '../richtext/content.defs.js'
+import * as RepoStrongRef from '../../../com/atproto/repo/strongRef.defs.js'
 
-const $nsid = 'fyi.questionable.answer'
+const $nsid = 'fyi.questionable.graph.question'
 
 export { $nsid }
 
-/** A proposed answer to a question */
+/** A question asked on questionable.fyi */
 type Main = {
-  $type: 'fyi.questionable.answer'
+  $type: 'fyi.questionable.graph.question'
+  createdAt: l.DatetimeString
 
   /**
-   * Indicates the question to which this is a proposed answer to
+   * A short summary of the question
    */
-  question: RepoStrongRef.Main
-  createdAt: l.DatetimeString
+  summary: string
   content: RichtextContent.Main
+
+  /**
+   * Indicates human language of the primary text content.
+   */
   languages?: l.LanguageString[]
+
+  /**
+   * Indicates the context in which this question was asked. Currently only fyi.questionable.actor.profile
+   */
+  contextRef?: RepoStrongRef.Main
 }
 
 export type { Main }
 
-/** A proposed answer to a question */
+/** A question asked on questionable.fyi */
 const main = l.record<'tid', Main>(
   'tid',
   $nsid,
   l.object({
-    question: l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
     createdAt: l.string({ format: 'datetime' }),
+    summary: l.string({ maxGraphemes: 300, maxLength: 3000, minLength: 1 }),
     content: l.ref<RichtextContent.Main>((() => RichtextContent.main) as any),
     languages: l.optional(
       l.array(l.string({ format: 'language' }), { maxLength: 3 }),
+    ),
+    contextRef: l.optional(
+      l.ref<RepoStrongRef.Main>((() => RepoStrongRef.main) as any),
     ),
   }),
 )

@@ -25,7 +25,7 @@ const main = l.typedObject<Main>(
     facets: l.optional(
       l.array(l.ref<RichtextFacet.Main>((() => RichtextFacet.main) as any)),
     ),
-    level: l.integer({ maximum: 6, minimum: 1 }),
+    level: l.integer({ maximum: 5, minimum: 1 }),
     plaintext: l.string({ maxGraphemes: 1000, maxLength: 2000 }),
   }),
 )
