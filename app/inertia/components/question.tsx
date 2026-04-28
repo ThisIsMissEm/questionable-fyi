@@ -1,6 +1,7 @@
-import * as richtext from '#lexicons/fyi/questionable/richtext'
+import * as richtext from '@lexicons/fyi/questionable/richtext'
 import { Data } from '@generated/data'
-import { Link, usePage } from '@inertiajs/react'
+import { usePage } from '@inertiajs/react'
+import { Link } from '@adonisjs/inertia/react'
 import { useMemo } from 'react'
 import { urlFor } from '~/client'
 

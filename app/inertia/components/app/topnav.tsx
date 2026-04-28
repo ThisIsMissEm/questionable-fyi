@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '~/lib/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/lib/components/ui/tooltip'
-import { useAuth } from '~/hooks/use-auth'
+import { useAuth } from '~/hooks/auth'
 import { AccountDisplayName } from '~/components/account-display-name'
 import { AccountHandle } from '~/components/account-handle'
 import { urlFor } from '~/client'

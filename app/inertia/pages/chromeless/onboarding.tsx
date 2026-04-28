@@ -1,6 +1,6 @@
 import { Form } from '@adonisjs/inertia/react'
 import FormLayout from '~/layouts/fullPageForm'
-import { useAuth } from '~/hooks/use-auth'
+import { useAuth } from '~/hooks/auth'
 
 export default function Onboarding() {
   const viewer = useAuth()

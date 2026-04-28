@@ -1,8 +1,9 @@
-import Account from '#models/account'
-import Profile from '#models/profile'
-import { errors } from '@adonisjs/core'
+import type { AtIdentifierString } from '@atproto/syntax'
 import router from '@adonisjs/core/services/router'
-import { AtIdentifierString } from '@atproto/syntax'
+import { errors } from '@adonisjs/core'
+
+import type Profile from '#models/profile'
+import Account from '#models/account'
 
 type ResolveHandleOptions = {
   url: string

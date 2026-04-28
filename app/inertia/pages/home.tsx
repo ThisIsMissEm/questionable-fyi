@@ -5,7 +5,7 @@ import { Tabbar } from '~/components/tabs/tabbar'
 
 import { urlFor } from '~/client'
 import { InertiaProps } from '~/types'
-import { useAuth } from '~/hooks/use-auth'
+import { useAuth } from '~/hooks/auth'
 import { Data } from '@generated/data'
 import { Link } from '@adonisjs/inertia/react'
 import { useMemo } from 'react'
@@ -58,7 +58,9 @@ export default function Home({ questions }: PageProps) {
         </section>
       )}
       <section className="mt-8" aria-labelledby="questions-heading">
-        <h2 id="questions-heading" className="text-2xl font-semibold mb-1">Questions</h2>
+        <h2 id="questions-heading" className="text-2xl font-semibold mb-1">
+          Questions
+        </h2>
         <Tabbar
           aria-label="Questions"
           tabs={[

@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react'
+import { Link } from '@adonisjs/inertia/react'
 import { FieldDescription } from '~/lib/components/ui/field'
 
 export function Terms() {

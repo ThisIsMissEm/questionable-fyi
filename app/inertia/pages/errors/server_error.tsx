@@ -1,4 +1,5 @@
-import { Head, Link } from '@inertiajs/react'
+import { Head } from '@inertiajs/react'
+import { Link } from '@adonisjs/inertia/react'
 
 export default function ServerError() {
   return (
@@ -9,10 +10,7 @@ export default function ServerError() {
         <p className="text-muted-foreground text-lg mb-8 max-w-md">
           We ran into a problem loading this page. Try refreshing, or head back to the home page.
         </p>
-        <Link
-          href="/"
-          className="text-primary hover:text-primary/80 underline underline-offset-4"
-        >
+        <Link href="/" className="text-primary hover:text-primary/80 underline underline-offset-4">
           Back to Questions
         </Link>
       </div>

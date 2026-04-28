@@ -4,13 +4,14 @@
  */
 
 export const controllers = {
+  api: {
+    Asks: () => import('#controllers/api/asks_controller'),
+  },
   Auth: () => import('#controllers/auth_controller'),
   Home: () => import('#controllers/home_controller'),
   Interviews: () => import('#controllers/interviews_controller'),
   Oauth: () => import('#controllers/oauth_controller'),
   Onboarding: () => import('#controllers/onboarding_controller'),
   Profiles: () => import('#controllers/profiles_controller'),
-  api: {
-    Asks: () => import('#controllers/api/asks_controller'),
-  },
+  Questions: () => import('#controllers/questions_controller'),
 }

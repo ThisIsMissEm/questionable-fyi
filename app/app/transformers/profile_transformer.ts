@@ -1,6 +1,6 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import Profile from '#models/profile'
-import Account from '#models/account'
+import type Profile from '#models/profile'
+import type Account from '#models/account'
 
 export default class ProfileTransformer extends BaseTransformer<Profile> {
   constructor(
