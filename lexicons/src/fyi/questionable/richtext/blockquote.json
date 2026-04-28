@@ -4,17 +4,27 @@
   "defs": {
     "main": {
       "type": "object",
-      "required": ["plaintext"],
+      "required": ["items"],
       "properties": {
-        "facets": {
-          "type": "array",
-          "items": {
-            "ref": "fyi.questionable.richtext.facet",
-            "type": "ref"
-          }
-        },
         "plaintext": {
           "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "description": "Content blocks inside the blockquote",
+          "maxLength": 500,
+          "items": {
+            "type": "union",
+            "closed": false,
+            "refs": [
+              "fyi.questionable.richtext.text",
+              "fyi.questionable.richtext.blockquote",
+              "fyi.questionable.richtext.code",
+              "fyi.questionable.richtext.header",
+              "fyi.questionable.richtext.horizontalRule",
+              "fyi.questionable.richtext.list"
+            ]
+          }
         }
       }
     }

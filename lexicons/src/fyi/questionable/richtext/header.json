@@ -14,7 +14,7 @@
           "type": "array"
         },
         "level": {
-          "maximum": 6,
+          "maximum": 5,
           "minimum": 1,
           "type": "integer"
         },

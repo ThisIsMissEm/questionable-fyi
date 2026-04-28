@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "fyi.questionable.answer",
+  "id": "fyi.questionable.graph.answer",
   "defs": {
     "main": {
       "description": "A proposed answer to a question",
@@ -8,9 +8,9 @@
       "type": "record",
       "record": {
         "type": "object",
-        "required": ["question", "content", "createdAt"],
+        "required": ["questionRef", "content", "createdAt"],
         "properties": {
-          "question": {
+          "questionRef": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "Indicates the question to which this is a proposed answer to"

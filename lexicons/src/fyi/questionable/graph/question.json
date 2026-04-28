@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "fyi.questionable.question",
+  "id": "fyi.questionable.graph.question",
   "defs": {
     "main": {
       "description": "A question asked on questionable.fyi",
