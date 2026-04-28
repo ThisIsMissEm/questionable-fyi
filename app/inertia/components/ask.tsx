@@ -110,9 +110,12 @@ export default function AskForm(props: AskProps) {
         onSubmit={handleSubmit}
         inert={processing}
         onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget) && !hasContent()) {
-            discard()
-          }
+          if (e.currentTarget.contains(e.relatedTarget)) return
+          // Don't collapse while a popup-trigger inside the form is open —
+          // Radix portals its content outside the form's DOM, so focus moving
+          // into a Select listbox or Popover would otherwise read as "left the form".
+          if (e.currentTarget.querySelector('[aria-expanded="true"]')) return
+          if (!hasContent()) discard()
         }}
       >
         <div className="flex flex-col gap-3 pb-2">
@@ -140,6 +143,9 @@ export default function AskForm(props: AskProps) {
                 if (e.key === 'Escape') {
                   e.currentTarget.blur()
                   tryDiscard()
+                } else if (e.key === 'Tab' && !e.shiftKey) {
+                  e.preventDefault()
+                  editorRef.current?.focus()
                 }
               }}
               className="ps-4 pe-30 h-14"

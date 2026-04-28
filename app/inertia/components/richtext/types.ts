@@ -4,6 +4,7 @@ export type EditorInstance = NonNullable<ReturnType<typeof useEditor>>
 
 export type RichtextEditorRef = {
   clearContent: () => void
+  focus: () => void
 }
 
 export type RichtextEditorProps = {

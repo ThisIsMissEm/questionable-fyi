@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react'
 import { useEditorState } from '@tiptap/react'
 import { Type, Heading1, Heading2 } from 'lucide-react'
 import {
@@ -7,9 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/lib/components/ui/select'
+import { cn } from '~/lib/lib/utils'
 import type { EditorInstance } from './types'
 
-export function StyleSelect({ editor }: { editor: EditorInstance }) {
+type StyleSelectProps = { editor: EditorInstance } & Omit<
+  ComponentProps<typeof SelectTrigger>,
+  'children'
+>
+
+export function StyleSelect({ editor, className, ...triggerProps }: StyleSelectProps) {
   const blockType = useEditorState({
     editor,
     selector: ({ editor: e }) => {
@@ -36,8 +43,8 @@ export function StyleSelect({ editor }: { editor: EditorInstance }) {
     >
       <SelectTrigger
         size="sm"
-        tabIndex={-1}
-        className="border-none shadow-none h-8 gap-1 px-2 w-[16ch]"
+        {...triggerProps}
+        className={cn('border-none shadow-none h-8 gap-1 px-2 w-[16ch]', className)}
       >
         <SelectValue />
       </SelectTrigger>
