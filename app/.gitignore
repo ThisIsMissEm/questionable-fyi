@@ -23,6 +23,10 @@ yarn-error.log
 
 # Platform specific
 .DS_Store
+.agents
+.claude/*
+!.claude/skills/
+.superpowers
 ./app/lexicons
 .yalc
 yalc.lock
