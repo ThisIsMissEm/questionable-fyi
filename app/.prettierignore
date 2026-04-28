@@ -5,3 +5,4 @@ app/lexicons/*
 inertia/lib/*
 pnpm-lock.yaml
 database/schema.ts
+docs/superpowers/*

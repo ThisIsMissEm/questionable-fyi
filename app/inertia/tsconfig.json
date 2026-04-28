@@ -7,13 +7,15 @@
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./lib/*"],
-      "@generated/*": ["../.adonisjs/client/*"]
+      "@generated/*": ["../.adonisjs/client/*"],
+      "@lexicons/*": ["../app/lexicons/*"]
     }
   },
   "include": [
     "./**/*.ts",
     "./**/*.tsx",
     "../.adonisjs/client/**/*.ts",
-    "../.adonisjs/server/**/*.ts"
+    "../.adonisjs/server/**/*.ts",
+    "../app/lexicons/**/*.ts"
   ]
 }

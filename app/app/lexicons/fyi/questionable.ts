@@ -3,8 +3,6 @@
  */
 
 export * as actor from './questionable/actor.js'
-export * as answer from './questionable/answer.js'
+export * as graph from './questionable/graph.js'
 export * as richtext from './questionable/richtext.js'
-export * as selectedAnswer from './questionable/selectedAnswer.js'
 export * as waitlist from './questionable/waitlist.js'
-export * as question from './questionable/question.js'

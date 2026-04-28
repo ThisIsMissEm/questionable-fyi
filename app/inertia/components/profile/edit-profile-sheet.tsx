@@ -20,7 +20,12 @@ export type EditProfileSheetProps = {
   onSuccess: () => void
 }
 
-export function EditProfileSheet({ profile, open, onOpenChange, onSuccess }: EditProfileSheetProps) {
+export function EditProfileSheet({
+  profile,
+  open,
+  onOpenChange,
+  onSuccess,
+}: EditProfileSheetProps) {
   const handleOrDid = profile.handle ?? profile.did
 
   return (

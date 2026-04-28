@@ -83,6 +83,7 @@ Tuyau generates a type-safe API client and route registry in `.adonisjs/`. Inert
 For design adjustments and UI refinement, use the impeccable.style MCP server tools.
 
 See `DESIGN.md` and `DESIGN.json` for the full specification. Key points:
+
 - Primary color: inquisitive-violet (`oklch(43.2% 0.232 292.759)`)
 - Typography: Charter serif font family for body/display text; `font-sans` is intentionally used on metadata/byline text and buttons — don't remove it
 - Rounded corners: 0.625rem base
@@ -103,9 +104,12 @@ The docs site (docs.adonisjs.com) can be fetched as markdown, but only from spec
 For Tuyau (API client / URL generation) docs, use library ID `/julien-r44/tuyau`.
 For AdonisJS Inertia adapter docs, use library ID `/adonisjs/inertia`.
 
+When working with AdonisJS Inertia, always prefer `Link` and `Form` from `@adonisjs/inertia/react` instead of `@inertiajs/react`.
+
 ## AT Protocol Lexicons
 
 Lexicon schemas live in `../lexicons/`. To understand or work with AT Protocol lexicons, use the lexicon.garden MCP server:
+
 - `describe_lexicon` — explain what a lexicon does
 - `validate_lexicon` — check a lexicon schema for errors
 - `lexicon_schema_creation_guide` prompt — reference for creating new lexicons
@@ -130,6 +134,13 @@ Note: `pnpm dlx skills experimental_install` restores files from the lock file b
 - **Package runner:** Use `pnpm dlx` instead of `npx` for running one-off packages.
 - **Dev server:** Never auto-start `pnpm dev`. Ask the user to run it, or check if port 3333 is already in use first.
 - **JSON inspection:** Use `jq` for reading/parsing JSON files in shell — not python, node, or awk.
+
+## Workflow
+
+Always run the following commands prior to making commits, and fix any issues found:
+- `pnpm typecheck`: this will ensure there are no typescript errors in your work
+- `pnpm lint`: this will ensure there are no linting errors in your work
+- `pnpm format`: this will automatically reformat files, you just need to commit the changes if they're part of your current work.
 
 ## Environment
 

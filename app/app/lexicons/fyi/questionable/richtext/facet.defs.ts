@@ -20,6 +20,9 @@ type Main = {
     | l.$Typed<Strikethrough>
     | l.$Typed<Bold>
     | l.$Typed<Italic>
+    | l.$Typed<Subscript>
+    | l.$Typed<Superscript>
+    | l.$Typed<Abbr>
     | l.Unknown$TypedObject
   )[]
   index: ByteSlice
@@ -43,6 +46,9 @@ const main = l.typedObject<Main>(
           l.typedRef<Strikethrough>((() => strikethrough) as any),
           l.typedRef<Bold>((() => bold) as any),
           l.typedRef<Italic>((() => italic) as any),
+          l.typedRef<Subscript>((() => subscript) as any),
+          l.typedRef<Superscript>((() => superscript) as any),
+          l.typedRef<Abbr>((() => abbr) as any),
         ],
         false,
       ),
@@ -168,6 +174,30 @@ const underline = l.typedObject<Underline>($nsid, 'underline', l.object({}))
 
 export { underline }
 
+/** Facet feature for subscript text. */
+type Subscript = { $type?: 'fyi.questionable.richtext.facet#subscript' }
+
+export type { Subscript }
+
+/** Facet feature for subscript text. */
+const subscript = l.typedObject<Subscript>($nsid, 'subscript', l.object({}))
+
+export { subscript }
+
+/** Facet feature for superscript text. */
+type Superscript = { $type?: 'fyi.questionable.richtext.facet#superscript' }
+
+export type { Superscript }
+
+/** Facet feature for superscript text. */
+const superscript = l.typedObject<Superscript>(
+  $nsid,
+  'superscript',
+  l.object({}),
+)
+
+export { superscript }
+
 /** Facet feature for a URL. The text URL may have been simplified or truncated, but the facet reference should be a complete URL. */
 type Link = { $type?: 'fyi.questionable.richtext.facet#link'; uri: l.UriString }
 
@@ -181,3 +211,19 @@ const link = l.typedObject<Link>(
 )
 
 export { link }
+
+/** Facet feature for text that is an abbreviation or acronym */
+type Abbr = { $type?: 'fyi.questionable.richtext.facet#abbr'; title: string }
+
+export type { Abbr }
+
+/** Facet feature for text that is an abbreviation or acronym */
+const abbr = l.typedObject<Abbr>(
+  $nsid,
+  'abbr',
+  l.object({
+    title: l.string({ maxLength: 300, maxGraphemes: 300, minLength: 5 }),
+  }),
+)
+
+export { abbr }

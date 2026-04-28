@@ -3,27 +3,27 @@
  */
 
 import { l } from '@atproto/lex'
-import * as RepoStrongRef from '../../com/atproto/repo/strongRef.defs.js'
+import * as RepoStrongRef from '../../../com/atproto/repo/strongRef.defs.js'
 
-const $nsid = 'fyi.questionable.selectedAnswer'
+const $nsid = 'fyi.questionable.graph.acceptedAnswer'
 
 export { $nsid }
 
-/** Marks an answer as answering a given question */
+/** Marks an answer as accepted for a given question */
 type Main = {
-  $type: 'fyi.questionable.selectedAnswer'
+  $type: 'fyi.questionable.graph.acceptedAnswer'
   questionRef: RepoStrongRef.Main
   answerRef: RepoStrongRef.Main
 
   /**
-   * Client-declared timestamp when this vote was originally created.
+   * Client-declared timestamp when the answer was accepted for this question.
    */
   createdAt: l.DatetimeString
 }
 
 export type { Main }
 
-/** Marks an answer as answering a given question */
+/** Marks an answer as accepted for a given question */
 const main = l.record<'tid', Main>(
   'tid',
   $nsid,

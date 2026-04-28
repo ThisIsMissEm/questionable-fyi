@@ -5,7 +5,7 @@
 import { l } from '@atproto/lex'
 import * as RichtextText from './text.defs.js'
 import * as RichtextBlockquote from './blockquote.defs.js'
-import * as RichtextBskyPost from './bskyPost.defs.js'
+import * as RichtextBlueskyPost from './blueskyPost.defs.js'
 import * as RichtextCode from './code.defs.js'
 import * as RichtextHeader from './header.defs.js'
 import * as RichtextHorizontalRule from './horizontalRule.defs.js'
@@ -27,7 +27,7 @@ type Main = {
   items: (
     | l.$Typed<RichtextText.Main>
     | l.$Typed<RichtextBlockquote.Main>
-    | l.$Typed<RichtextBskyPost.Main>
+    | l.$Typed<RichtextBlueskyPost.Main>
     | l.$Typed<RichtextCode.Main>
     | l.$Typed<RichtextHeader.Main>
     | l.$Typed<RichtextHorizontalRule.Main>
@@ -53,8 +53,8 @@ const main = l.typedObject<Main>(
           l.typedRef<RichtextBlockquote.Main>(
             (() => RichtextBlockquote.main) as any,
           ),
-          l.typedRef<RichtextBskyPost.Main>(
-            (() => RichtextBskyPost.main) as any,
+          l.typedRef<RichtextBlueskyPost.Main>(
+            (() => RichtextBlueskyPost.main) as any,
           ),
           l.typedRef<RichtextCode.Main>((() => RichtextCode.main) as any),
           l.typedRef<RichtextHeader.Main>((() => RichtextHeader.main) as any),

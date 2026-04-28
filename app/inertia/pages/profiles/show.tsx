@@ -4,9 +4,9 @@ import { Data } from '@generated/data'
 import { Head, usePage } from '@inertiajs/react'
 import AskForm from '~/components/ask'
 import ProfileHeader from '~/components/profile/header'
-import { useAuth } from '~/hooks/use-auth'
+import { useAuth } from '~/hooks/auth'
 import { InertiaProps } from '~/types'
-import { $nsid as ProfileNSID } from '#lexicons/fyi/questionable/actor/profile'
+import { $nsid as profileNsid } from '@lexicons/fyi/questionable/actor/profile'
 
 type PageProps = InertiaProps<{
   profile: Data.Profile
@@ -20,7 +20,7 @@ export default function ShowProfile({ profile, links }: PageProps) {
   const tab = new URLSearchParams(url.split('?', 2)[1]).get('tab') ?? 'asks'
 
   const context = useMemo(() => {
-    return AtUri.make(profile.did, ProfileNSID, 'self').toString()
+    return AtUri.make(profile.did, profileNsid, 'self').toString()
   }, [profile])
 
   return (

@@ -1,4 +1,4 @@
-import { ensureValidDatetime, HandleString, INVALID_HANDLE } from '@atproto/syntax'
+import { ensureValidDatetime, type HandleString, INVALID_HANDLE } from '@atproto/syntax'
 import { DateTime } from 'luxon'
 
 export function getCurrentTimestamp() {
