@@ -148,7 +148,7 @@ export default function AskForm(props: AskProps) {
                   editorRef.current?.focus()
                 }
               }}
-              className="ps-4 pe-30 h-14"
+              className="ps-4 pe-30 h-14 text-lg md:text-lg"
               required
               autoComplete="off"
               value={data.title}

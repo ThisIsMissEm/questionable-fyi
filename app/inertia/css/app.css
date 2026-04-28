@@ -141,15 +141,17 @@
   }
 }
 
-/* Rendered richtext content — more generous spacing */
+/* Rendered richtext content — more generous spacing, body-size type */
 .richtext-content {
+  @apply text-xl;
   p {
     @apply my-3 leading-relaxed;
   }
 }
 
-/* TipTap editor — tighter spacing for editing */
+/* TipTap editor — tighter spacing and form-control sizing */
 .richtext-editor-content {
+  @apply text-base md:text-sm;
   > :first-child {
     @apply mt-0;
   }
