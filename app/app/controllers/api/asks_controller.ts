@@ -11,10 +11,11 @@ export default class AsksController {
   async store({ request, response, auth, logger }: HttpContext) {
     const user = auth.getUserOrFail()
     logger.debug(request.all(), 'request params')
-    const data = await request.validateUsing(askValidator)
+    const [errors, data] = await request.tryValidateUsing(askValidator)
 
-    // Temporary for multiple paragraphs:
-    const content = (data.content ?? '').split('\n\n')
+    if (errors) {
+      return response.status(422).json({ errors: errors.messages })
+    }
 
     // Build the context reference:
     let context: lexicon.com.atproto.repo.strongRef.Main | null = null
@@ -36,13 +37,7 @@ export default class AsksController {
     const record = lexicon.fyi.questionable.graph.question.$build({
       createdAt: getCurrentTimestamp(),
       summary: data.title,
-      content: lexicon.fyi.questionable.richtext.content.$build({
-        items: content.map((text) => {
-          return lexicon.fyi.questionable.richtext.text.$build({
-            plaintext: text,
-          })
-        }),
-      }),
+      content: data.content,
       contextRef: context !== null ? lexicon.com.atproto.repo.strongRef.$build(context) : undefined,
     })
 

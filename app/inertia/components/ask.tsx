@@ -1,12 +1,24 @@
 import { router, useForm } from '@inertiajs/react'
-import { FormEventHandler, useState } from 'react'
+import { FormEventHandler, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import type { JSONContent } from '@tiptap/react'
 
 import { client, urlFor } from '~/client'
+import { tiptapToLexicon } from '~/lib/richtext/tiptap_to_lexicon'
 
 import { Button } from '~/lib/components/ui/button'
 import { Input } from '~/lib/components/ui/input'
-import { Textarea } from '~/lib/components/ui/textarea'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '~/lib/components/ui/alert-dialog'
+import { RichtextEditor, type RichtextEditorRef } from '~/components/richtext-editor'
 import { cn } from '~/lib/lib/utils'
 import { toast } from 'sonner'
 
@@ -18,20 +30,62 @@ type AskProps = React.ComponentProps<'div'> & {
 
 export default function AskForm(props: AskProps) {
   const [collapsed, setCollapsed] = useState(true)
+  const [showDiscardDialog, setShowDiscardDialog] = useState(false)
+  const editorRef = useRef<RichtextEditorRef>(null)
+  const editorContentRef = useRef<JSONContent | null>(null)
   const { data, setData, processing, resetAndClearErrors, wasSuccessful } = useForm({
     title: '',
-    content: '',
     context: props.context,
   })
+
+  const hasContent = () => {
+    if (data.title.trim()) return true
+    const doc = editorContentRef.current
+    if (!doc?.content?.length) return false
+    return doc.content.some((node: any) => node.content?.length > 0)
+  }
+
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  const tryDiscard = () => {
+    if (hasContent()) {
+      previousFocusRef.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null
+      setShowDiscardDialog(true)
+    } else {
+      discard()
+    }
+  }
+
+  const discardedRef = useRef(false)
+
+  const discard = () => {
+    discardedRef.current = true
+    setCollapsed(true)
+    resetAndClearErrors()
+    editorRef.current?.clearContent()
+    editorContentRef.current = null
+  }
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     try {
+      const content = editorContentRef.current
+        ? tiptapToLexicon(editorContentRef.current)
+        : tiptapToLexicon({ type: 'doc', content: [] })
+
       const response = await client.api.api.ask.store({
-        body: data,
+        body: { ...data, content } as any,
       })
 
+      if ('errors' in response) {
+        toast.error('Validation failed. Please check your input.')
+        return
+      }
+
       resetAndClearErrors()
+      editorRef.current?.clearContent()
+      editorContentRef.current = null
       setCollapsed(true)
 
       toast.success('Question asked!', {
@@ -69,14 +123,7 @@ export default function AskForm(props: AskProps) {
                   animate={{ width: 'auto', opacity: 1 }}
                   exit={{ width: 0, opacity: 0 }}
                 >
-                  <Button
-                    type="reset"
-                    variant={'secondary'}
-                    onClick={() => {
-                      setCollapsed(true)
-                      resetAndClearErrors()
-                    }}
-                  >
+                  <Button type="button" variant={'secondary'} onClick={tryDiscard}>
                     Cancel
                   </Button>
                 </motion.div>
@@ -87,6 +134,9 @@ export default function AskForm(props: AskProps) {
               name="title"
               placeholder={`${props.prompt}...`}
               onFocus={() => setCollapsed(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') tryDiscard()
+              }}
               className="ps-4 pe-30 h-14"
               autoComplete="off"
               value={data.title}
@@ -100,18 +150,20 @@ export default function AskForm(props: AskProps) {
                 layout
                 className="overflow-y-clip flex"
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 200, opacity: 1 }}
+                animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
               >
                 <div className="py-1 flex flex-1 flex-col">
-                  <Textarea
-                    name="content"
-                    value={data.content}
-                    onChange={(e) => setData('content', e.target.value)}
+                  <RichtextEditor
+                    ref={editorRef}
                     placeholder="Write more details about your question here"
-                    className="mb-2 flex-1 w-full resize-none"
-                  ></Textarea>
+                    onChange={(json) => {
+                      editorContentRef.current = json
+                    }}
+                    onEscape={tryDiscard}
+                    className="mb-2 flex-1 w-full"
+                  />
                   <Button size="lg" type="submit" className="w-full" disabled={processing}>
                     {processing ? 'Asking...' : wasSuccessful ? 'Asked!' : 'Ask question'}
                   </Button>
@@ -121,6 +173,31 @@ export default function AskForm(props: AskProps) {
           </AnimatePresence>
         </div>
       </form>
+
+      <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
+        <AlertDialogContent
+          onCloseAutoFocus={(e) => {
+            e.preventDefault()
+            if (discardedRef.current) {
+              discardedRef.current = false
+            } else {
+              previousFocusRef.current?.focus()
+            }
+            previousFocusRef.current = null
+          }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard your question?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your question and any details you've written will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel autoFocus>Keep editing</AlertDialogCancel>
+            <AlertDialogAction onClick={discard}>Discard</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

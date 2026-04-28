@@ -3,7 +3,11 @@
  */
 
 import { l } from '@atproto/lex'
-import * as RichtextFacet from './facet.defs.js'
+import * as RichtextText from './text.defs.js'
+import * as RichtextCode from './code.defs.js'
+import * as RichtextHeader from './header.defs.js'
+import * as RichtextHorizontalRule from './horizontalRule.defs.js'
+import * as RichtextList from './list.defs.js'
 
 const $nsid = 'fyi.questionable.richtext.blockquote'
 
@@ -11,8 +15,20 @@ export { $nsid }
 
 type Main = {
   $type?: 'fyi.questionable.richtext.blockquote'
-  facets?: RichtextFacet.Main[]
-  plaintext: string
+  plaintext?: string
+
+  /**
+   * Content blocks inside the blockquote
+   */
+  items: (
+    | l.$Typed<RichtextText.Main>
+    | l.$Typed<Main>
+    | l.$Typed<RichtextCode.Main>
+    | l.$Typed<RichtextHeader.Main>
+    | l.$Typed<RichtextHorizontalRule.Main>
+    | l.$Typed<RichtextList.Main>
+    | l.Unknown$TypedObject
+  )[]
 }
 
 export type { Main }
@@ -21,10 +37,23 @@ const main = l.typedObject<Main>(
   $nsid,
   'main',
   l.object({
-    facets: l.optional(
-      l.array(l.ref<RichtextFacet.Main>((() => RichtextFacet.main) as any)),
+    plaintext: l.optional(l.string()),
+    items: l.array(
+      l.typedUnion(
+        [
+          l.typedRef<RichtextText.Main>((() => RichtextText.main) as any),
+          l.typedRef<Main>((() => main) as any),
+          l.typedRef<RichtextCode.Main>((() => RichtextCode.main) as any),
+          l.typedRef<RichtextHeader.Main>((() => RichtextHeader.main) as any),
+          l.typedRef<RichtextHorizontalRule.Main>(
+            (() => RichtextHorizontalRule.main) as any,
+          ),
+          l.typedRef<RichtextList.Main>((() => RichtextList.main) as any),
+        ],
+        false,
+      ),
+      { maxLength: 500 },
     ),
-    plaintext: l.string(),
   }),
 )
 

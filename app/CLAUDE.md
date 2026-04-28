@@ -138,6 +138,7 @@ Note: `pnpm dlx skills experimental_install` restores files from the lock file b
 ## Workflow
 
 Always run the following commands prior to making commits, and fix any issues found:
+
 - `pnpm typecheck`: this will ensure there are no typescript errors in your work
 - `pnpm lint`: this will ensure there are no linting errors in your work
 - `pnpm format`: this will automatically reformat files, you just need to commit the changes if they're part of your current work.
