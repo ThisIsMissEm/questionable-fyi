@@ -17,7 +17,10 @@
               "#underline",
               "#strikethrough",
               "#bold",
-              "#italic"
+              "#italic",
+              "#subscript",
+              "#superscript",
+              "#abbr"
             ]
           }
         },
@@ -91,6 +94,18 @@
       "required": [],
       "type": "object"
     },
+    "subscript": {
+      "description": "Facet feature for subscript text.",
+      "properties": {},
+      "required": [],
+      "type": "object"
+    },
+    "superscript": {
+      "description": "Facet feature for superscript text.",
+      "properties": {},
+      "required": [],
+      "type": "object"
+    },
     "link": {
       "type": "object",
       "description": "Facet feature for a URL. The text URL may have been simplified or truncated, but the facet reference should be a complete URL.",
@@ -99,6 +114,19 @@
         "uri": {
           "type": "string",
           "format": "uri"
+        }
+      }
+    },
+    "abbr": {
+      "type": "object",
+      "description": "Facet feature for text that is an abbreviation or acronym",
+      "required": ["title"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 300,
+          "maxGraphemes": 300,
+          "minLength": 5
         }
       }
     }

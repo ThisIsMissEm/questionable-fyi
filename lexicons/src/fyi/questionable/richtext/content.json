@@ -17,7 +17,7 @@
             "refs": [
               "fyi.questionable.richtext.text",
               "fyi.questionable.richtext.blockquote",
-              "fyi.questionable.richtext.bskyPost",
+              "fyi.questionable.richtext.blueskyPost",
               "fyi.questionable.richtext.code",
               "fyi.questionable.richtext.header",
               "fyi.questionable.richtext.horizontalRule",
