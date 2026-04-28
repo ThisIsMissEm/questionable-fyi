@@ -21,6 +21,7 @@ export default defineConfig({
       '~/': `${import.meta.dirname}/inertia/`,
       '@': `${import.meta.dirname}/inertia/lib`,
       '@generated': `${import.meta.dirname}/.adonisjs/client/`,
+      '@lexicons': `${import.meta.dirname}/app/lexicons/`,
     },
   },
 
