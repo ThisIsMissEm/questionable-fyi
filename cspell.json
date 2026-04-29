@@ -48,6 +48,7 @@
     "node_modules",
     "app/build",
     "app/.adonisjs",
+    "**/__fixtures__/**",
     "**/*.lock",
     "pnpm-lock.yaml"
   ]

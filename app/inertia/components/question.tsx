@@ -3,7 +3,7 @@ import { usePage } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import { useMemo } from 'react'
 import { urlFor } from '~/client'
-import { RichtextContent } from '~/lib/richtext/render_richtext'
+import { RichtextContent } from '~/components/richtext/content'
 
 type QuestionProps = React.ComponentProps<'article'> & {
   question: Data.Question

@@ -69,9 +69,17 @@ function wrapWithFeature(
     case 'fyi.questionable.richtext.facet#italic':
       return <em key={`i-${key}`}>{node}</em>
     case 'fyi.questionable.richtext.facet#underline':
-      return <span key={`u-${key}`} className="underline">{node}</span>
+      return (
+        <span key={`u-${key}`} className="underline">
+          {node}
+        </span>
+      )
     case 'fyi.questionable.richtext.facet#strikethrough':
-      return <span key={`s-${key}`} className="line-through">{node}</span>
+      return (
+        <span key={`s-${key}`} className="line-through">
+          {node}
+        </span>
+      )
     case 'fyi.questionable.richtext.facet#code':
       return <code key={`c-${key}`}>{node}</code>
     case 'fyi.questionable.richtext.facet#highlight':
@@ -90,11 +98,7 @@ function wrapWithFeature(
       )
     case 'fyi.questionable.richtext.facet#mention':
       return (
-        <a
-          key={`m-${key}`}
-          href={`/p/${feature.did}`}
-          className="underline text-primary"
-        >
+        <a key={`m-${key}`} href={`/p/${feature.did}`} className="underline text-primary">
           {node}
         </a>
       )
@@ -111,13 +115,20 @@ function renderBlock(item: Block, index: number): ReactNode {
     case 'fyi.questionable.richtext.header': {
       const content = renderTextWithFacets(item.plaintext ?? '', item.facets)
       switch (item.level) {
-        case 1: return <h1 key={index}>{content}</h1>
-        case 2: return <h2 key={index}>{content}</h2>
-        case 3: return <h3 key={index}>{content}</h3>
-        case 4: return <h4 key={index}>{content}</h4>
-        case 5: return <h5 key={index}>{content}</h5>
-        case 6: return <h6 key={index}>{content}</h6>
-        default: return <h2 key={index}>{content}</h2>
+        case 1:
+          return <h1 key={index}>{content}</h1>
+        case 2:
+          return <h2 key={index}>{content}</h2>
+        case 3:
+          return <h3 key={index}>{content}</h3>
+        case 4:
+          return <h4 key={index}>{content}</h4>
+        case 5:
+          return <h5 key={index}>{content}</h5>
+        case 6:
+          return <h6 key={index}>{content}</h6>
+        default:
+          return <h2 key={index}>{content}</h2>
       }
     }
 
@@ -150,7 +161,10 @@ function renderBlock(item: Block, index: number): ReactNode {
             groups[groups.length - 1].nested.push(block)
           } else {
             // Nested list with no preceding item — render standalone
-            groups.push({ content: { $type: 'fyi.questionable.richtext.text', plaintext: '' }, nested: [block] })
+            groups.push({
+              content: { $type: 'fyi.questionable.richtext.text', plaintext: '' },
+              nested: [block],
+            })
           }
         } else {
           groups.push({ content: block, nested: [] })
