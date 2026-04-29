@@ -48,7 +48,7 @@ export const basicTiptap: JSONContent = {
         {
           type: 'text',
           text: 'voluptate',
-          marks: [{ type: 'link', attrs: { href: 'https://example.com' } }],
+          marks: [{ type: 'link', attrs: { href: 'https://example.com/' } }],
         },
         { type: 'text', text: ' velit.' },
       ],
@@ -80,7 +80,7 @@ export const basicLexicon = {
     {
       $type: 'fyi.questionable.richtext.text',
       plaintext: para2,
-      facets: [facet(para2, 'voluptate', [link('https://example.com')])],
+      facets: [facet(para2, 'voluptate', [link('https://example.com/')])],
     },
   ],
 }

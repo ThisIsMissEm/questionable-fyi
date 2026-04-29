@@ -380,14 +380,14 @@ describe('lexiconToTiptap', () => {
       const input = content([
         {
           $type: 'fyi.questionable.richtext.text',
-          plaintext: 'BOLDEDITALIC',
+          plaintext: 'testing',
           facets: [
             {
-              index: byteSlice(0, 6),
+              index: byteSlice(0, 4),
               features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
             },
             {
-              index: byteSlice(6, 12),
+              index: byteSlice(4, 7),
               features: [{ $type: 'fyi.questionable.richtext.facet#italic' }],
             },
           ],
@@ -398,8 +398,8 @@ describe('lexiconToTiptap', () => {
         content: Array<{ text: string; marks?: Array<{ type: string }> }>
       }
       expect(para.content).toEqual([
-        { type: 'text', text: 'BOLDED', marks: [{ type: 'bold' }] },
-        { type: 'text', text: 'ITALIC', marks: [{ type: 'italic' }] },
+        { type: 'text', text: 'test', marks: [{ type: 'bold' }] },
+        { type: 'text', text: 'ing', marks: [{ type: 'italic' }] },
       ])
     })
 
@@ -466,7 +466,7 @@ describe('lexiconToTiptap', () => {
             {
               index: byteSlice(byteStart, byteEnd),
               features: [
-                { $type: 'fyi.questionable.richtext.facet#link', uri: 'https://hi' },
+                { $type: 'fyi.questionable.richtext.facet#link', uri: 'https://example.com/wave' },
               ],
             },
           ],
@@ -479,8 +479,99 @@ describe('lexiconToTiptap', () => {
       expect(para.content[0]).toEqual({
         type: 'text',
         text: 'wave 👋',
-        marks: [{ type: 'link', attrs: { href: 'https://hi' } }],
+        marks: [{ type: 'link', attrs: { href: 'https://example.com/wave' } }],
       })
+    })
+
+    it('preserves a ZWJ family emoji wholly inside a facet', () => {
+      // 👨‍👩‍👧‍👧 = man + ZWJ + woman + ZWJ + girl + ZWJ + girl: 7 code points,
+      // 25 UTF-8 bytes for one visible cluster. The byte slicer has to span
+      // every joiner cleanly or we'd emit a fractured family.
+      const family = '👨‍👩‍👧‍👧'
+      const plaintext = `meet ${family} here`
+      const byteStart = utf8Len('meet ')
+      const byteEnd = byteStart + utf8Len(family)
+      const input = content([
+        {
+          $type: 'fyi.questionable.richtext.text',
+          plaintext,
+          facets: [
+            {
+              index: byteSlice(byteStart, byteEnd),
+              features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+            },
+          ],
+        },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ text: string; marks?: unknown[] }>
+      }
+      expect(para.content).toEqual([
+        { type: 'text', text: 'meet ' },
+        { type: 'text', text: family, marks: [{ type: 'bold' }] },
+        { type: 'text', text: ' here' },
+      ])
+    })
+
+    it('preserves a skin-tone modifier emoji wholly inside a facet', () => {
+      // 👋🏽 = wave + medium-skin-tone modifier: 2 code points, 8 UTF-8
+      // bytes. A boundary between the two code points would leave an
+      // orphan modifier on either side.
+      const wave = '👋🏽'
+      const plaintext = `${wave} hi`
+      const input = content([
+        {
+          $type: 'fyi.questionable.richtext.text',
+          plaintext,
+          facets: [
+            {
+              index: byteSlice(0, utf8Len(wave)),
+              features: [
+                {
+                  $type: 'fyi.questionable.richtext.facet#link',
+                  uri: 'https://example.com/wave',
+                },
+              ],
+            },
+          ],
+        },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ text: string; marks?: Array<{ type: string }> }>
+      }
+      expect(para.content[0].text).toBe(wave)
+      expect(para.content[0].marks?.[0]?.type).toBe('link')
+      expect(para.content[1].text).toBe(' hi')
+    })
+
+    it('keeps adjacent ZWJ family emoji separable when only one is faceted', () => {
+      // Back-to-back fat-unicode clusters with no separator. The byte
+      // counter has to land exactly on the boundary between the two
+      // 25-byte clusters; off-by-one bytes would shred either cluster.
+      const family = '👨‍👩‍👧‍👧'
+      const plaintext = `${family}${family}`
+      const input = content([
+        {
+          $type: 'fyi.questionable.richtext.text',
+          plaintext,
+          facets: [
+            {
+              index: byteSlice(0, utf8Len(family)),
+              features: [{ $type: 'fyi.questionable.richtext.facet#italic' }],
+            },
+          ],
+        },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ text: string; marks?: unknown[] }>
+      }
+      expect(para.content).toEqual([
+        { type: 'text', text: family, marks: [{ type: 'italic' }] },
+        { type: 'text', text: family },
+      ])
     })
   })
 
@@ -517,6 +608,501 @@ describe('lexiconToTiptap', () => {
         content: Array<{ text: string; marks?: unknown[] }>
       }
       expect(para.content).toEqual([{ type: 'text', text: 'hi' }])
+    })
+  })
+
+  describe('input sanitization (defense against malicious-but-schema-valid input)', () => {
+    describe('byte range validation', () => {
+      it('drops facets with byteEnd < byteStart (inverted range)', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'hello',
+            facets: [
+              {
+                index: byteSlice(4, 1),
+                features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        expect(para.content).toEqual([{ type: 'text', text: 'hello' }])
+      })
+
+      it('drops facets with byteEnd > plaintext byte length', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'hello',
+            facets: [
+              {
+                index: byteSlice(0, 99),
+                features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        expect(para.content).toEqual([{ type: 'text', text: 'hello' }])
+      })
+
+      it('drops facets with byteStart > plaintext byte length', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'hello',
+            facets: [
+              {
+                index: byteSlice(99, 100),
+                features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        expect(para.content).toEqual([{ type: 'text', text: 'hello' }])
+      })
+
+      it('drops zero-length facets (byteStart === byteEnd)', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'hello',
+            facets: [
+              {
+                index: byteSlice(2, 2),
+                features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        // Empty-range facets would produce an empty TipTap text node, which
+        // the schema rejects. Drop them instead.
+        expect(para.content).toEqual([{ type: 'text', text: 'hello' }])
+      })
+
+      it('keeps valid facets even when other facets in the same block are invalid', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'hello world',
+            facets: [
+              {
+                index: byteSlice(99, 1), // inverted + out of bounds → drop
+                features: [{ $type: 'fyi.questionable.richtext.facet#italic' }],
+              },
+              {
+                index: byteSlice(6, 11), // bold "world" → keep
+                features: [{ $type: 'fyi.questionable.richtext.facet#bold' }],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: Array<{ type: string }> }>
+        }
+        expect(para.content).toEqual([
+          { type: 'text', text: 'hello ' },
+          { type: 'text', text: 'world', marks: [{ type: 'bold' }] },
+        ])
+      })
+    })
+
+    describe('link URI validation', () => {
+      function paragraphWithLinkFacet(plaintext: string, uri: string) {
+        return content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext,
+            facets: [
+              {
+                index: byteSlice(0, plaintext.length),
+                features: [
+                  { $type: 'fyi.questionable.richtext.facet#link', uri },
+                ],
+              },
+            ],
+          },
+        ])
+      }
+
+      it.each([
+        ['javascript:alert(1)'],
+        ['data:text/html,<script>alert(1)</script>'],
+        ['vbscript:msgbox("hi")'],
+        ['file:///etc/passwd'],
+        ['mailto:victim@example.com'],
+        ['ftp://example.com'],
+        ['//protocol-relative.example.com'],
+        ['/relative/path'],
+        ['relative/path'],
+        [''],
+      ])('drops link feature with non-http(s) URI: %s → plain text', (uri) => {
+        // Skip expectValidInput — the lexicon URI format check is loose enough
+        // to accept some of these. The point is the converter sanitizes them.
+        const input = paragraphWithLinkFacet('click me', uri)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        expect(para.content).toEqual([{ type: 'text', text: 'click me' }])
+      })
+
+      it.each([
+        ['http://example.com', 'http://example.com/'],
+        ['https://example.com', 'https://example.com/'],
+        ['HTTPS://EXAMPLE.COM/PATH', 'https://example.com/PATH'],
+        [
+          'https://example.com/path?query=1#fragment',
+          'https://example.com/path?query=1#fragment',
+        ],
+      ])(
+        'keeps link feature with valid http(s) URI: %s → canonical %s',
+        (uri, canonical) => {
+          const input = paragraphWithLinkFacet('safe link', uri)
+          expectValidInput(input)
+          const para = lexiconToTiptap(input).content?.[0] as {
+            content: Array<{ text: string; marks?: Array<{ attrs?: { href: string } }> }>
+          }
+          expect(para.content[0].marks).toEqual([
+            { type: 'link', attrs: { href: canonical } },
+          ])
+        }
+      )
+
+      it('drops only the link feature when other features on the same facet are valid', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'mixed',
+            facets: [
+              {
+                index: byteSlice(0, 5),
+                features: [
+                  {
+                    $type: 'fyi.questionable.richtext.facet#link',
+                    uri: 'javascript:alert(1)',
+                  },
+                  { $type: 'fyi.questionable.richtext.facet#bold' },
+                ],
+              },
+            ],
+          },
+        ])
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: Array<{ type: string }> }>
+        }
+        expect(para.content).toEqual([
+          { type: 'text', text: 'mixed', marks: [{ type: 'bold' }] },
+        ])
+      })
+
+      it('drops link feature with non-string uri', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'broken',
+            facets: [
+              {
+                index: byteSlice(0, 6),
+                features: [
+                  { $type: 'fyi.questionable.richtext.facet#link', uri: null },
+                ],
+              },
+            ],
+          },
+        ])
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: unknown[] }>
+        }
+        expect(para.content).toEqual([{ type: 'text', text: 'broken' }])
+      })
+    })
+  })
+
+  describe('OWASP / unicode link sanitization', () => {
+    function paragraphWithLinkFacet(plaintext: string, uri: unknown) {
+      return content([
+        {
+          $type: 'fyi.questionable.richtext.text',
+          plaintext,
+          facets: [
+            {
+              index: byteSlice(0, plaintext.length),
+              features: [
+                { $type: 'fyi.questionable.richtext.facet#link', uri },
+              ],
+            },
+          ],
+        },
+      ])
+    }
+
+    function getLinkHref(input: ReturnType<typeof content>): string | undefined {
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ marks?: Array<{ attrs?: { href: string } }> }>
+      }
+      return para.content[0].marks?.[0]?.attrs?.href
+    }
+
+    function expectLinkDropped(input: ReturnType<typeof content>, plaintext: string) {
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ text: string; marks?: unknown[] }>
+      }
+      expect(para.content).toEqual([{ type: 'text', text: plaintext }])
+    }
+
+    describe('scheme-confusion XSS attempts (rejected)', () => {
+      it.each([
+        // Case variations of dangerous schemes — WHATWG lowercases protocol.
+        'JaVaScRiPt:alert(1)',
+        'JAVASCRIPT:alert(1)',
+        'Javascript:alert(1)',
+        'javaScript:alert(1)',
+        'Data:text/html,<script>alert(1)</script>',
+        'DATA:text/html,foo',
+        'VBScript:msgbox("x")',
+        // Leading whitespace — WHATWG strips ASCII whitespace before parsing.
+        ' javascript:alert(1)',
+        '  javascript:alert(1)',
+        '\tjavascript:alert(1)',
+        '\njavascript:alert(1)',
+        '\rjavascript:alert(1)',
+        // Trailing whitespace
+        'javascript:alert(1)\n',
+        'javascript:alert(1) ',
+        // Whitespace inside scheme — WHATWG strips \t \r \n.
+        'java\tscript:alert(1)',
+        'java\nscript:alert(1)',
+        'java\rscript:alert(1)',
+      ])('rejects scheme-confusion attempt: %j', (uri) => {
+        expectLinkDropped(paragraphWithLinkFacet('click', uri), 'click')
+      })
+    })
+
+    describe('zero-width / invisible character scheme attempts (rejected)', () => {
+      // These chars are NOT in WHATWG's strip-list (only \t \r \n are stripped).
+      // They remain in the URL string and break scheme parsing → new URL throws.
+      it.each([
+        ['soft hyphen', 'java\u00ADscript:alert(1)'],
+        ['zero-width space', 'java\u200Bscript:alert(1)'],
+        ['zero-width non-joiner', 'java\u200Cscript:alert(1)'],
+        ['zero-width joiner', 'java\u200Dscript:alert(1)'],
+        ['word joiner', 'java\u2060script:alert(1)'],
+        ['BOM', 'java\uFEFFscript:alert(1)'],
+        ['null byte', 'java\u0000script:alert(1)'],
+        ['LTR override', 'java\u202Dscript:alert(1)'],
+        ['RTL override', 'java\u202Escript:alert(1)'],
+      ])('rejects %s in scheme: %j', (_label, uri) => {
+        expectLinkDropped(paragraphWithLinkFacet('click', uri), 'click')
+      })
+    })
+
+    describe('IDN / unicode hostname canonicalization', () => {
+      it('encodes Japanese IDN as punycode', () => {
+        const input = paragraphWithLinkFacet('safe', 'https://例え.jp/')
+        const href = getLinkHref(input)
+        // Compare against WHATWG's own canonical form rather than hard-coding
+        // a punycode that could shift across Node versions.
+        expect(href).toBe(new URL('https://例え.jp/').href)
+        expect(href).toMatch(/^https:\/\/xn--/)
+      })
+
+      it('encodes Cyrillic homograph host as punycode (unmasking visual spoof)', () => {
+        // 'а' (U+0430, Cyrillic) instead of 'a' (U+0061, Latin).
+        const spoofed = 'https://аpple.com/'
+        const input = paragraphWithLinkFacet('Apple', spoofed)
+        const href = getLinkHref(input)
+        // After canonicalization the host is ASCII-only punycode, so users
+        // (and downstream warning code) can see it isn't really apple.com.
+        expect(href).not.toContain('а') // no Cyrillic char in canonical href
+        expect(href).toMatch(/^https:\/\/xn--/)
+      })
+
+      it('rewrites visible text to canonical hostname when text claims the spoofed host', () => {
+        // The text presents itself as the host the reader will visit, but
+        // uses Cyrillic а (U+0430) instead of Latin a — visually identical,
+        // different code points. With the href IDN-encoded but the text
+        // still in Cyrillic, the spoof would be invisible to readers.
+        // cSpell:disable-next-line
+        const plaintext = 'аpple.com'
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext,
+            facets: [
+              {
+                index: byteSlice(0, utf8Len(plaintext)),
+                features: [
+                  {
+                    $type: 'fyi.questionable.richtext.facet#link',
+                    uri: 'https://аpple.com/',
+                  },
+                ],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: Array<{ attrs?: { href: string } }> }>
+        }
+        const node = para.content[0]
+        const expectedHostname = new URL('https://аpple.com/').hostname
+        expect(node.text).toBe(expectedHostname)
+        expect(node.text).toMatch(/^xn--/)
+        expect(node.text).not.toContain('а')
+      })
+
+      it('rewrites visible text to canonical href when text claims the full spoofed URI', () => {
+        const plaintext = 'https://аpple.com/'
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext,
+            facets: [
+              {
+                index: byteSlice(0, utf8Len(plaintext)),
+                features: [
+                  {
+                    $type: 'fyi.questionable.richtext.facet#link',
+                    uri: 'https://аpple.com/',
+                  },
+                ],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string }>
+        }
+        expect(para.content[0].text).toBe(new URL('https://аpple.com/').href)
+        expect(para.content[0].text).not.toContain('а')
+      })
+
+      it('leaves text unchanged when the URI required no canonicalization', () => {
+        // No spoof to expose — rewriting an innocuous match would be churn.
+        const input = paragraphWithLinkFacet(
+          'https://example.com/',
+          'https://example.com/'
+        )
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string }>
+        }
+        expect(para.content[0].text).toBe('https://example.com/')
+      })
+
+      it('leaves text unchanged when text is a label rather than a URL claim', () => {
+        // text "Apple" is just a label; rewriting would corrupt legit content.
+        const input = paragraphWithLinkFacet('Apple', 'https://аpple.com/')
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string }>
+        }
+        expect(para.content[0].text).toBe('Apple')
+      })
+
+      it('passes through punycode hosts unchanged', () => {
+        const uri = 'https://xn--r8jz45g.jp/'
+        const href = getLinkHref(paragraphWithLinkFacet('safe', uri))
+        expect(href).toBe(uri)
+      })
+
+      it('percent-encodes unicode in path', () => {
+        const href = getLinkHref(
+          paragraphWithLinkFacet('safe', 'https://example.com/café')
+        )
+        expect(href).toBe('https://example.com/caf%C3%A9')
+      })
+
+      it('percent-encodes unicode in query string', () => {
+        const href = getLinkHref(
+          paragraphWithLinkFacet('safe', 'https://example.com/?q=café')
+        )
+        expect(href).toBe('https://example.com/?q=caf%C3%A9')
+      })
+    })
+
+    describe('userinfo / credentials in URL (accepted, host visible after canonicalization)', () => {
+      // WHATWG permits userinfo in http(s) URLs. We accept these but rely on
+      // the rendering layer to surface label/host mismatches as a warning.
+      // Mirrors bsky's approach (see linkRequiresWarning in social-app).
+
+      it('preserves the host-spoofing pattern `host@evil.com` in canonical form', () => {
+        // The visible label here might say "google.com" but the real host is evil.com.
+        const href = getLinkHref(
+          paragraphWithLinkFacet('Google', 'https://google.com@evil.com/')
+        )
+        // Canonical form makes the actual host visible to humans + render layer.
+        expect(href).toBe('https://google.com@evil.com/')
+      })
+
+      it('preserves user:pass credentials in canonical form', () => {
+        const href = getLinkHref(
+          paragraphWithLinkFacet('login', 'https://user:secret@example.com/')
+        )
+        expect(href).toBe('https://user:secret@example.com/')
+      })
+    })
+
+    describe('whitespace and control characters in legitimate http(s) URLs', () => {
+      it('strips tabs/newlines/CR per WHATWG normalization', () => {
+        const href = getLinkHref(
+          paragraphWithLinkFacet(
+            'click',
+            'https://example.com/\tpath\nwith\rcontrols'
+          )
+        )
+        // No raw \t \n \r remain in the canonical href.
+        expect(href).not.toMatch(/[\t\n\r]/)
+        expect(href).toBe('https://example.com/pathwithcontrols')
+      })
+
+      it('percent-encodes literal spaces in path', () => {
+        const href = getLinkHref(
+          paragraphWithLinkFacet('click', 'https://example.com/path with spaces')
+        )
+        expect(href).toBe('https://example.com/path%20with%20spaces')
+      })
+    })
+
+    describe('malformed input (rejected)', () => {
+      it('drops the link mark when uri is undefined', () => {
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext: 'broken',
+            facets: [
+              {
+                index: byteSlice(0, 6),
+                features: [
+                  { $type: 'fyi.questionable.richtext.facet#link' },
+                ],
+              },
+            ],
+          },
+        ])
+        expectLinkDropped(input, 'broken')
+      })
+
+      it('drops the link mark when the URI cannot be parsed', () => {
+        expectLinkDropped(paragraphWithLinkFacet('click', 'http://'), 'click')
+        expectLinkDropped(paragraphWithLinkFacet('click', '://nohost'), 'click')
+      })
     })
   })
 

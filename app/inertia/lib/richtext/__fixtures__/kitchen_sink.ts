@@ -208,7 +208,7 @@ export const kitchenSinkTiptap: JSONContent = {
         {
           type: 'text',
           text: 'example.com',
-          marks: [{ type: 'link', attrs: { href: 'https://example.com' } }],
+          marks: [{ type: 'link', attrs: { href: 'https://example.com/' } }],
         },
         { type: 'text', text: '.' },
       ],
@@ -295,7 +295,7 @@ export const kitchenSinkLexicon = {
       plaintext: utf8Para,
       facets: [
         facet(utf8Para, 'café', [bold]),
-        facet(utf8Para, 'example.com', [link('https://example.com')]),
+        facet(utf8Para, 'example.com', [link('https://example.com/')]),
       ],
     },
   ],
