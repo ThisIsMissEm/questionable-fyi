@@ -1,4 +1,5 @@
 import type { JSONContent } from '@tiptap/react'
+import { canonicalHttpUri, presentLink } from './link_sanitization'
 
 type Facet = {
   index: { byteStart: number; byteEnd: number }
@@ -44,55 +45,6 @@ function isValidByteRange(
 }
 
 /**
- * Validates and canonicalizes a link URI. Returns the WHATWG-normalized
- * `href` (lowercase scheme + host, trailing slash on empty paths, etc.) for
- * http/https URIs, or `null` for anything else (javascript:, data:, file:,
- * protocol-relative, malformed, non-string). Non-http(s) facets are dropped
- * by callers, so the underlying text content survives as plain text.
- */
-function canonicalHttpUri(uri: unknown): string | null {
-  if (typeof uri !== 'string') return null
-  try {
-    const parsed = new URL(uri)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null
-    return parsed.href
-  } catch {
-    return null
-  }
-}
-
-/**
- * Exposes homoglyph link spoofs by rewriting visible link text when the URI
- * required canonicalization (e.g., IDN-encoded a Cyrillic host) AND the
- * text is presenting itself as that URI or its hostname. In that case the
- * reader is being told "this link goes to <visually familiar host>" while
- * it actually goes to its punycode form — surfacing the punycode in the
- * visible text removes the deception.
- *
- * Returns text unchanged when the URI was already canonical (no spoof to
- * expose) or when the text is clearly a label rather than a URL claim.
- */
-function displayTextForLink(
-  text: string,
-  uri: string,
-  canonicalHref: string
-): string {
-  if (canonicalHref === uri) return text
-  try {
-    const canonicalHostname = new URL(canonicalHref).hostname
-    // `new URL(uri).hostname` already returns the canonical (punycode)
-    // form, so it can't tell us whether the *text* mirrors the host as the
-    // user typed it. Pull the as-typed host substring out of the URI string.
-    const asTypedHost = uri.match(/^https?:\/\/([^/?#]+)/i)?.[1]
-    if (asTypedHost !== undefined && text === asTypedHost) return canonicalHostname
-    if (text === uri) return canonicalHref
-  } catch {
-    // canonicalHttpUri already parsed `uri` successfully; unreachable.
-  }
-  return text
-}
-
-/**
  * Converts faceted plaintext into TipTap text nodes with marks.
  */
 function textNodesFromFacets(plaintext: string, facets?: Facet[]): JSONContent[] {
@@ -130,15 +82,21 @@ function textNodesFromFacets(plaintext: string, facets?: Facet[]): JSONContent[]
         typeof f.uri === 'string'
     )
     const linkHref = marks.find((m) => m.type === 'link')?.attrs?.['href']
-    const displayText =
-      linkFeature && typeof linkHref === 'string'
-        ? displayTextForLink(text, linkFeature.uri, linkHref)
-        : text
+
+    let displayText = text
+    let effectiveMarks = marks
+    if (linkFeature && typeof linkHref === 'string') {
+      const decision = presentLink(text, linkFeature.uri, linkHref)
+      displayText = decision.text
+      if (decision.dropLink) {
+        effectiveMarks = marks.filter((m) => m.type !== 'link')
+      }
+    }
 
     nodes.push({
       type: 'text',
       text: displayText,
-      ...(marks.length > 0 ? { marks } : {}),
+      ...(effectiveMarks.length > 0 ? { marks: effectiveMarks } : {}),
     })
     cursor = byteEnd
   }

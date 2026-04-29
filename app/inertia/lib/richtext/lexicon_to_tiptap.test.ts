@@ -933,11 +933,13 @@ describe('lexiconToTiptap', () => {
         expect(href).toMatch(/^https:\/\/xn--/)
       })
 
-      it('rewrites visible text to canonical hostname when text claims the spoofed host', () => {
+      it('rewrites text and drops link mark when text claims the spoofed host', () => {
         // The text presents itself as the host the reader will visit, but
         // uses Cyrillic а (U+0430) instead of Latin a — visually identical,
-        // different code points. With the href IDN-encoded but the text
-        // still in Cyrillic, the spoof would be invisible to readers.
+        // different code points. Mixing Latin with a confusable script in
+        // the same host is the homoglyph signal; the converter rewrites
+        // the visible text AND strips the link mark so readers can't
+        // accidentally click.
         // cSpell:disable-next-line
         const plaintext = 'аpple.com'
         const input = content([
@@ -959,16 +961,17 @@ describe('lexiconToTiptap', () => {
         ])
         expectValidInput(input)
         const para = lexiconToTiptap(input).content?.[0] as {
-          content: Array<{ text: string; marks?: Array<{ attrs?: { href: string } }> }>
+          content: Array<{ text: string; marks?: Array<{ type: string }> }>
         }
         const node = para.content[0]
         const expectedHostname = new URL('https://аpple.com/').hostname
         expect(node.text).toBe(expectedHostname)
         expect(node.text).toMatch(/^xn--/)
         expect(node.text).not.toContain('а')
+        expect(node.marks).toBeUndefined()
       })
 
-      it('rewrites visible text to canonical href when text claims the full spoofed URI', () => {
+      it('rewrites text and drops link mark when text claims the full spoofed URI', () => {
         const plaintext = 'https://аpple.com/'
         const input = content([
           {
@@ -989,11 +992,74 @@ describe('lexiconToTiptap', () => {
         ])
         expectValidInput(input)
         const para = lexiconToTiptap(input).content?.[0] as {
-          content: Array<{ text: string }>
+          content: Array<{ text: string; marks?: unknown[] }>
         }
-        expect(para.content[0].text).toBe(new URL('https://аpple.com/').href)
-        expect(para.content[0].text).not.toContain('а')
+        const node = para.content[0]
+        expect(node.text).toBe(new URL('https://аpple.com/').href)
+        expect(node.text).not.toContain('а')
+        expect(node.marks).toBeUndefined()
       })
+
+      it('preserves other marks (bold, italic, …) when dropping a homoglyph link mark', () => {
+        // cSpell:disable-next-line
+        const plaintext = 'аpple.com'
+        const input = content([
+          {
+            $type: 'fyi.questionable.richtext.text',
+            plaintext,
+            facets: [
+              {
+                index: byteSlice(0, utf8Len(plaintext)),
+                features: [
+                  {
+                    $type: 'fyi.questionable.richtext.facet#link',
+                    uri: 'https://аpple.com/',
+                  },
+                  { $type: 'fyi.questionable.richtext.facet#bold' },
+                ],
+              },
+            ],
+          },
+        ])
+        expectValidInput(input)
+        const para = lexiconToTiptap(input).content?.[0] as {
+          content: Array<{ text: string; marks?: Array<{ type: string }> }>
+        }
+        const node = para.content[0]
+        expect(node.marks).toEqual([{ type: 'bold' }])
+      })
+
+      it.each([
+        ['Japanese (Han + Hiragana)', '例え.jp', 'https://例え.jp/'],
+        ['Korean (Hangul)', '한국.kr', 'https://한국.kr/'],
+        // cSpell:disable-next-line
+        ['pure Cyrillic (no Latin mixing)', 'президент.рф', 'https://президент.рф/'],
+      ])(
+        'keeps text and link for %s even when text mirrors the IDN host',
+        (_label, plaintext, uri) => {
+          const input = content([
+            {
+              $type: 'fyi.questionable.richtext.text',
+              plaintext,
+              facets: [
+                {
+                  index: byteSlice(0, utf8Len(plaintext)),
+                  features: [
+                    { $type: 'fyi.questionable.richtext.facet#link', uri },
+                  ],
+                },
+              ],
+            },
+          ])
+          expectValidInput(input)
+          const para = lexiconToTiptap(input).content?.[0] as {
+            content: Array<{ text: string; marks?: Array<{ type: string }> }>
+          }
+          const node = para.content[0]
+          expect(node.text).toBe(plaintext)
+          expect(node.marks?.some((m) => m.type === 'link')).toBe(true)
+        }
+      )
 
       it('leaves text unchanged when the URI required no canonicalization', () => {
         // No spoof to expose — rewriting an innocuous match would be churn.

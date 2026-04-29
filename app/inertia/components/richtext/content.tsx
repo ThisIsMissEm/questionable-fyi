@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { canonicalHttpUri, presentLink } from '~/lib/richtext/link_sanitization'
 
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
@@ -41,10 +42,50 @@ function renderTextWithFacets(plaintext: string, facets?: Facet[]): ReactNode {
     }
 
     const facetText = decoder.decode(bytes.slice(byteStart, byteEnd))
-    let element: ReactNode = facetText
+
+    // Resolve the link feature (if any) up front so we can apply homoglyph
+    // defenses: rewrite the visible text and/or drop the anchor wrapper.
+    const linkFeature = facet.features.find(
+      (f) => f.$type === 'fyi.questionable.richtext.facet#link'
+    )
+    const canonicalHref =
+      linkFeature && typeof linkFeature.uri === 'string'
+        ? canonicalHttpUri(linkFeature.uri)
+        : null
+
+    let displayText = facetText
+    let dropLink = false
+    if (
+      linkFeature &&
+      typeof linkFeature.uri === 'string' &&
+      canonicalHref !== null
+    ) {
+      const decision = presentLink(facetText, linkFeature.uri, canonicalHref)
+      displayText = decision.text
+      dropLink = decision.dropLink
+    }
+
+    let element: ReactNode = displayText
 
     for (const feature of facet.features) {
-      element = wrapWithFeature(element, feature, i)
+      if (feature.$type === 'fyi.questionable.richtext.facet#link') {
+        // Drop links with non-http(s) URIs (javascript:, data:, …) and
+        // links flagged by homoglyph detection. The text still renders.
+        if (canonicalHref === null || dropLink) continue
+        element = (
+          <a
+            key={`l-${i}`}
+            href={canonicalHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-primary"
+          >
+            {element}
+          </a>
+        )
+      } else {
+        element = wrapWithFeature(element, feature, i)
+      }
     }
 
     segments.push(element)
@@ -84,18 +125,6 @@ function wrapWithFeature(
       return <code key={`c-${key}`}>{node}</code>
     case 'fyi.questionable.richtext.facet#highlight':
       return <mark key={`h-${key}`}>{node}</mark>
-    case 'fyi.questionable.richtext.facet#link':
-      return (
-        <a
-          key={`l-${key}`}
-          href={feature.uri}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline text-primary"
-        >
-          {node}
-        </a>
-      )
     case 'fyi.questionable.richtext.facet#mention':
       return (
         <a key={`m-${key}`} href={`/p/${feature.did}`} className="underline text-primary">
