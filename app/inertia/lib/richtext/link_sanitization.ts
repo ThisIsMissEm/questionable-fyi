@@ -16,6 +16,15 @@ export function canonicalHttpUri(uri: unknown): string | null {
   }
 }
 
+/**
+ * Predicate form of {@link canonicalHttpUri} for use as a TipTap Link
+ * `validate` callback or in editor flows that just need a yes/no answer.
+ * Returns true only for URIs that successfully parse as http or https.
+ */
+export function isAcceptableLinkUri(uri: unknown): boolean {
+  return canonicalHttpUri(uri) !== null
+}
+
 // Scripts whose characters are visually confusable with Latin letters in
 // hostnames (Cyrillic 'а' / Greek 'α' look identical to Latin 'a'). Mixing
 // one of these with Latin in a hostname is the classic homoglyph pattern.

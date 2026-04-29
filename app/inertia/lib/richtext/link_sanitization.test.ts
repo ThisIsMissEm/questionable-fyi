@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { canonicalHttpUri, presentLink } from './link_sanitization'
+import {
+  canonicalHttpUri,
+  isAcceptableLinkUri,
+  presentLink,
+} from './link_sanitization'
 
 describe('canonicalHttpUri', () => {
   it('returns the WHATWG-normalized href for http URIs', () => {
@@ -41,6 +45,40 @@ describe('canonicalHttpUri', () => {
     ['object', { uri: 'https://example.com/' }],
   ])('rejects non-string input %s', (_label, uri) => {
     expect(canonicalHttpUri(uri)).toBeNull()
+  })
+})
+
+describe('isAcceptableLinkUri', () => {
+  it.each([
+    'http://example.com',
+    'https://example.com',
+    'https://example.com/path?q=1#frag',
+    'https://例え.jp/',
+  ])('accepts http(s) URI %j', (uri) => {
+    expect(isAcceptableLinkUri(uri)).toBe(true)
+  })
+
+  it.each([
+    ['ftp', 'ftp://ftp.scene.org/pub/index.txt'],
+    ['javascript', 'javascript:alert(1)'],
+    ['data', 'data:text/html,foo'],
+    ['mailto', 'mailto:hi@example.com'],
+    ['vbscript', 'vbscript:msgbox'],
+    ['file', 'file:///etc/passwd'],
+    ['protocol-relative', '//example.com/'],
+    ['empty', ''],
+    ['malformed', 'not a url'],
+  ])('rejects non-http(s) URI: %s', (_label, uri) => {
+    expect(isAcceptableLinkUri(uri)).toBe(false)
+  })
+
+  it.each([
+    ['number', 42],
+    ['null', null],
+    ['undefined', undefined],
+    ['object', { uri: 'https://example.com/' }],
+  ])('rejects non-string input: %s', (_label, uri) => {
+    expect(isAcceptableLinkUri(uri)).toBe(false)
   })
 })
 

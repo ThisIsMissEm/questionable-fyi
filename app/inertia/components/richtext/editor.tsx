@@ -6,6 +6,7 @@ import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useImperativeHandle, forwardRef } from 'react'
 import { cn } from '~/lib/lib/utils'
+import { isAcceptableLinkUri } from '~/lib/richtext/link_sanitization'
 import type { RichtextEditorRef, RichtextEditorProps } from './types'
 import { Toolbar } from './toolbar'
 import { DevTools } from './dev_tools'
@@ -18,12 +19,23 @@ const RichtextEditor = forwardRef<RichtextEditorRef, RichtextEditorProps>(functi
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
+        // Disable the bundled Link so our standalone Link.configure below
+        // is the only registration — otherwise paste/autolink defaults from
+        // the bundled copy would override our isAllowedUri/shouldAutoLink.
+        link: false,
       }),
       Underline,
       Highlight,
       Link.configure({
         openOnClick: false,
+        defaultProtocol: 'https',
         HTMLAttributes: { class: 'underline text-primary' },
+        // `isAllowedUri` gates setLink / toggleLink / paste-rules / parseHTML;
+        // `shouldAutoLink` gates the autolink-while-typing and paste-handler
+        // plugins. Both default to allowing ftp/mailto/tel/etc., so we
+        // override both with the same http(s)-only predicate.
+        isAllowedUri: (url) => isAcceptableLinkUri(url),
+        shouldAutoLink: (url) => isAcceptableLinkUri(url),
       }),
       Placeholder.configure({
         placeholder: placeholder ?? 'Write more details...',
