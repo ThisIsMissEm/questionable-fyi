@@ -37,6 +37,10 @@
  * - sub/super paragraph with the same character ('2') faceted twice with
  *   different marks via the `nth` occurrence helper
  *     → subscript / superscript mark mapping; nth-occurrence facet building
+ *
+ * - abbr paragraph with a 'DOM' span carrying a title attribute
+ *     → abbr mark mapping including the threaded `title` attribute
+ *       round-tripping through both converters
  */
 import type { JSONContent } from '@tiptap/react'
 import {
@@ -49,6 +53,7 @@ import {
   subscript,
   superscript,
   link,
+  abbr,
   facet,
 } from './helpers'
 
@@ -68,6 +73,8 @@ const orderedItem2 = 'beta'
 const orderedItem3 = 'gamma'
 const utf8Para = 'Hello 👋 from café in 日本! Visit example.com.'
 const subSuperPara = 'Water H2O and energy E=mc2 here'
+const abbrPara = 'Just touch the DOM directly today.'
+const abbrTitle = 'Document Object Model'
 
 export const kitchenSinkTiptap: JSONContent = {
   type: 'doc',
@@ -230,6 +237,18 @@ export const kitchenSinkTiptap: JSONContent = {
         { type: 'text', text: ' here' },
       ],
     },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Just touch the ' },
+        {
+          type: 'text',
+          text: 'DOM',
+          marks: [{ type: 'abbr', attrs: { title: abbrTitle } }],
+        },
+        { type: 'text', text: ' directly today.' },
+      ],
+    },
   ],
 }
 
@@ -322,6 +341,11 @@ export const kitchenSinkLexicon = {
         facet(subSuperPara, '2', [subscript], 0),
         facet(subSuperPara, '2', [superscript], 1),
       ],
+    },
+    {
+      $type: 'fyi.questionable.richtext.text',
+      plaintext: abbrPara,
+      facets: [facet(abbrPara, 'DOM', [abbr(abbrTitle)])],
     },
   ],
 }

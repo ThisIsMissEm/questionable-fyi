@@ -22,6 +22,7 @@ import {
 } from '~/lib/components/ui/toolbar'
 import type { EditorInstance } from './types'
 import { LinkPopover } from './link_popover'
+import { AbbrPopover } from './abbr_popover'
 import { StyleSelect } from './style_select'
 
 const MARK_KEYS = ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript'] as const
@@ -116,6 +117,7 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
       </ToolbarToggleGroup>
 
       <LinkPopover editor={editor} />
+      <AbbrPopover editor={editor} />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}

@@ -2,7 +2,7 @@ import { utf8Len } from '@atproto/lex'
 
 const BYTE_SLICE = 'fyi.questionable.richtext.facet#byteSlice' as const
 
-export type Feature = { $type: string; uri?: string; did?: string }
+export type Feature = { $type: string; uri?: string; did?: string; title?: string }
 
 export const bold: Feature = { $type: 'fyi.questionable.richtext.facet#bold' }
 export const italic: Feature = { $type: 'fyi.questionable.richtext.facet#italic' }
@@ -15,6 +15,10 @@ export const superscript: Feature = { $type: 'fyi.questionable.richtext.facet#su
 export const link = (uri: string): Feature => ({
   $type: 'fyi.questionable.richtext.facet#link',
   uri,
+})
+export const abbr = (title: string): Feature => ({
+  $type: 'fyi.questionable.richtext.facet#abbr',
+  title,
 })
 
 /**

@@ -7,7 +7,7 @@ type Facet = {
     byteStart: number
     byteEnd: number
   }
-  features: { $type: string; uri?: string; did?: string }[]
+  features: { $type: string; uri?: string; did?: string; title?: string }[]
 }
 
 type LexiconBlock =
@@ -44,6 +44,11 @@ function markToFeature(mark: { type: string; attrs?: Record<string, unknown> }) 
       return { $type: 'fyi.questionable.richtext.facet#subscript' }
     case 'superscript':
       return { $type: 'fyi.questionable.richtext.facet#superscript' }
+    case 'abbr': {
+      const title = mark.attrs?.title
+      if (typeof title !== 'string') return null
+      return { $type: 'fyi.questionable.richtext.facet#abbr', title }
+    }
     case 'link':
       return { $type: 'fyi.questionable.richtext.facet#link', uri: mark.attrs?.href as string }
     default:

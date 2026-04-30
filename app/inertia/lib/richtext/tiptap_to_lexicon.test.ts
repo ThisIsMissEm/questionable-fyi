@@ -282,6 +282,56 @@ describe('tiptapToLexicon', () => {
       expectValidLexicon(result)
     })
 
+    it('maps an abbr mark with title to a feature carrying the title', () => {
+      const result = tiptapToLexicon(
+        doc(
+          paragraphWithMarks('DOM', [
+            { type: 'abbr', attrs: { title: 'Document Object Model' } },
+          ])
+        )
+      )
+      const item = result.items[0] as { facets?: Array<{ features: unknown[] }> }
+      expect(item.facets?.[0].features).toEqual([
+        {
+          $type: 'fyi.questionable.richtext.facet#abbr',
+          title: 'Document Object Model',
+        },
+      ])
+      expectValidLexicon(result)
+    })
+
+    it('drops an abbr mark with no title (lexicon requires it)', () => {
+      // The plain text survives, but no facet is emitted for the title-less abbr.
+      const result = tiptapToLexicon(
+        doc(paragraphWithMarks('DOM', [{ type: 'abbr' }]))
+      )
+      expect(result.items[0]).toEqual({
+        $type: 'fyi.questionable.richtext.text',
+        plaintext: 'DOM',
+      })
+      expectValidLexicon(result)
+    })
+
+    it('maps abbr + bold marks on one text node to a single facet with both features', () => {
+      const result = tiptapToLexicon(
+        doc(
+          paragraphWithMarks('DOM', [
+            { type: 'abbr', attrs: { title: 'Document Object Model' } },
+            { type: 'bold' },
+          ])
+        )
+      )
+      const item = result.items[0] as { facets?: Array<{ features: unknown[] }> }
+      expect(item.facets?.[0].features).toEqual([
+        {
+          $type: 'fyi.questionable.richtext.facet#abbr',
+          title: 'Document Object Model',
+        },
+        { $type: 'fyi.questionable.richtext.facet#bold' },
+      ])
+      expectValidLexicon(result)
+    })
+
     it('maps subscript + bold marks on one text node to a single facet with both features', () => {
       const result = tiptapToLexicon(
         doc(paragraphWithMarks('2', [{ type: 'subscript' }, { type: 'bold' }]))

@@ -6,7 +6,7 @@ const decoder = new TextDecoder()
 
 type Facet = {
   index: { byteStart: number; byteEnd: number }
-  features: { $type?: string; uri?: string; did?: string }[]
+  features: { $type?: string; uri?: string; did?: string; title?: string }[]
 }
 
 type Block = {
@@ -95,7 +95,7 @@ function renderTextWithFacets(plaintext: string, facets?: Facet[]): ReactNode {
 
 function wrapWithFeature(
   node: ReactNode,
-  feature: { $type?: string; uri?: string; did?: string },
+  feature: { $type?: string; uri?: string; did?: string; title?: string },
   key: number
 ): ReactNode {
   switch (feature.$type) {
@@ -123,6 +123,16 @@ function wrapWithFeature(
       return <sub key={`sub-${key}`}>{node}</sub>
     case 'fyi.questionable.richtext.facet#superscript':
       return <sup key={`sup-${key}`}>{node}</sup>
+    case 'fyi.questionable.richtext.facet#abbr': {
+      const title = typeof feature.title === 'string' ? feature.title : undefined
+      return title ? (
+        <abbr key={`abbr-${key}`} title={title}>
+          {node}
+        </abbr>
+      ) : (
+        node
+      )
+    }
     case 'fyi.questionable.richtext.facet#mention':
       return (
         <a key={`m-${key}`} href={`/p/${feature.did}`} className="underline text-primary">

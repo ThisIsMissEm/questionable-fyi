@@ -213,6 +213,61 @@ describe('lexiconToTiptap', () => {
       expect(para.content[0].marks).toEqual([{ type: expectedMarkType }])
     })
 
+    it('maps an abbr feature with a valid title to a mark carrying the title attr', () => {
+      const input = paragraphWithOneFacet('DOM', 'DOM', [
+        {
+          $type: 'fyi.questionable.richtext.facet#abbr',
+          title: 'Document Object Model',
+        },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ marks?: Array<{ type: string; attrs?: { title: string } }> }>
+      }
+      expect(para.content[0].marks).toEqual([
+        { type: 'abbr', attrs: { title: 'Document Object Model' } },
+      ])
+    })
+
+    it('drops an abbr feature with no title (lexicon requires it)', () => {
+      // Skip expectValidInput — lexicon validator rejects abbr without title.
+      // Defensive: converter should also reject and emit a plain text node.
+      const input = content([
+        {
+          $type: 'fyi.questionable.richtext.text',
+          plaintext: 'huh',
+          facets: [
+            {
+              index: byteSlice(0, 3),
+              features: [{ $type: 'fyi.questionable.richtext.facet#abbr' }],
+            },
+          ],
+        },
+      ])
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ text: string; marks?: unknown[] }>
+      }
+      expect(para.content).toEqual([{ type: 'text', text: 'huh' }])
+    })
+
+    it('maps a facet with abbr + bold to a text node carrying both marks', () => {
+      const input = paragraphWithOneFacet('DOM', 'DOM', [
+        {
+          $type: 'fyi.questionable.richtext.facet#abbr',
+          title: 'Document Object Model',
+        },
+        { $type: 'fyi.questionable.richtext.facet#bold' },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ marks?: Array<{ type: string; attrs?: { title: string } }> }>
+      }
+      expect(para.content[0].marks).toEqual([
+        { type: 'abbr', attrs: { title: 'Document Object Model' } },
+        { type: 'bold' },
+      ])
+    })
+
     it('maps a facet with subscript + bold to a text node carrying both marks', () => {
       const input = paragraphWithOneFacet('H2', '2', [
         { $type: 'fyi.questionable.richtext.facet#subscript' },

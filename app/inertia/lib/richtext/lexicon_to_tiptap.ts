@@ -3,7 +3,7 @@ import { canonicalHttpUri, presentLink } from './link_sanitization'
 
 type Facet = {
   index: { byteStart: number; byteEnd: number }
-  features: { $type?: string; uri?: string; did?: string }[]
+  features: { $type?: string; uri?: string; did?: string; title?: string }[]
 }
 
 type Block = {
@@ -108,7 +108,7 @@ function textNodesFromFacets(plaintext: string, facets?: Facet[]): JSONContent[]
   return nodes
 }
 
-function featureToMark(feature: { $type?: string; uri?: string }): { type: string; attrs?: Record<string, unknown> } | null {
+function featureToMark(feature: { $type?: string; uri?: string; title?: string }): { type: string; attrs?: Record<string, unknown> } | null {
   switch (feature.$type) {
     case 'fyi.questionable.richtext.facet#bold': return { type: 'bold' }
     case 'fyi.questionable.richtext.facet#italic': return { type: 'italic' }
@@ -118,6 +118,10 @@ function featureToMark(feature: { $type?: string; uri?: string }): { type: strin
     case 'fyi.questionable.richtext.facet#highlight': return { type: 'highlight' }
     case 'fyi.questionable.richtext.facet#subscript': return { type: 'subscript' }
     case 'fyi.questionable.richtext.facet#superscript': return { type: 'superscript' }
+    case 'fyi.questionable.richtext.facet#abbr':
+      return typeof feature.title === 'string'
+        ? { type: 'abbr', attrs: { title: feature.title } }
+        : null
     case 'fyi.questionable.richtext.facet#link': {
       // Drop the mark for non-http(s) URIs (javascript:, data:, etc.); the
       // text content survives because zero-mark facets push a plain text node.

@@ -6,6 +6,7 @@ import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
+import { Abbr } from './extensions/abbr'
 import { useImperativeHandle, forwardRef } from 'react'
 import { cn } from '~/lib/lib/utils'
 import { isAcceptableLinkUri } from '~/lib/richtext/link_sanitization'
@@ -30,6 +31,7 @@ const RichtextEditor = forwardRef<RichtextEditorRef, RichtextEditorProps>(functi
       Highlight,
       Subscript,
       Superscript,
+      Abbr,
       Link.configure({
         openOnClick: false,
         defaultProtocol: 'https',
