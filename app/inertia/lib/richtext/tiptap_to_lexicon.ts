@@ -40,6 +40,10 @@ function markToFeature(mark: { type: string; attrs?: Record<string, unknown> }) 
       return { $type: 'fyi.questionable.richtext.facet#code' }
     case 'highlight':
       return { $type: 'fyi.questionable.richtext.facet#highlight' }
+    case 'subscript':
+      return { $type: 'fyi.questionable.richtext.facet#subscript' }
+    case 'superscript':
+      return { $type: 'fyi.questionable.richtext.facet#superscript' }
     case 'link':
       return { $type: 'fyi.questionable.richtext.facet#link', uri: mark.attrs?.href as string }
     default:

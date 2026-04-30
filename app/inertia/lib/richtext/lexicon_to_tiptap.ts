@@ -116,6 +116,8 @@ function featureToMark(feature: { $type?: string; uri?: string }): { type: strin
     case 'fyi.questionable.richtext.facet#strikethrough': return { type: 'strike' }
     case 'fyi.questionable.richtext.facet#code': return { type: 'code' }
     case 'fyi.questionable.richtext.facet#highlight': return { type: 'highlight' }
+    case 'fyi.questionable.richtext.facet#subscript': return { type: 'subscript' }
+    case 'fyi.questionable.richtext.facet#superscript': return { type: 'superscript' }
     case 'fyi.questionable.richtext.facet#link': {
       // Drop the mark for non-http(s) URIs (javascript:, data:, etc.); the
       // text content survives because zero-mark facets push a plain text node.

@@ -10,6 +10,8 @@ import {
   List,
   ListOrdered,
   Minus,
+  Subscript as SubscriptIcon,
+  Superscript as SuperscriptIcon,
 } from 'lucide-react'
 import {
   Toolbar as ToolbarRoot,
@@ -22,7 +24,7 @@ import type { EditorInstance } from './types'
 import { LinkPopover } from './link_popover'
 import { StyleSelect } from './style_select'
 
-const MARK_KEYS = ['bold', 'italic', 'underline', 'strike'] as const
+const MARK_KEYS = ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript'] as const
 type MarkKey = (typeof MARK_KEYS)[number]
 
 const BLOCK_KEYS = ['bulletList', 'orderedList', 'blockquote', 'codeBlock'] as const
@@ -36,6 +38,8 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
       isItalic: e.isActive('italic'),
       isUnderline: e.isActive('underline'),
       isStrike: e.isActive('strike'),
+      isSubscript: e.isActive('subscript'),
+      isSuperscript: e.isActive('superscript'),
       isCode: e.isActive('code'),
       isBulletList: e.isActive('bulletList'),
       isOrderedList: e.isActive('orderedList'),
@@ -49,6 +53,8 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
     italic: () => editor.chain().focus().toggleItalic().run(),
     underline: () => editor.chain().focus().toggleUnderline().run(),
     strike: () => editor.chain().focus().toggleStrike().run(),
+    subscript: () => editor.chain().focus().toggleSubscript().run(),
+    superscript: () => editor.chain().focus().toggleSuperscript().run(),
   }
 
   const blockCommands: Record<BlockKey, () => boolean> = {
@@ -64,6 +70,8 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
       state.isItalic && 'italic',
       state.isUnderline && 'underline',
       state.isStrike && 'strike',
+      state.isSubscript && 'subscript',
+      state.isSuperscript && 'superscript',
     ] as Array<MarkKey | false>
   ).filter((v): v is MarkKey => Boolean(v))
 
@@ -98,6 +106,12 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
         </ToolbarToggleItem>
         <ToolbarToggleItem value="strike" title="Strikethrough">
           <Strikethrough />
+        </ToolbarToggleItem>
+        <ToolbarToggleItem value="subscript" title="Subscript">
+          <SubscriptIcon />
+        </ToolbarToggleItem>
+        <ToolbarToggleItem value="superscript" title="Superscript">
+          <SuperscriptIcon />
         </ToolbarToggleItem>
       </ToolbarToggleGroup>
 

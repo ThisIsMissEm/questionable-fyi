@@ -33,6 +33,10 @@
  * - UTF-8 stress paragraph mixing ASCII + 2-byte (é) + 4-byte (👋) + 3-byte (日本)
  *   with a bold span and a link span that each cross multi-byte boundaries
  *     → utf8Len-based byte-offset arithmetic, TextEncoder/TextDecoder slicing
+ *
+ * - sub/super paragraph with the same character ('2') faceted twice with
+ *   different marks via the `nth` occurrence helper
+ *     → subscript / superscript mark mapping; nth-occurrence facet building
  */
 import type { JSONContent } from '@tiptap/react'
 import {
@@ -42,6 +46,8 @@ import {
   strikethrough,
   code,
   highlight,
+  subscript,
+  superscript,
   link,
   facet,
 } from './helpers'
@@ -61,6 +67,7 @@ const orderedItem1 = 'alpha'
 const orderedItem2 = 'beta'
 const orderedItem3 = 'gamma'
 const utf8Para = 'Hello 👋 from café in 日本! Visit example.com.'
+const subSuperPara = 'Water H2O and energy E=mc2 here'
 
 export const kitchenSinkTiptap: JSONContent = {
   type: 'doc',
@@ -213,6 +220,16 @@ export const kitchenSinkTiptap: JSONContent = {
         { type: 'text', text: '.' },
       ],
     },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Water H' },
+        { type: 'text', text: '2', marks: [{ type: 'subscript' }] },
+        { type: 'text', text: 'O and energy E=mc' },
+        { type: 'text', text: '2', marks: [{ type: 'superscript' }] },
+        { type: 'text', text: ' here' },
+      ],
+    },
   ],
 }
 
@@ -296,6 +313,14 @@ export const kitchenSinkLexicon = {
       facets: [
         facet(utf8Para, 'café', [bold]),
         facet(utf8Para, 'example.com', [link('https://example.com/')]),
+      ],
+    },
+    {
+      $type: 'fyi.questionable.richtext.text',
+      plaintext: subSuperPara,
+      facets: [
+        facet(subSuperPara, '2', [subscript], 0),
+        facet(subSuperPara, '2', [superscript], 1),
       ],
     },
   ],

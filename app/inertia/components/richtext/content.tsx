@@ -49,17 +49,11 @@ function renderTextWithFacets(plaintext: string, facets?: Facet[]): ReactNode {
       (f) => f.$type === 'fyi.questionable.richtext.facet#link'
     )
     const canonicalHref =
-      linkFeature && typeof linkFeature.uri === 'string'
-        ? canonicalHttpUri(linkFeature.uri)
-        : null
+      linkFeature && typeof linkFeature.uri === 'string' ? canonicalHttpUri(linkFeature.uri) : null
 
     let displayText = facetText
     let dropLink = false
-    if (
-      linkFeature &&
-      typeof linkFeature.uri === 'string' &&
-      canonicalHref !== null
-    ) {
+    if (linkFeature && typeof linkFeature.uri === 'string' && canonicalHref !== null) {
       const decision = presentLink(facetText, linkFeature.uri, canonicalHref)
       displayText = decision.text
       dropLink = decision.dropLink
@@ -125,6 +119,10 @@ function wrapWithFeature(
       return <code key={`c-${key}`}>{node}</code>
     case 'fyi.questionable.richtext.facet#highlight':
       return <mark key={`h-${key}`}>{node}</mark>
+    case 'fyi.questionable.richtext.facet#subscript':
+      return <sub key={`sub-${key}`}>{node}</sub>
+    case 'fyi.questionable.richtext.facet#superscript':
+      return <sup key={`sup-${key}`}>{node}</sup>
     case 'fyi.questionable.richtext.facet#mention':
       return (
         <a key={`m-${key}`} href={`/p/${feature.did}`} className="underline text-primary">

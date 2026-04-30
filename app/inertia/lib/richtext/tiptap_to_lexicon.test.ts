@@ -273,10 +273,24 @@ describe('tiptapToLexicon', () => {
       ['strike → strikethrough', [{ type: 'strike' }], { $type: 'fyi.questionable.richtext.facet#strikethrough' }],
       ['code', [{ type: 'code' }], { $type: 'fyi.questionable.richtext.facet#code' }],
       ['highlight', [{ type: 'highlight' }], { $type: 'fyi.questionable.richtext.facet#highlight' }],
+      ['subscript', [{ type: 'subscript' }], { $type: 'fyi.questionable.richtext.facet#subscript' }],
+      ['superscript', [{ type: 'superscript' }], { $type: 'fyi.questionable.richtext.facet#superscript' }],
     ])('maps %s mark to a single-feature facet', (_label, marks, expectedFeature) => {
       const result = tiptapToLexicon(doc(paragraphWithMarks('hi', marks)))
       const item = result.items[0] as { facets?: Array<{ features: unknown[] }> }
       expect(item.facets?.[0].features).toEqual([expectedFeature])
+      expectValidLexicon(result)
+    })
+
+    it('maps subscript + bold marks on one text node to a single facet with both features', () => {
+      const result = tiptapToLexicon(
+        doc(paragraphWithMarks('2', [{ type: 'subscript' }, { type: 'bold' }]))
+      )
+      const item = result.items[0] as { facets?: Array<{ features: unknown[] }> }
+      expect(item.facets?.[0].features).toEqual([
+        { $type: 'fyi.questionable.richtext.facet#subscript' },
+        { $type: 'fyi.questionable.richtext.facet#bold' },
+      ])
       expectValidLexicon(result)
     })
 

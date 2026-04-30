@@ -10,6 +10,8 @@ export const underline: Feature = { $type: 'fyi.questionable.richtext.facet#unde
 export const strikethrough: Feature = { $type: 'fyi.questionable.richtext.facet#strikethrough' }
 export const code: Feature = { $type: 'fyi.questionable.richtext.facet#code' }
 export const highlight: Feature = { $type: 'fyi.questionable.richtext.facet#highlight' }
+export const subscript: Feature = { $type: 'fyi.questionable.richtext.facet#subscript' }
+export const superscript: Feature = { $type: 'fyi.questionable.richtext.facet#superscript' }
 export const link = (uri: string): Feature => ({
   $type: 'fyi.questionable.richtext.facet#link',
   uri,

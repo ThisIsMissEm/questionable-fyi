@@ -202,6 +202,8 @@ describe('lexiconToTiptap', () => {
       ['strikethrough → strike', 'fyi.questionable.richtext.facet#strikethrough', 'strike'],
       ['code', 'fyi.questionable.richtext.facet#code', 'code'],
       ['highlight', 'fyi.questionable.richtext.facet#highlight', 'highlight'],
+      ['subscript', 'fyi.questionable.richtext.facet#subscript', 'subscript'],
+      ['superscript', 'fyi.questionable.richtext.facet#superscript', 'superscript'],
     ])('maps %s feature to a single mark', (_label, featureType, expectedMarkType) => {
       const input = paragraphWithOneFacet('hi', 'hi', [{ $type: featureType }])
       expectValidInput(input)
@@ -209,6 +211,21 @@ describe('lexiconToTiptap', () => {
         content: Array<{ marks?: Array<{ type: string }> }>
       }
       expect(para.content[0].marks).toEqual([{ type: expectedMarkType }])
+    })
+
+    it('maps a facet with subscript + bold to a text node carrying both marks', () => {
+      const input = paragraphWithOneFacet('H2', '2', [
+        { $type: 'fyi.questionable.richtext.facet#subscript' },
+        { $type: 'fyi.questionable.richtext.facet#bold' },
+      ])
+      expectValidInput(input)
+      const para = lexiconToTiptap(input).content?.[0] as {
+        content: Array<{ marks?: Array<{ type: string }> }>
+      }
+      expect(para.content[1].marks).toEqual([
+        { type: 'subscript' },
+        { type: 'bold' },
+      ])
     })
 
     it('maps a link feature to a link mark with href attr', () => {
