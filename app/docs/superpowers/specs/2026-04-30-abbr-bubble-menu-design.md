@@ -30,6 +30,8 @@ The richtext editor today uses a single-input `AbbrPopover` mounted in the toolb
 
 10. **`COMPLEX_MARKS` const tuple as a category.** `'abbr' | 'link'` (extensible). Establishes a shared concept across the codebase: marks that need a form to populate attributes, distinct from simple toggles in `MARK_KEYS`.
 
+11. **Visible form labels, not placeholders.** Both inputs are paired with explicit `<label>` elements describing what to enter. Placeholders are not used as label substitutes — they're inaccessible (vanish on focus, low contrast, inconsistent SR support) and example values inside placeholders confuse users about whether a field is already filled.
+
 ## Architecture
 
 ```
@@ -129,9 +131,10 @@ type AbbrEditFormProps = {
 - `editor.isActive('abbr')` → `mode='edit'`; text from current abbr range, title from `editor.getAttributes('abbr').title`.
 - Else → `mode='create'`; text from selection, title empty.
 
-**Inputs:**
-- `<input name="text" required>` — text content of the marked range.
-- `<input name="title" required minLength={5} maxLength={300}>` — abbr title attribute.
+**Inputs:** Each input is paired with a visible `<label>` element — no placeholder text used as a label substitute. (Project convention: labels are explicit visible elements, not placeholders.)
+
+- `<label>` "Visible text" + `<input name="text" required>` — text content of the marked range.
+- `<label>` "Abbreviation title" + `<input name="title" required minLength={5} maxLength={300}>` — the abbr title attribute, typed full form.
 
 **Buttons (both submit, both inside form):**
 - `<button type="submit" name="apply">Apply</button>`
