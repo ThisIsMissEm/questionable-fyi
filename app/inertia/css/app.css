@@ -137,7 +137,7 @@
     @apply underline text-primary;
   }
   mark {
-    @apply bg-primary/10 rounded-sm px-0.5;
+    @apply bg-primary/5 text-primary rounded-sm px-0.5;
   }
 }
 
