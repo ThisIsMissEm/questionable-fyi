@@ -1,9 +1,9 @@
-import * as richtext from '@lexicons/fyi/questionable/richtext'
 import { Data } from '@generated/data'
 import { usePage } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import { useMemo } from 'react'
 import { urlFor } from '~/client'
+import { RichtextContent } from '~/components/richtext/content'
 
 type QuestionProps = React.ComponentProps<'article'> & {
   question: Data.Question
@@ -22,13 +22,6 @@ export default function Question({ question, hideByline, ...restProps }: Questio
       id: question.rkey,
     })
   }, [question])
-
-  const content =
-    question.content?.items.map((item, index) => {
-      if (richtext.text.$matches(item)) {
-        return <p key={index}>{item.plaintext}</p>
-      }
-    }) ?? []
 
   const isDetailPage = page.url == questionUrl
 
@@ -72,15 +65,15 @@ export default function Question({ question, hideByline, ...restProps }: Questio
           {heading}
         </header>
       )}
-      {content.length > 0 && (
+      {question.content && question.content.items.length > 0 && (
         <div
           className={
             isDetailPage
-              ? 'mt-6 max-w-prose space-y-4'
-              : 'mt-2 max-w-prose line-clamp-3 text-muted-foreground'
+              ? 'richtext-prose richtext-content mt-6'
+              : 'richtext-prose mt-2 line-clamp-3 text-muted-foreground'
           }
         >
-          {content}
+          <RichtextContent content={question.content} />
         </div>
       )}
     </article>

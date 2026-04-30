@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import adonisjs from '@adonisjs/vite/client'
 import inertia from '@adonisjs/inertia/vite'
+import { resolve } from './vite.shared.ts'
 
 export default defineConfig({
   plugins: [
@@ -12,17 +13,7 @@ export default defineConfig({
     adonisjs({ entrypoints: ['inertia/app.tsx'], reload: ['resources/views/**/*.edge'] }),
   ],
 
-  /**
-   * Define aliases for importing modules from
-   * your frontend code
-   */
-  resolve: {
-    alias: {
-      '~/': `${import.meta.dirname}/inertia/`,
-      '@': `${import.meta.dirname}/inertia/lib`,
-      '@generated': `${import.meta.dirname}/.adonisjs/client/`,
-    },
-  },
+  resolve,
 
   server: {
     watch: {

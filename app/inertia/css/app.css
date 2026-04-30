@@ -103,3 +103,69 @@
     @apply bg-background text-foreground font-serif text-xl font-normal;
   }
 }
+
+/* Shared richtext prose styles — used by both the editor and rendered content */
+.richtext-prose {
+  h2 {
+    @apply text-2xl font-semibold mt-6 mb-2;
+  }
+  h3 {
+    @apply text-xl font-semibold mt-4 mb-1;
+  }
+  blockquote {
+    @apply bg-muted/60 rounded-md px-4 py-3 my-3;
+  }
+  pre {
+    @apply bg-muted rounded-md p-4 my-3 font-mono text-[0.8em] overflow-x-auto;
+  }
+  code:not(pre code) {
+    @apply bg-muted rounded px-1.5 py-0.5 font-mono text-[0.85em];
+  }
+  ul {
+    @apply list-disc pl-6 my-3;
+  }
+  ol {
+    @apply list-decimal pl-6 my-3;
+  }
+  li {
+    @apply my-1;
+  }
+  hr {
+    @apply border-border my-6;
+  }
+  a {
+    @apply underline text-primary;
+  }
+  mark {
+    @apply bg-primary/5 text-primary rounded-sm px-0.5;
+  }
+}
+
+/* Rendered richtext content — more generous spacing, body-size type */
+.richtext-content {
+  @apply text-xl;
+  p {
+    @apply my-3 leading-relaxed;
+  }
+}
+
+/* TipTap editor — tighter spacing and form-control sizing */
+.richtext-editor-content {
+  @apply text-base md:text-sm;
+  > :first-child {
+    @apply mt-0;
+  }
+  p {
+    @apply my-1;
+  }
+}
+
+.tiptap {
+  interpolate-size: allow-keywords;
+  transition: height 150ms ease-out;
+}
+
+.tiptap .is-editor-empty:first-child::before {
+  @apply text-muted-foreground pointer-events-none float-left h-0;
+  content: attr(data-placeholder);
+}

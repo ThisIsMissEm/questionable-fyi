@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "lexicon-garden": {
+      "type": "http",
+      "url": "https://lexicon.garden/mcp"
+    },
+    "atproto-docs": {
+      "type": "http",
+      "url": "https://atproto.mcp.kapa.ai"
+    }
+  }
+}
