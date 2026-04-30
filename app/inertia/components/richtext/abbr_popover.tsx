@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useEditorState } from '@tiptap/react'
-import { SquareDashedText } from 'lucide-react'
+import { SpellCheck2 } from 'lucide-react'
 import { cn } from '~/lib/lib/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '~/lib/components/ui/popover'
 import { Input } from '~/lib/components/ui/input'
@@ -98,7 +98,7 @@ export function AbbrPopover({ editor }: { editor: EditorInstance }) {
     <Popover open={open} onOpenChange={handleOpen}>
       <PopoverTrigger asChild>
         <ToolbarButton title="Abbreviation" aria-pressed={isActive} disabled={triggerDisabled}>
-          <SquareDashedText />
+          <SpellCheck2 />
         </ToolbarButton>
       </PopoverTrigger>
       <PopoverContent
