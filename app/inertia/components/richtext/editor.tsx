@@ -29,8 +29,8 @@ const RichtextEditor = forwardRef<RichtextEditorRef, RichtextEditorProps>(functi
       }),
       Underline,
       Highlight,
-      Subscript,
-      Superscript,
+      Subscript.extend({ excludes: 'superscript' }),
+      Superscript.extend({ excludes: 'subscript' }),
       Abbr,
       Link.configure({
         openOnClick: false,

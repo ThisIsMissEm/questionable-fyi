@@ -26,16 +26,11 @@ import { LinkPopover } from './link_popover'
 import { AbbrPopover } from './abbr_popover'
 import { StyleSelect } from './style_select'
 
-const MARK_KEYS = [
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'highlight',
-  'subscript',
-  'superscript',
-] as const
+const MARK_KEYS = ['bold', 'italic', 'underline', 'strike', 'highlight'] as const
 type MarkKey = (typeof MARK_KEYS)[number]
+
+const SCRIPT_KEYS = ['subscript', 'superscript'] as const
+type ScriptKey = (typeof SCRIPT_KEYS)[number]
 
 const BLOCK_KEYS = ['bulletList', 'orderedList', 'blockquote', 'codeBlock'] as const
 type BlockKey = (typeof BLOCK_KEYS)[number]
@@ -65,6 +60,9 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
     underline: () => editor.chain().focus().toggleUnderline().run(),
     strike: () => editor.chain().focus().toggleStrike().run(),
     highlight: () => editor.chain().focus().toggleHighlight().run(),
+  }
+
+  const scriptCommands: Record<ScriptKey, () => boolean> = {
     subscript: () => editor.chain().focus().toggleSubscript().run(),
     superscript: () => editor.chain().focus().toggleSuperscript().run(),
   }
@@ -83,10 +81,14 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
       state.isUnderline && 'underline',
       state.isStrike && 'strike',
       state.isHighlight && 'highlight',
-      state.isSubscript && 'subscript',
-      state.isSuperscript && 'superscript',
     ] as Array<MarkKey | false>
   ).filter((v): v is MarkKey => Boolean(v))
+
+  const activeScript: ScriptKey | '' = state.isSubscript
+    ? 'subscript'
+    : state.isSuperscript
+      ? 'superscript'
+      : ''
 
   const activeBlocks = (
     [
@@ -123,6 +125,21 @@ export function Toolbar({ editor }: { editor: EditorInstance }) {
         <ToolbarToggleItem value="highlight" title="Highlight">
           <Highlighter />
         </ToolbarToggleItem>
+      </ToolbarToggleGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarToggleGroup
+        type="single"
+        value={activeScript}
+        onValueChange={(next) => {
+          if (next === '' && activeScript !== '') {
+            scriptCommands[activeScript]()
+          } else if (next === 'subscript' || next === 'superscript') {
+            scriptCommands[next]()
+          }
+        }}
+      >
         <ToolbarToggleItem value="subscript" title="Subscript">
           <SubscriptIcon />
         </ToolbarToggleItem>
